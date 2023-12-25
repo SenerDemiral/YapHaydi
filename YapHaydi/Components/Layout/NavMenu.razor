@@ -1,0 +1,143 @@
+﻿@inject ProtectedLocalStorage PLS
+@inject CascadingValueSource<RLCV> source
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">YapHaydi</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="counter">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter @rLCV?.usrName
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="weather">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    [CascadingParameter] 
+    public RLCV? rLCV { get; set; }
+    
+    private string Pge = "NavM";
+
+    // public override Task SetParametersAsync(ParameterView parameters)
+    // {
+    //     // ParameterView instance can no longer be read because it has expired. ParameterView can only be read synchronously and must not be stored for later use.
+    //     Console.WriteLine($"{Pge}.SPA s");
+    //     return base.SetParametersAsync(parameters);
+    // }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        // Console.WriteLine($"{Pge}.OAR s {firstRender.ToString()}");
+        // base.OnAfterRender(firstRender);
+        // Console.WriteLine($"{Pge}.OAR f {firstRender.ToString()}");
+
+        Console.WriteLine($"{Pge}.OAR s {firstRender.ToString()} {rLCV.usrName}");
+
+        if (firstRender)
+        {
+            // UsrPLS usr = new();
+            // usr.usrid = 111;
+            // usr.usrpwd = "xxx";
+            // await PLS.SetAsync("pwd", "bodved", usr);
+            //var toto = PLS.GetAsync<UsrPLS>("pwd", "bodved").Result;
+            //var aaa = Task.Run(() => PLS.GetAsync<UsrPLS>("pwd", "bodved")).Result;
+            //eConsole.WriteLine($"{Pge}.OAR f {firstRender.ToString()} 1");
+            //Console.WriteLine($"{Pge}.OARA f {firstRender.ToString()} {toto.Value.usrid}");
+        }
+
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+
+        if (firstRender)
+        {
+            Console.WriteLine($"{Pge}.OARA s {firstRender.ToString()}");
+            UsrPLS usr = new();
+            //usr.usrid = 111;
+            // usr.usrpwd = "xxx";
+            //await PLS.SetAsync("pwd", "bodved", usr);
+            try
+            {
+                var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
+                Console.WriteLine($"{Pge}.OARA f {firstRender.ToString()} {toto.Value?.usrid}");
+                rLCV.SetVal(toto.Value.usrid, "Şener");
+                
+                source?.NotifyChangedAsync();
+
+                //StateHasChanged();
+                //var aaa = rLCV.usrName;
+                //Console.WriteLine($"{Pge}.OARA f {aaa}");
+            } catch
+            {
+                
+            }
+            //var task = GetFooAsync();
+            //task.Wait();
+            //var result = task.Result;
+            //await Task.Delay(2000);
+            //Console.WriteLine($"{Pge}.OARA f {firstRender.ToString()} 1");
+        }
+    }
+
+    public async ValueTask<ProtectedBrowserStorageResult<UsrPLS>> GetFooAsync()
+    {
+        // Start asynchronous operation(s) and return associated task.
+        var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
+        return toto;
+    }
+     
+    // protected override void OnInitialized()
+    // {
+    //     Console.WriteLine($"{Pge}.OI s");
+    //     base.OnInitialized();
+    //     Console.WriteLine($"{Pge}.OI f");
+    // }
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     Console.WriteLine($"{Pge}.OIA s");
+    //     await Task.Delay(10);
+    //     Console.WriteLine($"{Pge}.OIA f");
+    // }
+
+    protected override void OnParametersSet()
+    {
+        Console.WriteLine($"{Pge}.OPS s");
+        base.OnParametersSet();
+        Console.WriteLine($"{Pge}.OPS f");
+    }
+
+    // protected override async Task OnParametersSetAsync()
+    // {
+    //     Console.WriteLine($"{Pge}.OPSA s");
+    //     //await Task.Delay(10);
+    //     Console.WriteLine($"{Pge}.OPSA f");
+    // }
+
+    public sealed class UsrPLS
+    {
+        public int usrid { get; set; }
+        public string usrpwd { get; set; }
+    }
+}
