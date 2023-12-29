@@ -11,20 +11,20 @@
 <button class="btn btn-primary" @onclick="IncrementCount">Click me @rLCV.usrName</button>
 
 @code {
-    [CascadingParameter] public RLCV? rLCV{ get; set; }
+	[CascadingParameter] public RLCV? rLCV { get; set; }
 
-    private int currentCount = 0;
+	private int currentCount = 0;
 
-    private void IncrementCount()
-    {
-        currentCount++;
+	private void IncrementCount()
+	{
+		currentCount++;
 
-        rLCV.usrName = currentCount.ToString();
+		rLCV.usrName = currentCount.ToString();
 
-        source.NotifyChangedAsync();
+		source.NotifyChangedAsync();
 
-        //rLCV = new DDD{usrId = currentCount.ToString()};
+		//rLCV = new DDD{usrId = currentCount.ToString()};
 
-        
-    }
+
+	}
 }

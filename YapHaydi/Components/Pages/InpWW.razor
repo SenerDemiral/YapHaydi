@@ -1,7 +1,7 @@
-﻿@inject NavigationManager Navigation
-@inject IDataAccess db
-@rendermode @(new InteractiveServerRenderMode(prerender: false))
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@page "/inp"
 
+<h2>rclv @rLCV.usrName</h2>
 
 <div style="display:flex;justify-content:space-between;">
     <button disabled="@RO"
@@ -14,254 +14,249 @@
     </button>
 </div>
 
-@if(ww is not null){
-<table class="table-edit">
-    <tr>
-        <td>Id</td>
-        <td>@ww.WWID</td>
-    </tr>
-    <tr>
-        <td>Konu</td>
-        <td>
-            <input type="text" 
-                   maxlength="30"
-                   size="30"
-                   list="TTSL"
-                   @bind="ww.Sbj"
-                   @bind:event="onchange"
-                   @bind:after="(() => CheckTTS(ref ww.SbjID, ref ww.Sbj, oww!.Sbj))" />
-         </td>
-    </tr>
-    <tr>
-        <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Request</td>
-    </tr>
-    <tr>
-        <td>Kim</td>
-        <td>
-            <input type="text" 
-                   maxlength="30"
-                   size="30"
-                   list="TTXL"
-                   @bind="ww.rWho"
-                   @bind:event="onchange"
-                   @bind:after="(() => CheckTTX(ref ww.rWhoID, ref ww.rWho, oww!.rWho))" />
-         </td>
-    </tr>
-    <tr>
-        <td>Info</td>
-        <td>
-            <textarea readonly="@RO"
-                      rows="4" cols="30"
-                      @bind="ww.rInf" 
-                      style="resize:vertical;height:42px" />
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Yapan</td>
-    </tr>
-    <tr>
-        <td>Dept</td>
-        <td>
-            <input type="text" 
-                   maxlength="30"
-                   size="30"
-                   list="TTDL"
-                   @bind="ww.mDpt"
-                   @bind:event="onchange"
-                   @bind:after="(() => CheckTTD(ref ww.mDptID, ref ww.mDpt, oww!.mDpt))" />
-         </td>
-    </tr>
-    <tr>
-        <td>Kişi</td>
-        <td>
-            <input type="text" 
-                   maxlength="30"
-                   size="30"
-                   list="TTXL"
-                   @bind="ww.mWho"
-                   @bind:event="onchange"
-                   @bind:after="(() => CheckTTX(ref ww.mWhoID, ref ww.mWho, oww!.mWho))" />
-         </td>
-    </tr>
-    <tr>
-        <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Başlangıç</td>
-    </tr>
-    <tr>
-        <td>Contact</td>
-        <td>
-            <input type="text" 
-                   maxlength="30"
-                   size="30"
-                   list="TTXL"
-                   @bind="ww.sCnt"
-                   @bind:event="onchange"
-                   @bind:after="(() => CheckTTX(ref ww.sCntID, ref ww.sCnt, oww!.sCnt))" />
-         </td>
-    </tr>
-    <tr>
-        <td>Adres</td>
-        <td>
-            <input type="text" 
-                   maxlength="30"
-                   size="30"
-                   list="TTXL"
-                   @bind="ww.sAdr"
-                   @bind:event="onchange"
-                   @bind:after="(() => CheckTTX(ref ww.sAdrID, ref ww.sAdr, oww!.sAdr))" />
-         </td>
-    </tr>
-    <tr>
-        <td></td>
-        <td>@ww.sAdres</td>
-    </tr>
-    <tr>
-        <td>Tahmini</td>
-        <td><input readonly="@RO" type="date" @bind="ww.SED" />
-            <input readonly="@RO" type="time" @bind="ww.SEDt" />
-        </td>
-    </tr>
-    <tr>
-        <td>Gerçek</td>
-        <td>@ww.SADs</td>
-    </tr>
-    <tr>
-        <td>Info</td>
-        <td>
-            <textarea readonly="@RO"
-                      rows="4" cols="30"
-                      @bind="ww.sInf" 
-                      style="resize:vertical;height:42px" />
-        </td>
-    </tr>
+@if(ww is not null) {
+    <table class="table-edit">
+        <tbody>
+        <tr>
+            <td>Id</td>
+            <td>@ww.WWID</td>
+        </tr>
+        <tr>
+            <td>Konu</td>
+            <td>
+                <input type="text" 
+                       maxlength="30"
+                       size="30"
+                       list="TTSL"
+                       @bind="ww.Sbj"
+                       @bind:event="onchange"
+                       @bind:after="(() => CheckTTS(ref ww.SbjID, ref ww.Sbj, oww!.Sbj))" />
+             </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Request</td>
+        </tr>
+        <tr>
+            <td>Kim</td>
+            <td>
+                <input type="text" 
+                       maxlength="30"
+                       size="30"
+                       list="TTXL"
+                       @bind="ww.rWho"
+                       @bind:event="onchange"
+                       @bind:after="(() => CheckTTX(ref ww.rWhoID, ref ww.rWho, oww!.rWho))" />
+             </td>
+        </tr>
+        <tr>
+            <td>Info</td>
+            <td>
+                <textarea readonly="@RO"
+                          rows="4" cols="30"
+                          @bind="ww.rInf" 
+                          style="resize:vertical;height:42px" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Yapan</td>
+        </tr>
+        <tr>
+            <td>Dept</td>
+            <td>
+                <input type="text" 
+                       maxlength="30"
+                       size="30"
+                       list="TTDL"
+                       @bind="ww.mDpt"
+                       @bind:event="onchange"
+                       @bind:after="(() => CheckTTD(ref ww.mDptID, ref ww.mDpt, oww!.mDpt))" />
+             </td>
+        </tr>
+        <tr>
+            <td>Kişi</td>
+            <td>
+                <input type="text" 
+                       maxlength="30"
+                       size="30"
+                       list="TTXL"
+                       @bind="ww.mWho"
+                       @bind:event="onchange"
+                       @bind:after="(() => CheckTTX(ref ww.mWhoID, ref ww.mWho, oww!.mWho))" />
+             </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Başlangıç</td>
+        </tr>
+        <tr>
+            <td>Contact</td>
+            <td>
+                <input type="text" 
+                       maxlength="30"
+                       size="30"
+                       list="TTXL"
+                       @bind="ww.sCnt"
+                       @bind:event="onchange"
+                       @bind:after="(() => CheckTTX(ref ww.sCntID, ref ww.sCnt, oww!.sCnt))" />
+             </td>
+        </tr>
+        <tr>
+            <td>Adres</td>
+            <td>
+                <input type="text" 
+                       maxlength="30"
+                       size="30"
+                       list="TTXL"
+                       @bind="ww.sAdr"
+                       @bind:event="onchange"
+                       @bind:after="(() => CheckTTX(ref ww.sAdrID, ref ww.sAdr, oww!.sAdr))" />
+             </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>@ww.sAdres</td>
+        </tr>
+        <tr>
+            <td>Tahmini</td>
+            <td><input readonly="@RO" type="date" @bind="ww.SED" />
+                <input readonly="@RO" type="time" @bind="ww.SEDt" />
+            </td>
+        </tr>
+        <tr>
+            <td>Gerçek</td>
+            <td>@ww.SADs</td>
+        </tr>
+        <tr>
+            <td>Info</td>
+            <td>
+                <textarea readonly="@RO"
+                          rows="4" cols="30"
+                          @bind="ww.sInf" 
+                          style="resize:vertical;height:42px" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Bitiş</td>
+        </tr>
+        <tr>
+            <td>Contact</td>
+            <td>
+                <input type="text" 
+                       maxlength="30"
+                       size="30"
+                       list="TTXL"
+                       @bind="ww.fCnt"
+                       @bind:event="onchange"
+                       @bind:after="(() => CheckTTX(ref ww.fCntID, ref ww.fCnt, oww!.fCnt))" />
+             </td>
+        </tr>
+        <tr>
+            <td>Adres</td>
+            <td>
+                <input type="text" 
+                       maxlength="30"
+                       size="30"
+                       list="TTXL"
+                       @bind="ww.fAdr"
+                       @bind:event="onchange"
+                       @bind:after="(() => CheckTTX(ref ww.fAdrID, ref ww.fAdr, oww!.fAdr))" />
+             </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td style="width:200px">@ww.fAdres</td>
+        </tr>
+        <tr>
+            <td>Tahmini</td>
+            <td><input readonly="@RO" type="date" @bind="ww.FED" />
+                <input readonly="@RO" type="time" @bind="ww.FEDt" />
+            </td>
+        </tr>
+        <tr>
+            <td>Gerçek</td>
+            <td>@ww.FADs</td>
+        </tr>
+        <tr>
+            <td>Info</td>
+            <td>
+                <textarea readonly="@RO"
+                          rows="4" cols="30"
+                          @bind="ww.fInf" 
+                          style="resize:vertical;height:42px" />
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Destinasyon</td>
+        </tr>
+        <tr>
+            <td>Contact</td>
+            <td>
+                <input type="text" 
+                       maxlength="30"
+                       size="30"
+                       list="TTXL"
+                       @bind="ww.sCnt"
+                       @bind:event="onchange"
+                       @bind:after="(() => CheckTTX(ref ww.sCntID, ref ww.sCnt, oww!.sCnt))" />
+             </td>
+        </tr>
+        <tr>
+            <td>Adres</td>
+            <td>
+                <input type="text" 
+                       maxlength="30"
+                       size="30"
+                       list="TTXL"
+                       @bind="ww.dAdr"
+                       @bind:event="onchange"
+                       @bind:after="(() => CheckTTX(ref ww.dAdrID, ref ww.dAdr, oww!.dAdr))" />
+             </td>
+        </tr>
+        </tbody>
+    </table>
 
-    <tr>
-        <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Bitiş</td>
-    </tr>
-    <tr>
-        <td>Contact</td>
-        <td>
-            <input type="text" 
-                   maxlength="30"
-                   size="30"
-                   list="TTXL"
-                   @bind="ww.fCnt"
-                   @bind:event="onchange"
-                   @bind:after="(() => CheckTTX(ref ww.fCntID, ref ww.fCnt, oww!.fCnt))" />
-         </td>
-    </tr>
-    <tr>
-        <td>Adres</td>
-        <td>
-            <input type="text" 
-                   maxlength="30"
-                   size="30"
-                   list="TTXL"
-                   @bind="ww.fAdr"
-                   @bind:event="onchange"
-                   @bind:after="(() => CheckTTX(ref ww.fAdrID, ref ww.fAdr, oww!.fAdr))" />
-         </td>
-    </tr>
-    <tr>
-        <td></td>
-        <td style="width:200px">@ww.fAdres</td>
-    </tr>
-    <tr>
-        <td>Tahmini</td>
-        <td><input readonly="@RO" type="date" @bind="ww.FED" />
-            <input readonly="@RO" type="time" @bind="ww.FEDt" />
-        </td>
-    </tr>
-    <tr>
-        <td>Gerçek</td>
-        <td>@ww.FADs</td>
-    </tr>
-    <tr>
-        <td>Info</td>
-        <td>
-            <textarea readonly="@RO"
-                      rows="4" cols="30"
-                      @bind="ww.fInf" 
-                      style="resize:vertical;height:42px" />
-        </td>
-    </tr>
-    <tr>
-        <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Destinasyon</td>
-    </tr>
-    <tr>
-        <td>Contact</td>
-        <td>
-            <input type="text" 
-                   maxlength="30"
-                   size="30"
-                   list="TTXL"
-                   @bind="ww.sCnt"
-                   @bind:event="onchange"
-                   @bind:after="(() => CheckTTX(ref ww.sCntID, ref ww.sCnt, oww!.sCnt))" />
-         </td>
-    </tr>
-    <tr>
-        <td>Adres</td>
-        <td>
-            <input type="text" 
-                   maxlength="30"
-                   size="30"
-                   list="TTXL"
-                   @bind="ww.dAdr"
-                   @bind:event="onchange"
-                   @bind:after="(() => CheckTTX(ref ww.dAdrID, ref ww.dAdr, oww!.dAdr))" />
-         </td>
-    </tr>
-</table>
 
+    <datalist id="TTXL">
+        @foreach (var r in ttx!)
+        {
+            <option value="@r.Key" />
+        }
+    </datalist>
 
-<datalist id="TTXL">
-    @foreach (var r in ttx!)
-    {
-        <option value="@r.Key" />
-    }
-</datalist>
-<datalist id="TTSL">
-    @foreach (var r in tts!)
-    {
-        <option value="@r.Key" />
-    }
-</datalist>
-<datalist id="TTDL">
-    @foreach (var r in ttd!)
-    {
-        <option value="@r.Key" />
-    }
-</datalist>
+    <datalist id="TTSL">
+        @foreach (var r in tts!)
+        {
+            <option value="@r.Key" />
+        }
+    </datalist>
+
+    <datalist id="TTDL">
+        @foreach (var r in ttd!)
+        {
+            <option value="@r.Key" />
+        }
+    </datalist>
 }
-@code {
-    [CascadingParameter] public RLCV rLCV { get; set; }
 
-    [Parameter] public int ID { get; set; }
-    [Parameter] public EventCallback OnSaved { get; set; }
-    [Parameter] public EventCallback OnCancelled { get; set; }
+@code {
+    [Inject] NavigationManager Navigation { get; set; } 
+    [Inject] IDataAccess db { get; set; }
+    [CascadingParameter] 
+    public RLCV rLCV { get; set; }
+    [Inject] 
+    CascadingValueSource<RLCV>? RLCVsource { get; set; } = default;
+    [Parameter] 
+    public int ID { get; set; }
+    [Parameter] 
+    public EventCallback OnSaved { get; set; }
+    [Parameter] 
+    public EventCallback OnCancelled { get; set; }
+
     private WWmodel? ww, oww;
     private bool RO = false;
     private int FFID = 101;
     private Dictionary<string, int>? ttx, tts, ttd;
 
     private string Pge = "Inp";
-
-    // public override async Task SetParametersAsync(ParameterView parameters)
-    // {
-    //     Console.WriteLine($"{Pge}.SPA s");
-    //     await Task.Delay(5);
-    //     Console.WriteLine($"{Pge}.SPA s 1");
-    //     await Task.Delay(5);
-    //     Console.WriteLine($"{Pge}.SPA s 2");
-    //     base.SetParametersAsync(parameters);
-    // }
-
-    // protected override void OnAfterRender(bool firstRender)
-    // {
-    //     Console.WriteLine($"{Pge}.OAR s {firstRender.ToString()}");
-    //     base.OnAfterRender(firstRender);
-    //     Console.WriteLine($"{Pge}.OAR f {firstRender.ToString()}");
-    // }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -275,33 +270,19 @@
         }
     }
 
-    // protected override void OnInitialized()
-    // {
-    //     Console.WriteLine($"{Pge}.OI s");
-    //     base.OnInitialized();
-    //     Console.WriteLine($"{Pge}.OI f");
-    // }
-
-    // protected override async Task OnInitializedAsync()
-    // {
-    //     Console.WriteLine($"{Pge}.OIA s");
-    //     await Task.Delay(10);
-    //     Console.WriteLine($"{Pge}.OIA f");
-    // }
-
     protected override void OnParametersSet()
     {
-        Console.WriteLine($"{Pge}.OPS s");
-        base.OnParametersSet();
-        Console.WriteLine($"{Pge}.OPS f");
+        // Console.WriteLine($"{Pge}.OPS s");
+        // base.OnParametersSet();
+        // Console.WriteLine($"{Pge}.OPS f");
     }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        Console.WriteLine($"{Pge}.OPSA s");
-        //await Task.Delay(10);
-        Console.WriteLine($"{Pge}.OPSA f");
-    }
+    // protected override async Task OnParametersSetAsync()
+    // {
+    //     Console.WriteLine($"{Pge}.OPSA s");
+    //     //await Task.Delay(10);
+    //     Console.WriteLine($"{Pge}.OPSA f");
+    // }
 
     private void CheckTTX(ref int? id, ref string? adx, string? oadx)
     {
@@ -341,27 +322,31 @@
 
     private void Cancel()
     {
+        rLCV.usrName = "Dilara";
+        RLCVsource?.NotifyChangedAsync();
+
         // zaten buradan geri dönecek, ilk değerlerini geri almaya gerek yok. ww = oww Bu çalışmaz birbirine eşitliyor copy yapmıyor;
-        ww = oww.ShallowCopy(); //Gerekirse bu OK 
-        OnCancelled.InvokeAsync();
+        // ww = oww.ShallowCopy(); //Gerekirse bu OK 
+        // OnCancelled.InvokeAsync();
     }
     private void Save()
     {
         var ppm = new   // Sirasi onemli Procedure Input sirasiyla ayni olmali
         {
-
+            aaa = "aaa"
         };
+
         db.SaveRec("WW_MDF", ppm);
         OnSaved.InvokeAsync();
     }
 
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine($"{Pge}.OIA s {rLCV.usrName}");
-        await Task.Delay(100);
-        Console.WriteLine($"{Pge}.OIA after delay 1 {rLCV.usrName}");
+        // Console.WriteLine($"{Pge}.OIA s {rLCV.usrName}");
+        // await Task.Delay(100);
+        // Console.WriteLine($"{Pge}.OIA after delay 1 {rLCV.usrName}");
         
-        Console.WriteLine($"{Pge}.{rLCV.usrName}");
+        // Console.WriteLine($"{Pge}.{rLCV.usrName}");
 
        
         

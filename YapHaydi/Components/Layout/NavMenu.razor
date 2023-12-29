@@ -1,6 +1,5 @@
-﻿@inject ProtectedLocalStorage PLS
-@inject CascadingValueSource<RLCV> source
-@rendermode @(new InteractiveServerRenderMode(prerender: false))
+﻿@implements IDisposable
+@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
@@ -25,7 +24,7 @@
         </div>
 
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
+            <NavLink class="nav-link" href=@($"weather/{@rLCV.usrName}")>
                 <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
             </NavLink>
         </div>
@@ -33,10 +32,23 @@
 </div>
 
 @code {
-    [CascadingParameter] 
-    public RLCV? rLCV { get; set; }
-    
+    [Inject]
+    ProtectedLocalStorage? PLS { get; set; } = default;
+
+    [Inject]
+    CascadingValueSource<RLCV>? RLCVsource { get; set; } = default;
+
+    [CascadingParameter]
+    public RLCV? rLCV { get; set; } = default;
+
+    [Parameter]
+    public string? UsrNme { get; set; } = default;
+
     private string Pge = "NavM";
+    public void Dispose()
+    {
+        
+    }
 
     // public override Task SetParametersAsync(ParameterView parameters)
     // {
@@ -72,25 +84,29 @@
 
         if (firstRender)
         {
-            Console.WriteLine($"{Pge}.OARA s {firstRender.ToString()}");
-            UsrPLS usr = new();
+            Console.WriteLine($"{Pge}.OARA s {firstRender.ToString()} {rLCV.usrName}");
+            //UsrPLS usr = new();
             //usr.usrid = 111;
-            // usr.usrpwd = "xxx";
+            //usr.usrpwd = "xxx";
             //await PLS.SetAsync("pwd", "bodved", usr);
-            try
+            if (rLCV.usrId == -1)
             {
-                var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
-                Console.WriteLine($"{Pge}.OARA f {firstRender.ToString()} {toto.Value?.usrid}");
-                rLCV.SetVal(toto.Value.usrid, "Şener");
-                
-                source?.NotifyChangedAsync();
+                try
+                {
+                    // var toto = await PLS!.GetAsync<UsrPLS>("pwd", "bodved");
+                    // Console.WriteLine($"{Pge}.OARA f {firstRender.ToString()} {toto.Value?.usrid} ---{toto.Value?.usrpwd}");
+                    // rLCV.SetVal(toto.Value.usrid, "Şener");
+                    // RLCVsource?.NotifyChangedAsync();
+                    // Console.WriteLine($"{Pge}.OARA f2 {firstRender.ToString()} {rLCV.usrName}");
 
-                //StateHasChanged();
-                //var aaa = rLCV.usrName;
-                //Console.WriteLine($"{Pge}.OARA f {aaa}");
-            } catch
-            {
-                
+                    //StateHasChanged();
+                    //var aaa = rLCV.usrName;
+                    //Console.WriteLine($"{Pge}.OARA f {aaa}");
+                }
+                catch
+                {
+
+                }
             }
             //var task = GetFooAsync();
             //task.Wait();
@@ -100,19 +116,21 @@
         }
     }
 
-    public async ValueTask<ProtectedBrowserStorageResult<UsrPLS>> GetFooAsync()
-    {
-        // Start asynchronous operation(s) and return associated task.
-        var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
-        return toto;
-    }
-     
-    // protected override void OnInitialized()
+    // public async ValueTask<ProtectedBrowserStorageResult<UsrPLS>> GetFooAsync()
     // {
-    //     Console.WriteLine($"{Pge}.OI s");
-    //     base.OnInitialized();
-    //     Console.WriteLine($"{Pge}.OI f");
+    //     // Start asynchronous operation(s) and return associated task.
+    //     var toto = await PLS.GetAsync<UsrPLS>("pwd", "bodved");
+    //     return toto;
     // }
+
+    protected override void OnInitialized()
+    {
+        Console.WriteLine($"{Pge}.OI s");
+        base.OnInitialized();
+        Console.WriteLine($"{Pge}.OI f");
+
+        rLCV.usrName = UsrNme;
+    }
 
     // protected override async Task OnInitializedAsync()
     // {

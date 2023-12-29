@@ -10,7 +10,17 @@
 </div>
  *@
 
- <Starship aaa="dilara" />
+@* <style>
+    .smooth {
+        transition: all 1s ease-in;
+    }
+</style>
+<div id="color-demo" class="smooth" style="color:red"
+     hx-get="/colors" hx-swap="outerHTML" hx-trigger="every 1s">
+    Color Swap Demo
+</div> *@
+
+ @* <Starship aaa="dilaracan" /> *@
 
 @code {
     [CascadingParameter]
@@ -51,7 +61,7 @@
     protected override async Task OnInitializedAsync()
     {
         Console.WriteLine($"{Pge}.OIA s");
-        //await Task.Delay(10);
+        await Task.Delay(10);
         Console.WriteLine($"{Pge}.OIA f");
     }
 

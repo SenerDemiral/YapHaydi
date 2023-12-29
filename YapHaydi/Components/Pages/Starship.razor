@@ -1,36 +1,62 @@
-﻿@page "/starship"
+﻿@inject NavigationManager Nav 
+@page "/starship"
 
-<EditForm Model="@Model" OnSubmit="@Submit" FormName="Starship1" Enhance>
-    <InputText @bind-Value="Model!.Id" />
+<EditForm Model="@Model" OnSubmit="@Submit" FormName="Starship1">
+    <InputNumber @bind-Value="Model.Id" />
+    <InputText @bind-Value="Model.Pwd" />
     <button type="submit">Submit</button>
 </EditForm>
 
+@* <a hx-get="/lgn" hx-target="this" hx-swap="none">New link</a> *@
+<a hx-get="/lgn">New link</a>
+
+<a href="/lgn">New link 2</a>
+
 @code {
-    [CascadingParameter] 
-    public HttpContext? Context { get; set; }
+
+    [CascadingParameter]
+    public HttpContext? context { get; set; }
 
     [Parameter]
     public string aaa { get; set; }
 
     [SupplyParameterFromForm]
-    public StarshipM? Model { get; set; }
+    public LgnMdl? Model { get; set; }
+    [Inject] IUsrDic usrDic { get; set; }
+    [Inject] IDataAccess db { get; set; }
 
-    protected override void OnInitialized() => Model ??= new();
+    protected override void OnInitialized()
+    {
+        Model ??= new();
+    }
 
     private void Submit()
     {
         //Logger.LogInformation("Id = {Id}", Model?.Id);
 
-        Model.Id += " dene";
+        var oldTkn = context.Request.Cookies["sener"];
+        usrDic.Remove(oldTkn);
+
+        Model.Tkn = Guid.NewGuid().ToString("N");
+
+        var res = db.SaveRec("ULT_LOGIN", new { Id = Model.Id, Pwd = Model.Pwd, Tkn = Model.Tkn }); 
+        usrDic.Add(Model.Tkn, Model.Id);
+
+        CookieOptions cookieOptions = new CookieOptions();
+        cookieOptions.Secure = false;
+        cookieOptions.Expires = DateTime.Now.AddHours(1);   // Sure bitince browser silmiyor, ama null gonderiyor
+        cookieOptions.HttpOnly = true;
+        cookieOptions.SameSite = SameSiteMode.Strict;
+        context.Response.Cookies.Append("sener", Model.Tkn, cookieOptions);
+
+
+        //Nav.NavigateTo("/counter");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
     }
 
-    protected override async Task OnInitializedAsync()
+    public class LgnMdl
     {
-        
-    }
-
-    public class StarshipM
-    {
-        public string? Id { get; set; }
+        public int Id { get; set; }
+        public string? Pwd  { get; set; }
+        public string? Tkn { get; set; }
     }
 }

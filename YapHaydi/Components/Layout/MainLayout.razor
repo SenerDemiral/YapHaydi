@@ -2,7 +2,7 @@
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <NavMenu UsrNme="@rLCV.usrName"/>
     </div>
 
     <main>
@@ -18,3 +18,8 @@
     <a class="dismiss">🗙</a>
 </div>
 
+@code {
+    [CascadingParameter]
+    public RLCV rLCV { get; set; }
+
+}

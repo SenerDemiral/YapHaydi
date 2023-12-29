@@ -14,6 +14,7 @@ builder.Configuration.AddJsonFile("C:\\AspNetConfig\\YapHaydi.json",
                        reloadOnChange: true);
 
 builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
+builder.Services.AddSingleton<IUsrDic, UsrDic>();
 
 // RootLevelCascadingValue
 builder.Services.AddScoped((sp) =>
@@ -59,6 +60,52 @@ if (!app.Environment.IsDevelopment())
 
 app.UseStaticFiles();
 app.UseAntiforgery();
+
+app.Use(async (context, next) =>
+{
+    //if (context.Request.Cookies["sener"] != "dilara")
+    //{
+    //    CookieOptions cookieOptions = new CookieOptions();
+    //    cookieOptions.Secure = false;
+    //    cookieOptions.Expires = DateTime.Now.AddHours(1);
+    //    cookieOptions.HttpOnly = true;
+    //    cookieOptions.SameSite = SameSiteMode.Strict;
+    //    context.Response.Cookies.Append("sener", "dilara", cookieOptions);
+    //}
+
+    if (context.Request.Path == "/abidik")
+    {
+        await context.Response.WriteAsync("Terminal Middleware.");
+        return; // Terminate, no next!
+    }
+
+    await next(context);
+});
+
+app.MapGet("/lgn", (HttpContext context, NavigationManager nm) =>
+{
+    CookieOptions cookieOptions = new CookieOptions();
+    cookieOptions.Secure = false;
+    cookieOptions.Expires = DateTime.Now.AddHours(1);
+    cookieOptions.HttpOnly = true;
+    cookieOptions.SameSite = SameSiteMode.Strict;
+    context.Response.Cookies.Append("sener2", "dilara2", cookieOptions);
+
+    //return Results.LocalRedirect("/");
+    //return Results.Content("OK", "text/html");
+    return Results.LocalRedirect("/", preserveMethod: true);
+    //return Results.Ok();
+});
+
+app.MapGet("/colors", () =>
+{
+    string html = $"""
+        <div id="color-demo" class="smooth" style="color:blue" hx-get="/colors" hx-swap="outerHTML" hx-trigger="every 1s">
+             Color Swap Demo Blue
+        </div>
+    """;
+    return Results.Content(html, "text/html");
+});
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();
