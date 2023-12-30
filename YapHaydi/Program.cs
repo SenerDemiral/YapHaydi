@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http.HttpResults;
 using YapHaydi;
 using YapHaydi.Components;
+using YapHaydi.Components.Pages;
 using YapHaydi.DataLibrary;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,12 +16,12 @@ builder.Configuration.AddJsonFile("C:\\AspNetConfig\\YapHaydi.json",
                        reloadOnChange: true);
 
 builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
-builder.Services.AddSingleton<IUsrDic, UsrDic>();
+//builder.Services.AddSingleton<IUsrDic, UsrDic>();
 
 // RootLevelCascadingValue
 builder.Services.AddScoped((sp) =>
 {
-    var daleks = new RLCV { usrId = -1, usrName = "Tanımsız" };
+    var daleks = new RLCV { UsrId = -1, UsrTkn = "Tanımsız" };
     return new CascadingValueSource<RLCV>(daleks, isFixed: false);
 });
 // use
@@ -106,6 +108,11 @@ app.MapGet("/colors", () =>
     """;
     return Results.Content(html, "text/html");
 });
+
+app.MapGet("/can", () => {
+    return new RazorComponentResult<Counter>();
+    });
+
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

@@ -1,6 +1,6 @@
-﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+﻿@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
 @page "/weather/{UsrNme}"
-@attribute [StreamRendering]
+@* @attribute [StreamRendering] *@
 
 <PageTitle>Weather</PageTitle>
 
@@ -49,8 +49,8 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        rLCV.usrName = UsrNme;
-        Console.WriteLine($"Weather.{rLCV.usrName}");
+        rLCV.UsrNme = UsrNme;
+        Console.WriteLine($"Weather.{rLCV.UsrTkn}");
 
         // Simulate asynchronous loading to demonstrate streaming rendering
         await Task.Delay(500);

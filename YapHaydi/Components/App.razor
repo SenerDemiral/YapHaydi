@@ -16,7 +16,13 @@
 
 <body style="font-size:12px">
     <Routes />
-    <script src="_framework/blazor.web.js"></script>
+    <script src="_framework/blazor.web.js" ></script>
+    @* <script src="_framework/blazor.web.js" autostart="false"></script>
+    <script>
+        Blazor.start({
+            ssr: { disableDomPreservation: true }
+        });
+    </script> *@
 </body>
 
 </html>
@@ -24,75 +30,36 @@
 @* @rendermode="new InteractiveServerRenderMode(prerender: false)" *@
 
 @code {
-    // [Inject] Blazored.LocalStorage.ILocalStorageService LocalStorage { get; set; } = default;
-    // private string message = "";
-    // protected override async Task OnInitializedAsync()
+    // [CascadingParameter]
+    // public HttpContext? context { get; set; }
+    
+    // [Inject]
+    // CascadingValueSource<RLCV>? RLCVsource { get; set; } = default;
+
+    // [CascadingParameter]
+    // public RLCV? rLCV { get; set; } = default;
+
+    // [Inject] 
+    // IUsrDic usrDic { get; set; }
+
+    // string Pge = "App";
+    // protected override void OnInitialized()
     // {
-    //     await LocalStorage.SetItemAsStringAsync("message", "Hello World!");
-    //     message = await LocalStorage.GetItemAsStringAsync("message");
+    //     var usrTkn = context.Request.Cookies["sener"];  // null ise yok/expired
+    //     if(usrTkn != null)
+    //     {
+    //         var ok = usrDic.Add(usrTkn); // Tkn a karsilik gelen usr bilmiyor
+    //         if (!ok)
+    //         {
+    //             CookieOptions cookieOptions = new CookieOptions();
+    //             cookieOptions.Expires = DateTime.Now;   // Sure bitince browser silmiyor, ama null gonderiyor
+    //             context.Response.Cookies.Append("sener", usrTkn, cookieOptions);
+    //         }
+    //     }
+
+
+    //     rLCV.usrName = context.Request.Cookies["sener"];
+
+    //     var aa = usrDic.Check(rLCV.usrName);
     // }
-
-    [CascadingParameter]
-    public HttpContext? context { get; set; }
-    [Inject]
-    CascadingValueSource<RLCV>? RLCVsource { get; set; } = default;
-
-    [CascadingParameter]
-    public RLCV? rLCV { get; set; } = default;
-
-    [Inject] IUsrDic usrDic { get; set; }
-
-
-
-    string Pge = "App";
-    protected override void OnInitialized()
-    {
-        var usrTkn = context.Request.Cookies["sener"];  // null ise yok/expired
-        if(usrTkn != null)
-        {
-            var ok = usrDic.Add(usrTkn); // Tkn a karsilik gelen usr bilmiyor
-            if (!ok)
-            {
-                CookieOptions cookieOptions = new CookieOptions();
-                cookieOptions.Expires = DateTime.Now;   // Sure bitince browser silmiyor, ama null gonderiyor
-                context.Response.Cookies.Append("sener", usrTkn, cookieOptions);
-            }
-        }
-
-
-        rLCV.usrName = context.Request.Cookies["sener"];
-
-        var aa = usrDic.Check(rLCV.usrName);
-    }
-    public override async Task SetParametersAsync(ParameterView parameters)
-    {
-        Console.WriteLine($"{Pge}.SPA s");
-        await base.SetParametersAsync(parameters);
-
-
-        // Cookie den nul dışında bir değer geliyorsa (Var&Geçerli[süresi dolmamış])
-        // Gelen UsrTkn ile UsrDic de yoksa
-        //   DB den ara
-        //      Db de var UsrId & Expire time getir
-        //          UsrDic ekle
-        //      Yoksa Login yaptır
-        // Varsa OK, legal user
-
-        // Login 
-        // Name&Pwd alıp DB check
-        // Ok ise
-        //      Onceki kayıtlarında expire etmiş kayıtları sil
-        //      Yenisini ekle
-        //      UsrDic e yaz
-
-        // Logout
-        // DB den sil
-        // Cookie den sil
-    }
-
-    public void Dispose()
-    {
-        
-    }
-
 }

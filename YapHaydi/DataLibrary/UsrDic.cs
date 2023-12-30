@@ -4,6 +4,7 @@ namespace YapHaydi.DataLibrary;
 
 public sealed class UsrDic : IUsrDic
 {
+    // KULLANMA
     private ConcurrentDictionary<string, int> cd = new ConcurrentDictionary<string, int>(4, 101);
     private IDataAccess db;
     public UsrDic(IDataAccess dataAccess)

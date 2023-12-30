@@ -1,7 +1,7 @@
 ﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @page "/inp"
 
-<h2>rclv @rLCV.usrName</h2>
+<h2>rclv @rLCV.UsrNme</h2>
 
 <div style="display:flex;justify-content:space-between;">
     <button disabled="@RO"
@@ -262,7 +262,7 @@
     {
         if (firstRender)
         {
-            Console.WriteLine($"{Pge}.OARA s {firstRender.ToString()} {rLCV.usrName}");
+            Console.WriteLine($"{Pge}.OARA s {firstRender.ToString()} {rLCV.UsrTkn}");
             //await Task.Delay(10);
             //Console.WriteLine($"{Pge}.OARA s {firstRender.ToString()} after delay 1");
             //await Task.Delay(10);
@@ -322,7 +322,7 @@
 
     private void Cancel()
     {
-        rLCV.usrName = "Dilara";
+        rLCV.UsrTkn = "Dilara";
         RLCVsource?.NotifyChangedAsync();
 
         // zaten buradan geri dönecek, ilk değerlerini geri almaya gerek yok. ww = oww Bu çalışmaz birbirine eşitliyor copy yapmıyor;
