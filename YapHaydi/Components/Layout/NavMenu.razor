@@ -2,78 +2,100 @@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 <div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">YapHaydi</a>
-    </div>
+	<div class="container-fluid">
+		<a class="navbar-brand" href="">YapHaydi</a>
+	</div>
 </div>
 
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            @* <NavLink class="nav-link" href="" Match="NavLinkMatch.All" data-enhance-nav="false"> *@
-                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                    <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
+	<nav class="flex-column">
+		<div class="nav-item px-3">
+			@* <NavLink class="nav-link" href="" Match="NavLinkMatch.All" data-enhance-nav="false"> *@
+			<NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+				<span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+			</NavLink>
+		</div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter @rLCV?.UsrTkn
-            </NavLink>
-        </div>
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href="counter">
+				<span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+			</NavLink>
+		</div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href=@($"weather/{@rLCV.UsrTkn}")>
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href=@($"weather/{@rLCV.UsrTkn}")>
+				<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+			</NavLink>
+		</div>
+
+		@if (UsrTkn is null)
+		{
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href="/login">
+					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Login
+				</NavLink>
+			</div>
+		}
+		else
+		{
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href=@($"logout/{@rLCV.UEXId}")>
+					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> @UsrTkn
+				</NavLink>
+			</div>
+		}
+	</nav>
 </div>
 
 @code {
-    [Inject]
-    IDataAccess db { get; set; }
-    
-    [Inject]
-    CascadingValueSource<RLCV>? RLCVsource { get; set; } = default;
+	[Inject]
+	IDataAccess db { get; set; }
 
-    [CascadingParameter]
-    public RLCV? rLCV { get; set; } = default;
+	[Inject] 
+	NavigationManager Nav { get; set; }
 
-    [Parameter]
-    public string? UsrTkn { get; set; } = default;
+	[Inject]
+	CascadingValueSource<RLCV>? RLCVsource { get; set; } = default;
 
-    public void Dispose()
-    {
-        var usr = db.LoadRec<ULE, dynamic>("select * from UEX_EXIT(@UEXId)", new { UEXId = rLCV.UEXId });
-    }
+	[CascadingParameter]
+	public RLCV? rLCV { get; set; } = default;
 
-    protected override void OnInitialized()
-    {
-        if (UsrTkn != null)
-        {
-            var usr = db.LoadRec<ULE, dynamic>("select * from UEX_ENTER(@Tkn)", new { Tkn = UsrTkn });
-            if (usr != null)
-            {
-                if (usr.UsrId > 0)
-                {
-                    rLCV.UsrTkn = UsrTkn;
-                    rLCV.UsrId = usr.UsrId;
-                    rLCV.UEXId = usr.UEXId;
-                }
-                else
-                {
-                    UsrTkn = null;
-                }
-            }
-        }
-    }
+	[Parameter]
+	public string? UsrTkn { get; set; } = default;
 
-    public sealed class UsrPLS
-    {
-        public int usrid { get; set; }
-        public string usrpwd { get; set; }
-    }
+	public void Dispose()
+	{
+		var usr = db.LoadRec<ULE, dynamic>("select * from UEX_EXIT(@UEXId)", new { UEXId = rLCV.UEXId });
+	}
+
+	
+
+	protected override void OnInitialized()
+	{
+		if (UsrTkn != null)
+		{
+			var usr = db.LoadRec<ULE, dynamic>("select * from UEX_ENTER(@Tkn)", new { Tkn = UsrTkn });
+			if (usr != null)
+			{
+				if (usr.UsrId > 0)
+				{
+					rLCV.UsrTkn = UsrTkn;
+					rLCV.UsrId = usr.UsrId;
+					rLCV.UEXId = usr.UEXId;
+				}
+				else
+				{
+					UsrTkn = null;
+				}
+			}
+		}
+	}
+
+	public sealed class UsrPLS
+	{
+		public int usrid { get; set; }
+		public string usrpwd { get; set; }
+	}
 }

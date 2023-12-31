@@ -1,0 +1,30 @@
+﻿@page "/logout/{uexid:int}"
+
+@code {
+	[CascadingParameter]
+	public HttpContext? context { get; set; }
+	[Inject]
+	IDataAccess db { get; set; }
+	[Inject]
+	NavigationManager Nav { get; set; }
+	[Parameter]
+	public int UEXId { get; set; } = default;
+
+	protected override void OnInitialized()
+	{
+		var usrTkn = context.Request.Cookies["sener"];
+
+		if (usrTkn != null)
+		{
+			_ = db.LoadRec<ULE, dynamic>("select * from ULT_LOGOUT(@Tkn, @UEXId)", new { Tkn = usrTkn, UEXId = UEXId });
+
+			// Cookie silinemiyor Tarihi öne alarak geçersiz yapılıyor
+			CookieOptions cookieOptions = new CookieOptions();
+			cookieOptions.Expires = DateTime.Now;
+			context.Response.Cookies.Append("sener", "..", cookieOptions);
+		}
+
+		//Nav.NavigateTo("");
+
+	}
+}

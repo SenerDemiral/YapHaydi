@@ -1,5 +1,5 @@
 ﻿@inject NavigationManager Nav
-@page "/starship"
+@page "/login"
 
 <EditForm Model="@Model" OnSubmit="@Submit" FormName="Starship1">
     <InputNumber @bind-Value="Model.Id" />
@@ -22,9 +22,9 @@
 
     [SupplyParameterFromForm]
     public LgnMdl? Model { get; set; }
-    [Inject] 
+    [Inject]
     IDataAccess db { get; set; }
-    
+
     //[Inject] IUsrDic usrDic { get; set; }
 
     protected override void OnInitialized()
@@ -63,7 +63,7 @@
     public class LgnMdl
     {
         public int Id { get; set; }
-        public string? Pwd  { get; set; }
+        public string? Pwd { get; set; }
         public string? Tkn { get; set; }
     }
 }

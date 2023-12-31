@@ -38,20 +38,10 @@ else
 }
 
 @code {
-    [CascadingParameter]
-    public HttpContext? Context { get; set; }
-    [CascadingParameter]
-    public RLCV rLCV { get; set; }
-    [Parameter]
-    public string? UsrNme { get; set; } = default;
-
     private WeatherForecast[]? forecasts;
 
     protected override async Task OnInitializedAsync()
     {
-        rLCV.UsrNme = UsrNme;
-        Console.WriteLine($"Weather.{rLCV.UsrTkn}");
-
         // Simulate asynchronous loading to demonstrate streaming rendering
         await Task.Delay(500);
 
