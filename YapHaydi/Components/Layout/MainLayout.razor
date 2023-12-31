@@ -31,11 +31,13 @@
     //[Inject] 
     //IUsrDic usrDic { get; set; }
 
-    private string usrTkn { get; set; }
+    private string usrTkn { get; set; } = "";
 
     protected override void OnInitialized()
     {
         usrTkn = context.Request.Cookies["sener"];  // null ise yok/expired
+        if (usrTkn == null)
+            usrTkn = "";
 
         // if (usrTkn != null)
         // {

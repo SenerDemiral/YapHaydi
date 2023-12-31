@@ -1,5 +1,5 @@
 ﻿@* @rendermode @(new InteractiveServerRenderMode(prerender: false)) *@
-@page "/weather/{UsrNme}"
+@page "/weather"
 @* @attribute [StreamRendering] *@
 
 <PageTitle>Weather</PageTitle>
@@ -38,6 +38,7 @@ else
 }
 
 @code {
+    // DENEME
     private WeatherForecast[]? forecasts;
 
     protected override async Task OnInitializedAsync()

@@ -1,5 +1,5 @@
 ﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
-@page "/inp"
+@page "/inp/{id:int}"
 
 <h2>rclv @rLCV.UsrNme</h2>
 
@@ -345,11 +345,11 @@
         // Console.WriteLine($"{Pge}.OIA s {rLCV.usrName}");
         // await Task.Delay(100);
         // Console.WriteLine($"{Pge}.OIA after delay 1 {rLCV.usrName}");
-        
+
         // Console.WriteLine($"{Pge}.{rLCV.usrName}");
 
-       
-        
+
+
         //rLCV.usrName = "DENEME";
 
         // await Task.Delay(10);
@@ -359,7 +359,7 @@
         //  await Task.Delay(1);
         //  Console.WriteLine($"{Pge}.OIA after delay 4");
         Console.WriteLine($"{Pge}.OIA f");
-        
+        FFID = 101;
         var tt = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID)", new { FFId = FFID });
         ttx = new();
         tts = new();

@@ -56,8 +56,9 @@
         cookieOptions.SameSite = SameSiteMode.Strict;
         context.Response.Cookies.Append("sener", Model.Tkn, cookieOptions);
 
-
-        //Nav.NavigateTo("/counter");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
+        // Debug da hata gekiyeor RunTime da geçiyor
+        Nav.NavigateTo("");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
+        //Nav.NavigateTo("/lgn");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
     }
 
     public class LgnMdl

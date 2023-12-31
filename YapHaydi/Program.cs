@@ -86,12 +86,12 @@ app.Use(async (context, next) =>
 
 app.MapGet("/lgn", (HttpContext context, NavigationManager nm) =>
 {
-    CookieOptions cookieOptions = new CookieOptions();
-    cookieOptions.Secure = false;
-    cookieOptions.Expires = DateTime.Now.AddHours(1);
-    cookieOptions.HttpOnly = true;
-    cookieOptions.SameSite = SameSiteMode.Strict;
-    context.Response.Cookies.Append("sener2", "dilara2", cookieOptions);
+    //CookieOptions cookieOptions = new CookieOptions();
+    //cookieOptions.Secure = false;
+    //cookieOptions.Expires = DateTime.Now.AddHours(1);
+    //cookieOptions.HttpOnly = true;
+    //cookieOptions.SameSite = SameSiteMode.Strict;
+    //context.Response.Cookies.Append("sener2", "dilara2", cookieOptions);
 
     //return Results.LocalRedirect("/");
     //return Results.Content("OK", "text/html");
