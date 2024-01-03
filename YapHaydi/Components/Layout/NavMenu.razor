@@ -3,7 +3,7 @@
 
 <div class="top-row ps-3 navbar navbar-dark">
 	<div class="container-fluid">
-		<a class="navbar-brand" href="">YapHaydi</a>
+		<a class="navbar-brand" href="">YapHaydi <i class="bi-house" /></a>
 	</div>
 </div>
 
@@ -11,12 +11,7 @@
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
 	<nav class="flex-column">
-		<div class="nav-item px-3">
-			@* <NavLink class="nav-link" href="" Match="NavLinkMatch.All" data-enhance-nav="false"> *@
-			<NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-				<span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-			</NavLink>
-		</div>
+
 
 		<div class="nav-item px-3">
 			<NavLink class="nav-link" href="counter" Match="NavLinkMatch.All">
@@ -25,16 +20,25 @@
 		</div>
 
 		<div class="nav-item px-3">
-			<NavLink class="nav-link" href="weather">
-				<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
+			<NavLink class="nav-link" href="orderypnpending">
+				<span class="material-symbols-outlined pr-2">cycle</span>
+				Aktif
 			</NavLink>
 		</div>
 
-		@if (UsrTkn is null)
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href="orderypndone">
+				<span class="material-symbols-outlined pr-2 text-lg">done_all</span>
+				Arşiv
+			</NavLink>
+		</div>
+
+		@if (string.IsNullOrEmpty(UsrTkn))
 		{
 			<div class="nav-item px-3">
 				<NavLink class="nav-link" href="/login">
-					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Login
+					<span class="material-symbols-outlined pr-2">login</span>
+					Login
 				</NavLink>
 			</div>
 		}
@@ -42,18 +46,27 @@
 		{
 			<div class="nav-item px-3">
 				<NavLink class="nav-link" href=@($"logout/{@rLCV.UEXId}")>
-					<span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> @UsrTkn
+					<span class="material-symbols-outlined pr-2">logout</span>
+					Logout
 				</NavLink>
 			</div>
 		}
 	</nav>
 </div>
 
+<style>
+	
+	span.sz-48 {
+		font-size: 48px;
+		font-variation-settings: 'OPSZ' 48;
+	}
+</style>
+
 @code {
 	[Inject]
 	IDataAccess db { get; set; }
 
-	[Inject] 
+	[Inject]
 	NavigationManager Nav { get; set; }
 
 	[Inject]
@@ -70,7 +83,7 @@
 		var usr = db.LoadRec<ULE, dynamic>("select * from UEX_EXIT(@UEXId)", new { UEXId = rLCV.UEXId });
 	}
 
-	
+
 
 	protected override void OnInitialized()
 	{
@@ -84,10 +97,11 @@
 					rLCV.UsrTkn = UsrTkn;
 					rLCV.UsrId = usr.UsrId;
 					rLCV.UEXId = usr.UEXId;
+					rLCV.FrmId = usr.FFId;
 				}
 				else
 				{
-					UsrTkn = null;
+					UsrTkn = "";
 				}
 			}
 		}

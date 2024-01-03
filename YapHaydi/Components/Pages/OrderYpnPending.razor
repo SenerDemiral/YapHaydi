@@ -1,0 +1,124 @@
+﻿@implements IDisposable
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
+@page "/orderypnpending"
+
+<PageTitle>Bekleyenler</PageTitle>
+
+<h3>Bekleyenler</h3>
+
+@if (ww != null)
+{
+	<table class="w-full text-sm text-left text-gray-500">
+		<thead class="text-xs text-gray-700 uppercase bg-gray-50">
+			<tr>
+				<th>Id</th>
+				<th>Konu</th>
+				<th>Beklenen BaşlangıÇ</th>
+				<th>BaŞladı</th>
+				<th>Beklenen BİTİŞ</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var w in ww)
+			{
+				<tr class="bg-white border-b">
+					<td>@w.WWID</td>
+					<td>@w.Sbj</td>
+					<td>@w.SEDfm</td>
+					<td><input type="checkbox" class="form-check-input" checked="@w.Started" disabled></td>
+					<td>@w.FEDfm</td>
+					<td><input type="checkbox" class="form-check-input" checked="@w.Finishhed" disabled></td>
+					@if (w.Started)
+					{
+						<td><input type="button" value="Başladı" class="btn btn-primary btn-sm" disabled /></td>
+					}
+					else
+					{
+						<td><input type="button" value="Başlat" class="btn btn-primary btn-sm" /></td>
+					}
+					@if (w.Finishhed)
+					{
+						<td><input type="button" value="Bitti" class="btn-bitti" disabled /></td>
+					}
+					else
+					{
+						<td>
+							<button class="bg-indigo-500 text-white rounded px-2 py-1 xl:px-4">
+								Bitir
+							</button>
+						</td>
+					}
+				</tr>
+
+			}
+		</tbody>
+	</table>
+}
+
+<style>
+	.btn-basladi {
+		background-color: green;
+		border-color: green;
+		color: white;
+	}
+
+	.btn-bitti {
+		color: red;
+		cursor: pointer;
+	}
+</style>
+
+@* @if (showModal)
+{
+    <div class="modal">
+        <InpOynRec PPId=@inpPPid OnSaved="Saved" OnCancelled="Cancelled" />
+    </div>
+}
+ *@
+@code {
+	[Inject]
+	IDataAccess db { get; set; }
+
+	[CascadingParameter]
+	public RLCV? rLCV { get; set; } = default;
+
+	public IEnumerable<WW> ww;
+
+	// private bool _showModal;
+	// private bool showModal
+	// {
+	// 	get => _showModal;
+	// 	set
+	// 	{
+	// 		_showModal = value;
+	// 		pointerEvent = _showModal ? "pe-none" : "pe-auto";
+	// 	}
+	// }
+
+	// private void ShowModal(int ppId)
+	// {
+	// 	if (showModal)
+	// 		showModal = false;
+	// 	else
+	// 	{
+	// 		this.inpPPid = ppId;
+	// 		showModal = true;
+	// 	}
+	// }
+
+	// public void Cancelled()
+	// {
+	// 	showModal = false;
+	// }
+
+	protected override void OnInitialized()
+	{
+		ww = db.LoadData<WW, dynamic>("select * from DBA_YPN(@ID)", new { ID = rLCV.UsrId });
+	}
+
+	public void Dispose()
+	{
+
+	}
+}

@@ -1,0 +1,86 @@
+﻿@implements IDisposable
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@page "/dbaypn"
+<h3>Bekleyenler</h3>
+
+@if (ww != null)
+{
+	<table class="table table-striped">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<th>Beklenen Başlangıç</th>
+				<th>Başladı</th>
+				<th>Beklenen Bitiş</th>
+				<th>Konu</th>
+				<th><i class="bi bi-record-btn"></i></th>
+			</tr>
+			@foreach (var w in ww)
+			{
+				<tr>
+					<td>@w.WWID</td>
+					<td>@w.SEDfm</td>
+					<td><input type="checkbox" class="form-check-input" checked="@w.Started" disabled></td>
+					<td>@w.FEDfm</td>
+					<td>@w.Sbj</td>
+					<td><input type="checkbox" class="form-check-input" checked="@w.Finishhed" disabled></td>
+				</tr>
+
+			}
+		</tbody>
+	</table>
+}
+
+@* @if (showModal)
+{
+    <div class="modal">
+        <InpOynRec PPId=@inpPPid OnSaved="Saved" OnCancelled="Cancelled" />
+    </div>
+}
+ *@
+@code {
+	[Inject]
+	IDataAccess db { get; set; }
+
+	[CascadingParameter]
+	public RLCV? rLCV { get; set; } = default;
+
+	public IEnumerable<WW> ww;
+
+	// private bool _showModal;
+	// private bool showModal
+	// {
+	// 	get => _showModal;
+	// 	set
+	// 	{
+	// 		_showModal = value;
+	// 		pointerEvent = _showModal ? "pe-none" : "pe-auto";
+	// 	}
+	// }
+
+	// private void ShowModal(int ppId)
+	// {
+	// 	if (showModal)
+	// 		showModal = false;
+	// 	else
+	// 	{
+	// 		this.inpPPid = ppId;
+	// 		showModal = true;
+	// 	}
+	// }
+
+	// public void Cancelled()
+	// {
+	// 	showModal = false;
+	// }
+
+	protected override void OnInitialized()
+	{
+		ww = db.LoadData<WW, dynamic>("select * from DBA_YPN(@ID)", new { ID = rLCV.UsrId });
+	}
+
+	public void Dispose()
+	{
+		
+	}
+}

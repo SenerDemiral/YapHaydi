@@ -1,6 +1,6 @@
 ﻿namespace YapHaydi.DataLibrary;
 
-public class WWmodel
+public class WW
 {
     public int WWID;
 
@@ -48,11 +48,18 @@ public class WWmodel
     public string? dCnt;
     public string? dAdr;
 
-    public string SADs => SAD?.ToString("dd.MM.yy HH:mm");
-    public string FADs => FAD?.ToString("dd.MM.yy HH:mm");
+    public string? SEDfs => SED?.ToString("dd.MM.yy HH:mm");
+    public string? SADfs => SAD?.ToString("dd.MM.yy HH:mm");
+    public string? FEDfs => FED?.ToString("dd.MM.yy HH:mm");
+    public string? FADfs => FAD?.ToString("dd.MM.yy HH:mm");
+    public string? SEDfm => Utils.Moment(SED);
+    public string? FEDfm => Utils.Moment(FED);
+	public bool Started => SAD != null;
+    public bool Finishhed => FAD != null;
 
-    public WWmodel ShallowCopy()
+
+    public WW ShallowCopy()
     {
-        return (WWmodel)this.MemberwiseClone();
+        return (WW)this.MemberwiseClone();
     }
 }

@@ -34,6 +34,8 @@ builder.Services.AddCascadingValue(sp => sp.GetRequiredService<CascadingValueSou
 // rLCV.SetVal(toto.Value.usrid, "Şener");
 
 
+builder.Services.AddSingleton<INewsContainer, NewsContainer>();
+
 //builder.Services.AddCascadingValue(sp => new RLCV { usrId = -1, usrName="Tanımsız" });
 //CascadingValueSource<RLCV> source;
 //builder.Services.AddCascadingValue(sp =>

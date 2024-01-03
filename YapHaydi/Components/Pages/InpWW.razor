@@ -123,7 +123,7 @@
         </tr>
         <tr>
             <td>Gerçek</td>
-            <td>@ww.SADs</td>
+            <td>@ww.SADfs</td>
         </tr>
         <tr>
             <td>Info</td>
@@ -173,7 +173,7 @@
         </tr>
         <tr>
             <td>Gerçek</td>
-            <td>@ww.FADs</td>
+            <td>@ww.FADfs</td>
         </tr>
         <tr>
             <td>Info</td>
@@ -251,7 +251,7 @@
     [Parameter] 
     public EventCallback OnCancelled { get; set; }
 
-    private WWmodel? ww, oww;
+    private WW? ww, oww;
     private bool RO = false;
     private int FFID = 101;
     private Dictionary<string, int>? ttx, tts, ttd;
@@ -383,7 +383,7 @@
         //ttx = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID) where Typ='X'", new { FFId = FFID }).ToDictionary((k) => k.AdX);
 
         //if (ScpC.IsAdm || ScpC.IsTnm)
-        ww = db.LoadRec<WWmodel, dynamic>("select * from WW_SEL(@WWId,@FFId,@UsrId)", new { WWId=ID, FFId=FFID, UsrId=1 });
+        ww = db.LoadRec<WW, dynamic>("select * from WW_SEL(@WWId,@FFId,@UsrId)", new { WWId=ID, FFId=FFID, UsrId=1 });
         // else
         // Navigation.NavigateTo("login");
         //pp = db.LoadRec<PP, dynamic>("select * from PP where PPId = @PPId", new { PPId = PPId });

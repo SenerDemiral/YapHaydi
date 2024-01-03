@@ -1,0 +1,1 @@
+tailwindcss -i ./YapHaydi/Styles/app.css -o ./YapHaydi/wwwroot/app.css --watch

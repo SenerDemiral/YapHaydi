@@ -22,22 +22,20 @@
     [CascadingParameter]
     public RLCV rLCV { get; set; }
 
-}
-
-@code {
     [CascadingParameter]
     public HttpContext? context { get; set; }
 
     //[Inject] 
     //IUsrDic usrDic { get; set; }
 
-    private string usrTkn { get; set; } = "";
+    private string usrTkn { get; set; }
 
     protected override void OnInitialized()
     {
-        usrTkn = context.Request.Cookies["sener"];  // null ise yok/expired
-        if (usrTkn == null)
-            usrTkn = "";
+        usrTkn = context?.Request.Cookies["sener"] ?? "";  // null ise yok/expired
+        // usrTkn ??= "";
+        // if (usrTkn == null)
+        //     usrTkn = "";
 
         // if (usrTkn != null)
         // {

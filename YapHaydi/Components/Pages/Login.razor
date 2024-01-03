@@ -39,7 +39,7 @@
         var oldTkn = context.Request.Cookies["sener"];
         //usrDic.Remove(oldTkn);
         if (oldTkn != null)
-            _ = db.LoadRec<ULE, dynamic>("select * from ULT_LOGOUT(@Tkn)", new { Tkn = oldTkn });
+            _ = db.LoadRec<ULE, dynamic>("select * from ULT_LOGOUT(@Tkn,0)", new { Tkn = oldTkn });
 
         Model.Tkn = Guid.NewGuid().ToString("N");
 
