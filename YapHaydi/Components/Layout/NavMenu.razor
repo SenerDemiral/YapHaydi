@@ -1,9 +1,15 @@
 ﻿@implements IDisposable
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
+
+
+
+
+
+
 <div class="top-row ps-3 navbar navbar-dark">
 	<div class="container-fluid">
-		<a class="navbar-brand" href="">YapHaydi <i class="bi-house" /></a>
+		<a class="text-white" href=""><span>YapHaydi</span> <span class="material-symbols-outlined mt-2 relative top-1 ">family_home</span></a>
 	</div>
 </div>
 
@@ -21,7 +27,7 @@
 
 		<div class="nav-item px-3">
 			<NavLink class="nav-link" href="orderypnpending">
-				<span class="material-symbols-outlined pr-2">cycle</span>
+				<span class="material-symbols-outlined pr-2 text-8xl">cycle</span>
 				Aktif
 			</NavLink>
 		</div>
@@ -30,6 +36,13 @@
 			<NavLink class="nav-link" href="orderypndone">
 				<span class="material-symbols-outlined pr-2 text-lg">done_all</span>
 				Arşiv
+			</NavLink>
+		</div>
+
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href="tts">
+				<span class="material-symbols-outlined pr-2 text-lg">settings</span>
+				Tanımlar
 			</NavLink>
 		</div>
 
@@ -51,23 +64,40 @@
 				</NavLink>
 			</div>
 		}
+
+		<select @bind="slc" class="rounded px-2 py-1 ">
+			<option value="">🔘 MENU</option>
+			<option value="counter">Counter</option>
+			<option value="tts">⚙️ Tanım</option>
+			<option value="orderypnpending">📌 Aktif</option>
+			<option value="orderypndone">💤 Arşiv</option>
+			@if (string.IsNullOrEmpty(UsrTkn))
+			{
+				<option value="login">↗️ Login</option>
+			}
+			else
+			{
+				<option value=@($"logout/{@rLCV.UEXId}")>↙️ Logout</option>
+			}
+		</select>
 	</nav>
 </div>
 
 <style>
-	
+
 	span.sz-48 {
 		font-size: 48px;
 		font-variation-settings: 'OPSZ' 48;
 	}
 </style>
 
+
 @code {
 	[Inject]
 	IDataAccess db { get; set; }
 
 	[Inject]
-	NavigationManager Nav { get; set; }
+	NavigationManager NM { get; set; }
 
 	[Inject]
 	CascadingValueSource<RLCV>? RLCVsource { get; set; } = default;
@@ -77,6 +107,17 @@
 
 	[Parameter]
 	public string? UsrTkn { get; set; } = default;
+
+	private string menu;
+	public string slc
+	{
+		get => menu;
+		set
+		{
+			menu = value;
+			NM.NavigateTo(value);
+		}
+	}
 
 	public void Dispose()
 	{

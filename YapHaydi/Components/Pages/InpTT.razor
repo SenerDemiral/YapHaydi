@@ -1,0 +1,105 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IDataAccess db
+
+<h3>InpTT</h3>
+
+@if (tt is not null)
+{
+
+	<div style="display:flex;justify-content:space-between;">
+		<button disabled="@RO"
+				@onclick="Save">
+			✅Kaydet
+		</button>
+		<button disabled="@RO"
+				@onclick="Cancel" style="margin-right: 10px;">
+			🚫Vazgeç
+		</button>
+	</div>
+
+	<table class="table-edit">
+		<tbody>
+			<tr>
+				<td class="border border-slate-300 px-2">Id</td>
+				<td class="border border-slate-300 px-2">@tt.TTID</td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 px-2">Tip</td>
+				<td class="border border-slate-300 px-2">@tt.Typ</td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 px-2">Tag</td>
+				<td class="border border-slate-300">
+					<input type="text"
+						   maxlength="50"
+						   size="30"
+						   class="px-1"
+						   @bind="tt.Tag" />
+				</td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 px-2">Ad</td>
+				<td class="border border-slate-300">
+					<input type="text"
+						   maxlength="50"
+						   size="30"
+						   class="px-1"
+						   @bind="tt.Ad" />
+				</td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 px-2">Tel</td>
+				<td class="border border-slate-300">
+					<input type="text"
+						   maxlength="50"
+						   size="30"
+						   class="px-1"
+						   @bind="tt.Tel" />
+				</td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 px-2">Mail</td>
+				<td class="border border-slate-300">
+					<input type="text"
+						   maxlength="50"
+						   size="30"
+						   class="px-1"
+						   @bind="tt.Mail" />
+				</td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 px-2">Adres</td>
+				<td class="border border-slate-300">
+
+					<textarea readonly="@RO"
+							  cols="30"
+							  class="h-16 px-1"
+							  @bind="tt.Adres"/>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+}
+
+@code {
+	[Parameter] public int TTId { get; set; }
+	private TT tt;
+	private bool RO = false;
+	[Parameter] public EventCallback OnSaved { get; set; }
+	[Parameter] public EventCallback OnCancelled { get; set; }
+
+	private void Cancel()
+	{
+		OnCancelled.InvokeAsync();
+	}
+
+	private void Save()
+	{
+		OnSaved.InvokeAsync();
+	}
+
+	protected override void OnInitialized()
+	{
+		tt = db.LoadRec<TT, dynamic>("select * from TT where TTId = @TTId", new { TTId = TTId });
+	}
+}

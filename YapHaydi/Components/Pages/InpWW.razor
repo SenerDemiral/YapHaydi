@@ -270,20 +270,6 @@
         }
     }
 
-    protected override void OnParametersSet()
-    {
-        // Console.WriteLine($"{Pge}.OPS s");
-        // base.OnParametersSet();
-        // Console.WriteLine($"{Pge}.OPS f");
-    }
-
-    // protected override async Task OnParametersSetAsync()
-    // {
-    //     Console.WriteLine($"{Pge}.OPSA s");
-    //     //await Task.Delay(10);
-    //     Console.WriteLine($"{Pge}.OPSA f");
-    // }
-
     private void CheckTTX(ref int? id, ref string? adx, string? oadx)
     {
         if (ttx!.TryGetValue(adx!, out var nid))
@@ -342,23 +328,6 @@
 
     protected override async Task OnInitializedAsync()
     {
-        // Console.WriteLine($"{Pge}.OIA s {rLCV.usrName}");
-        // await Task.Delay(100);
-        // Console.WriteLine($"{Pge}.OIA after delay 1 {rLCV.usrName}");
-
-        // Console.WriteLine($"{Pge}.{rLCV.usrName}");
-
-
-
-        //rLCV.usrName = "DENEME";
-
-        // await Task.Delay(10);
-        // Console.WriteLine($"{Pge}.OIA after delay 2");
-        //  await Task.Delay(10);
-        //  Console.WriteLine($"{Pge}.OIA after delay 3");
-        //  await Task.Delay(1);
-        //  Console.WriteLine($"{Pge}.OIA after delay 4");
-        Console.WriteLine($"{Pge}.OIA f");
         FFID = 101;
         var tt = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID)", new { FFId = FFID });
         ttx = new();

@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http.HttpResults;
-using YapHaydi;
 using YapHaydi.Components;
 using YapHaydi.Components.Pages;
 using YapHaydi.DataLibrary;

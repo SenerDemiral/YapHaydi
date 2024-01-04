@@ -1,0 +1,19 @@
+﻿.modal {
+	z-index: 100;
+	display: block;
+	position: fixed;
+	top: calc(50vh - 100px);
+	left: calc(50vw - 150px);
+	background-color: lightgoldenrodyellow;
+	padding: 10px;
+	border: 1px solid #ccc;
+	box-shadow: 2px 2px 6px 0px rgba(0,0,0,0.3);
+}
+
+.pe-none {
+	pointer-events: none;
+}
+
+.pe-auto {
+	pointer-events: auto;
+}
