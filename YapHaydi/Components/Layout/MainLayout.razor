@@ -1,7 +1,19 @@
 ﻿@inherits LayoutComponentBase
 
+<div>
+	<div class="relative">
+		<div class="w-dvw bg-sky-500 text-white h-7 flex items-center justify-start px-2 fixed">
+			<NavMenu UsrTkn="@usrTkn" />
+		</div>
+		<main>
+			<article class="px-4 py-8">
+				@Body
+			</article>
+		</main>
+	</div>
+</div>
 
-<div class="page">
+@* <div class="page">
     <div class="sidebar">
         <NavMenu UsrTkn="@usrTkn"/>
     </div>
@@ -12,42 +24,42 @@
         </article>
     </main>
 </div>
-
+ *@
 <div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a href="" class="reload">Reload</a>
-    <a class="dismiss">🗙</a>
+	An unhandled error has occurred.
+	<a href="" class="reload">Reload</a>
+	<a class="dismiss">🗙</a>
 </div>
 
 @code {
-    [CascadingParameter]
-    public RLCV rLCV { get; set; }
+	[CascadingParameter]
+	public RLCV rLCV { get; set; }
 
-    [CascadingParameter]
-    public HttpContext? context { get; set; }
+	[CascadingParameter]
+	public HttpContext? context { get; set; }
 
-    //[Inject] 
-    //IUsrDic usrDic { get; set; }
+	//[Inject]
+	//IUsrDic usrDic { get; set; }
 
-    private string usrTkn { get; set; }
+	private string usrTkn { get; set; }
 
-    protected override void OnInitialized()
-    {
-        usrTkn = context?.Request.Cookies["sener"] ?? "";  // null ise yok/expired
-        // usrTkn ??= "";
-        // if (usrTkn == null)
-        //     usrTkn = "";
+	protected override void OnInitialized()
+	{
+		usrTkn = context?.Request.Cookies["sener"] ?? "";  // null ise yok/expired
+																	// usrTkn ??= "";
+																	// if (usrTkn == null)
+																	//     usrTkn = "";
 
-        // if (usrTkn != null)
-        // {
-        //     var ok = usrDic.Add(usrTkn); // Tkn a karsilik gelen usr bilmiyor
-        //     if (!ok)
-        //     {
-        //         CookieOptions cookieOptions = new CookieOptions();
-        //         cookieOptions.Expires = DateTime.Now;   // Sure bitince browser silmiyor, ama null gonderiyor
-        //         context.Response.Cookies.Append("sener", usrTkn, cookieOptions);
-        //     }
-        // }
-    }
+		// if (usrTkn != null)
+		// {
+		//     var ok = usrDic.Add(usrTkn); // Tkn a karsilik gelen usr bilmiyor
+		//     if (!ok)
+		//     {
+		//         CookieOptions cookieOptions = new CookieOptions();
+		//         cookieOptions.Expires = DateTime.Now;   // Sure bitince browser silmiyor, ama null gonderiyor
+		//         context.Response.Cookies.Append("sener", usrTkn, cookieOptions);
+		//     }
+		// }
+	}
 
 }

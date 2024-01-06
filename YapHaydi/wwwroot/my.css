@@ -2,8 +2,10 @@
 	z-index: 100;
 	display: block;
 	position: fixed;
-	top: calc(50vh - 100px);
-	left: calc(50vw - 150px);
+	top: 5vh;
+	left: calc((100vw - 250px) / 2);
+	max-height: 90vh;
+	overflow-y: auto;
 	background-color: lightgoldenrodyellow;
 	padding: 10px;
 	border: 1px solid #ccc;

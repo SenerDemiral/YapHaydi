@@ -23,6 +23,12 @@
 			@foreach (var w in ww)
 			{
 				<tr class="bg-white border-b">
+					<td class="border border-slate-300">
+						<button class="bg-indigo-500 text-white rounded px-2 py-1"
+								@onclick="() => ShowModal(w.WWID)">
+							Edit
+						</button>
+					</td>
 					<td>@w.WWID</td>
 					<td>@w.Sbj</td>
 					<td>@w.SEDfm</td>
@@ -69,13 +75,13 @@
 	}
 </style>
 
-@* @if (showModal)
+@if (showModal)
 {
     <div class="modal">
-        <InpOynRec PPId=@inpPPid OnSaved="Saved" OnCancelled="Cancelled" />
+        <InpWW ID=@mdlId OnSaved="Saved" OnCancelled="Cancelled" />
     </div>
 }
- *@
+
 @code {
 	[Inject]
 	IDataAccess db { get; set; }
@@ -85,36 +91,51 @@
 
 	public IEnumerable<WW> ww;
 
-	// private bool _showModal;
-	// private bool showModal
-	// {
-	// 	get => _showModal;
-	// 	set
-	// 	{
-	// 		_showModal = value;
-	// 		pointerEvent = _showModal ? "pe-none" : "pe-auto";
-	// 	}
-	// }
+	private int mdlId;
+	private string pointerEvent = "pe-auto";
 
-	// private void ShowModal(int ppId)
-	// {
-	// 	if (showModal)
-	// 		showModal = false;
-	// 	else
-	// 	{
-	// 		this.inpPPid = ppId;
-	// 		showModal = true;
-	// 	}
-	// }
+	private bool _showModal;
+	private bool showModal
+	{
+		get => _showModal;
+		set
+		{
+			_showModal = value;
+			pointerEvent = _showModal ? "pe-none" : "pe-auto";
+		}
+	}
 
-	// public void Cancelled()
-	// {
-	// 	showModal = false;
-	// }
+	private void ShowModal(int id)
+	{
+		if (showModal)
+			showModal = false;
+		else
+		{
+			this.mdlId = id;
+			showModal = true;
+		}
+	}
 
-	protected override void OnInitialized()
+	public void Cancelled()
+	{
+		showModal = false;
+	}
+
+	public void Saved()
+	{
+		showModal = false;
+		LoadData();
+	}
+
+	private void LoadData()
 	{
 		ww = db.LoadData<WW, dynamic>("select * from DBA_YPN(@ID)", new { ID = rLCV.UsrId });
+
+	}
+	protected override void OnInitialized()
+	{
+		if(rLCV.UsrId > 0)
+			LoadData();
 	}
 
 	public void Dispose()

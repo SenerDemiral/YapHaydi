@@ -59,7 +59,7 @@
 
 @if (showModal)
 {
-	<div class="modal">
+	<div class="modal h-auto">
 		<InpTT TTId=@inpTTid OnSaved="Saved" OnCancelled="Cancelled" />
 	</div>
 }
@@ -105,12 +105,17 @@
 	public void Saved()
 	{
 		showModal = false;
-		//LoadData();
+		LoadData();
+	}
+
+	private void LoadData()
+	{
+		tt = db.LoadData<TT, dynamic>("select * from TT where FFId = @FFId order by Typ, Tag, Ad", new { FFId = rLCV.FrmId });
 	}
 
 	protected override void OnInitialized()
 	{
-		tt = db.LoadData<TT, dynamic>("select * from TT where FFId = @FFId order by Typ, Tag, Ad", new { FFId = rLCV.FrmId });
+		LoadData();
 	}
 
 	public void Dispose()

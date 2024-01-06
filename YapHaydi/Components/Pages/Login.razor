@@ -2,69 +2,76 @@
 @page "/login"
 
 <EditForm Model="@Model" OnSubmit="@Submit" FormName="Starship1">
-    <InputNumber @bind-Value="Model.Id" />
-    <InputText @bind-Value="Model.Pwd" />
-    <button type="submit">Submit</button>
+	<table width="200px" class="m-auto">
+		<tbody>
+			<tr>
+				<td class="border border-slate-300 text-right px-2">ID</td>
+				<td class="border border-slate-300 text-right px-2"><InputNumber @bind-Value="Model.Id" /></td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 text-right px-2">PWD</td>
+				<td class="border border-slate-300 text-right px-2"><InputText @bind-Value="Model.Pwd" /></td>
+			</tr>
+			<tr>
+				<td colspan="2" class="border border-slate-300 text-center"><button type="submit" class="bg-indigo-500 text-white rounded px-2 py-1">Submit</button></td>
+			</tr>
+		</tbody>
+	</table>
 </EditForm>
-
-@* <a hx-get="/lgn" hx-target="this" hx-swap="none">New link</a> *@
-<a hx-get="/lgn">New link</a>
-
-<a href="/lgn">New link 2</a>
 
 @code {
 
-    [CascadingParameter]
-    public HttpContext? context { get; set; }
+	[CascadingParameter]
+	public HttpContext? context { get; set; }
 
-    [Parameter]
-    public string aaa { get; set; }
+	[Parameter]
+	public string aaa { get; set; }
 
-    [SupplyParameterFromForm]
-    public LgnMdl? Model { get; set; }
-    [Inject]
-    IDataAccess db { get; set; }
+	[SupplyParameterFromForm]
+	public LgnMdl? Model { get; set; }
+	[Inject]
+	IDataAccess db { get; set; }
 
-    //[Inject] IUsrDic usrDic { get; set; }
+	//[Inject] IUsrDic usrDic { get; set; }
 
-    protected override void OnInitialized()
-    {
-        Model ??= new();
-    }
+	protected override void OnInitialized()
+	{
+		Model ??= new();
+	}
 
-    private void Submit()
-    {
-        //Logger.LogInformation("Id = {Id}", Model?.Id);
+	private void Submit()
+	{
+		//Logger.LogInformation("Id = {Id}", Model?.Id);
 
-        var oldTkn = context.Request.Cookies["sener"];
-        //usrDic.Remove(oldTkn);
-        if (oldTkn != null)
-            _ = db.LoadRec<ULE, dynamic>("select * from ULT_LOGOUT(@Tkn,0)", new { Tkn = oldTkn });
+		var oldTkn = context.Request.Cookies["sener"];
+		//usrDic.Remove(oldTkn);
+		if (oldTkn != null)
+			_ = db.LoadRec<ULE, dynamic>("select * from ULT_LOGOUT(@Tkn,0)", new { Tkn = oldTkn });
 
-        Model.Tkn = Guid.NewGuid().ToString("N");
+		Model.Tkn = Guid.NewGuid().ToString("N");
 
-        //var usr = db.LoadRec<ULE, dynamic>("select * from UEX_EXIT(@UEXId)", new { UEXId = rLCV.UEXId });
+		//var usr = db.LoadRec<ULE, dynamic>("select * from UEX_EXIT(@UEXId)", new { UEXId = rLCV.UEXId });
 
-        var usr = db.LoadRec<ULE, dynamic>("select * from ULT_LOGIN(@Id, @Pwd, @Tkn)", new { Id = Model.Id, Pwd = Model.Pwd, Tkn = Model.Tkn });
+		var usr = db.LoadRec<ULE, dynamic>("select * from ULT_LOGIN(@Id, @Pwd, @Tkn)", new { Id = Model.Id, Pwd = Model.Pwd, Tkn = Model.Tkn });
 
-        //usrDic.Add(Model.Tkn, Model.Id);
+		//usrDic.Add(Model.Tkn, Model.Id);
 
-        CookieOptions cookieOptions = new CookieOptions();
-        cookieOptions.Secure = false;
-        cookieOptions.Expires = DateTime.Now.AddHours(1);   // Sure bitince browser silmiyor, ama null gonderiyor
-        cookieOptions.HttpOnly = true;
-        cookieOptions.SameSite = SameSiteMode.Strict;
-        context.Response.Cookies.Append("sener", Model.Tkn, cookieOptions);
+		CookieOptions cookieOptions = new CookieOptions();
+		cookieOptions.Secure = false;
+		cookieOptions.Expires = DateTime.Now.AddHours(1);   // Sure bitince browser silmiyor, ama null gonderiyor
+		cookieOptions.HttpOnly = true;
+		cookieOptions.SameSite = SameSiteMode.Strict;
+		context.Response.Cookies.Append("sener", Model.Tkn, cookieOptions);
 
-        // Debug da hata gekiyeor RunTime da geçiyor
-        Nav.NavigateTo("");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
-        //Nav.NavigateTo("/lgn");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
-    }
+		// Debug da hata gekiyeor RunTime da geçiyor
+		Nav.NavigateTo("");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
+								//Nav.NavigateTo("/lgn");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
+	}
 
-    public class LgnMdl
-    {
-        public int Id { get; set; }
-        public string? Pwd { get; set; }
-        public string? Tkn { get; set; }
-    }
+	public class LgnMdl
+	{
+		public int Id { get; set; }
+		public string? Pwd { get; set; }
+		public string? Tkn { get; set; }
+	}
 }

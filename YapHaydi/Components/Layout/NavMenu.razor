@@ -1,12 +1,69 @@
 ﻿@implements IDisposable
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
+@* <div onclick="document.querySelector('.sener').classList.toggle('can');"> *@
+<a href="/">YapHaydi</a>
+@* <div onclick="document.querySelector('.sener').classList.toggle('bg-red-400')">xxxx</div> *@
+
+<div style="display:none">
+	<ul id="myUL" style="position: absolute; background-color: antiquewhite; color: black; top:3px; left:100px">
+		<li>
+			<span class="caret"
+				  onclick="this.parentElement.querySelector('.nested').classList.toggle('active');this.classList.toggle('caret-down');">MENU</span>
+			<ul class="nested">
+				<li><a href="tts">⚙️Tanımlar</a></li>
+				<li>Coffee</li>
+				<li>
+					<span class="caret"
+						  onclick="this.parentElement.querySelector('.nested').classList.toggle('active');this.classList.toggle('caret-down');">Tea</span>
+					<ul class="nested">
+						<li>Black Tea</li>
+						<li>White Tea</li>
+						<li>
+							<span class="caret"
+								  onclick="this.parentElement.querySelector('.nested').classList.toggle('active');this.classList.toggle('caret-down');">
+								Green Tea
+							</span>
+							<ul class="nested">
+								<li>Sencha</li>
+								<li>Gyokuro</li>
+								<li>
+									<a href="/" onclick="document.body.querySelector('.nested').classList.toggle('active')">
+										<span class="material-symbols-outlined">home</span>
+										Machua
+									</a>
+								</li>
+								<li>Pi Lo Chun</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li>Bidiğimiz Çay</li>
+			</ul>
+		</li>
+	</ul>
+</div>
 
 
+<select @bind="slc" class="sener rounded px-2 py-1 h-6 bg-red-400 ml-auto">
+	<option value="">🔘 MENU</option>
+	<option value="counter">Counter</option>
+	<option value="tts">⚙️ Tanım</option>
+	<option value="orderypnpending">📌 Aktif</option>
+	<option value="orderypndone">💤 Arşiv</option>
+	@if (string.IsNullOrEmpty(UsrTkn))
+	{
+		<option value="login">↗️ Login</option>
+	}
+	else
+	{
+		<option value=@($"logout/{@rLCV.UEXId}")>↙️ Logout</option>
+	}
+
+</select>
 
 
-
-
+@*
 <div class="top-row ps-3 navbar navbar-dark">
 	<div class="container-fluid">
 		<a class="text-white" href=""><span>YapHaydi</span> <span class="material-symbols-outlined mt-2 relative top-1 ">family_home</span></a>
@@ -82,7 +139,7 @@
 		</select>
 	</nav>
 </div>
-
+*@
 <style>
 
 	span.sz-48 {
@@ -148,9 +205,5 @@
 		}
 	}
 
-	public sealed class UsrPLS
-	{
-		public int usrid { get; set; }
-		public string usrpwd { get; set; }
-	}
+
 }

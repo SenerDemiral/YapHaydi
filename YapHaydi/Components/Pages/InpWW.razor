@@ -1,20 +1,31 @@
-﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+﻿@inject NavigationManager NM 
+@inject IDataAccess db
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @page "/inp/{id:int}"
 
-<h2>rclv @rLCV.UsrNme</h2>
+<h2 class="text-center">WorkOrder</h2>
 
-<div style="display:flex;justify-content:space-between;">
-    <button disabled="@RO"
-            @onclick="Cancel">
-        🚫Vazgeç
-    </button>
-    <button disabled="@RO"
-            @onclick="Save">
-        ✅Kaydet
-    </button>
-</div>
 
 @if(ww is not null) {
+    <div class="flex justify-between">
+        <button disabled="@RO"
+                @onclick="Cancel">
+            🚫 Vazgeç
+        </button>
+        <button disabled="@RO"
+                @onclick="Clone">
+            🐑 Klon
+        </button>
+        <button disabled="@RO"
+                @onclick="NewRec">
+            ➕ Yeni
+        </button>
+        <button disabled="@RO"
+                @onclick="Save">
+            ✅ Kaydet
+        </button>
+    </div>
+    
     <table class="table-edit">
         <tbody>
         <tr>
@@ -238,8 +249,6 @@
 }
 
 @code {
-    [Inject] NavigationManager Navigation { get; set; } 
-    [Inject] IDataAccess db { get; set; }
     [CascadingParameter] 
     public RLCV rLCV { get; set; }
     [Inject] 
@@ -253,22 +262,8 @@
 
     private WW? ww, oww;
     private bool RO = false;
-    private int FFID = 101;
+    private int FFID;
     private Dictionary<string, int>? ttx, tts, ttd;
-
-    private string Pge = "Inp";
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            Console.WriteLine($"{Pge}.OARA s {firstRender.ToString()} {rLCV.UsrTkn}");
-            //await Task.Delay(10);
-            //Console.WriteLine($"{Pge}.OARA s {firstRender.ToString()} after delay 1");
-            //await Task.Delay(10);
-            //Console.WriteLine($"{Pge}.OARA f {firstRender.ToString()} after delay 2");
-        }
-    }
 
     private void CheckTTX(ref int? id, ref string? adx, string? oadx)
     {
@@ -308,18 +303,51 @@
 
     private void Cancel()
     {
-        rLCV.UsrTkn = "Dilara";
-        RLCVsource?.NotifyChangedAsync();
+        //RLCVsource?.NotifyChangedAsync();
 
         // zaten buradan geri dönecek, ilk değerlerini geri almaya gerek yok. ww = oww Bu çalışmaz birbirine eşitliyor copy yapmıyor;
         // ww = oww.ShallowCopy(); //Gerekirse bu OK 
-        // OnCancelled.InvokeAsync();
+        OnCancelled.InvokeAsync();
     }
+
+    private void Clone()
+    {
+        ww.WWID = 0;
+    }
+
+    private void NewRec()
+    {
+        ww = new();
+        oww = new();
+    }
+
     private void Save()
     {
         var ppm = new   // Sirasi onemli Procedure Input sirasiyla ayni olmali
         {
-            aaa = "aaa"
+            WWID = ww.WWID,
+            USRID = rLCV.UsrId,
+            FFID = rLCV.FrmId,
+            SBJID = ww.SbjID,
+            RWHOID = ww.mWhoID,
+            RINF = ww.rInf,
+            MDPTID = ww.mDptID,
+            MWHOID = ww.mWhoID,
+            SCNTID = ww.sCntID,
+            SADRID = ww.sAdrID,
+            SINF = ww.sInf,
+            SED = ww.SED,
+            SAD = ww.SAD,
+            SADOK = 1,
+            FCNTID = ww.fCntID,
+            FADRID = ww.fAdrID,
+            FINF = ww.fInf,
+            FED = ww.FED,
+            FAD = ww.FAD,
+            FADOK = 0,
+            DCNTID = ww.dCntID,
+            DADRID = ww.dAdrID,
+            DINF = ww.dInf
         };
 
         db.SaveRec("WW_MDF", ppm);
@@ -328,7 +356,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        FFID = 101;
+        FFID = rLCV.FrmId;
         var tt = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID)", new { FFId = FFID });
         ttx = new();
         tts = new();
@@ -354,7 +382,7 @@
         //if (ScpC.IsAdm || ScpC.IsTnm)
         ww = db.LoadRec<WW, dynamic>("select * from WW_SEL(@WWId,@FFId,@UsrId)", new { WWId=ID, FFId=FFID, UsrId=1 });
         // else
-        // Navigation.NavigateTo("login");
+        // NM.NavigateTo("login");
         //pp = db.LoadRec<PP, dynamic>("select * from PP where PPId = @PPId", new { PPId = PPId });
         oww = ww.ShallowCopy();
     }

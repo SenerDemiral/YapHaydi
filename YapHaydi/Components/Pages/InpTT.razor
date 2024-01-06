@@ -6,10 +6,14 @@
 @if (tt is not null)
 {
 
-	<div style="display:flex;justify-content:space-between;">
+	<div class="flex justify-between">
 		<button disabled="@RO"
 				@onclick="Save">
 			✅Kaydet
+		</button>
+		<button disabled="@RO"
+				@onclick="NewRec" style="margin-right: 10px;">
+			➕Yeni
 		</button>
 		<button disabled="@RO"
 				@onclick="Cancel" style="margin-right: 10px;">
@@ -70,7 +74,6 @@
 			<tr>
 				<td class="border border-slate-300 px-2">Adres</td>
 				<td class="border border-slate-300">
-
 					<textarea readonly="@RO"
 							  cols="30"
 							  class="h-16 px-1"
@@ -82,11 +85,20 @@
 }
 
 @code {
+	[CascadingParameter] 
+	public RLCV rLCV { get; set; }
 	[Parameter] public int TTId { get; set; }
 	private TT tt;
 	private bool RO = false;
 	[Parameter] public EventCallback OnSaved { get; set; }
 	[Parameter] public EventCallback OnCancelled { get; set; }
+
+	private void NewRec()
+	{
+		string typ = tt.Typ;
+		tt = new();
+		tt.Typ = typ;
+	}
 
 	private void Cancel()
 	{
@@ -95,6 +107,19 @@
 
 	private void Save()
 	{
+		var rec = new
+		{
+			TTID = tt.TTID,
+			FFID = rLCV.FrmId,
+			TYP = tt.Typ,
+			AD = tt.Ad,
+			TAG = tt.Tag,
+			ADRES = tt.Adres,
+			TEL = tt.Tel,
+			MAIL = tt.Mail
+		};
+
+		db.SaveRec("TT_MDF", rec);
 		OnSaved.InvokeAsync();
 	}
 
