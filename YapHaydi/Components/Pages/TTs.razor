@@ -37,6 +37,9 @@
 					<td class="border border-slate-300 pl-1">@r.Tel</td>
 					<td class="border border-slate-300 pl-1">@r.Mail</td>
 					<td class="border border-slate-300 pl-1">@r.Adres</td>
+					<td class="border border-slate-300 pl-1"><input type="checkbox" class="pointer-events-none" checked="@r.Ytk1b"></td>
+					<td class="border border-slate-300 pl-1"><input type="checkbox" class="pointer-events-none" checked="@r.Ytk2b"></td>
+					<td class="border border-slate-300 pl-1"><input type="checkbox" class="pointer-events-none" checked="@r.Ytk3b" ></td>
 				</tr>
 
 			}
@@ -110,7 +113,8 @@
 
 	private void LoadData()
 	{
-		tt = db.LoadData<TT, dynamic>("select * from TT where FFId = @FFId order by Typ, Tag, Ad", new { FFId = rLCV.FrmId });
+		if(rLCV.Ytk1)
+			tt = db.LoadData<TT, dynamic>("select * from TT where FFId = @FFId order by Typ, Tag, Ad", new { FFId = rLCV.FrmId });
 	}
 
 	protected override void OnInitialized()

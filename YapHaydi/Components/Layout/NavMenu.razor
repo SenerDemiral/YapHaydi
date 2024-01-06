@@ -5,17 +5,53 @@
 <a href="/">YapHaydi</a>
 @* <div onclick="document.querySelector('.sener').classList.toggle('bg-red-400')">xxxx</div> *@
 
-<div style="display:none">
-	<ul id="myUL" style="position: absolute; background-color: antiquewhite; color: black; top:3px; left:100px">
+@*
+<div style="display:block">
+	<ul id="myUL" class="rounded bg-red-100 text-black absolute left-24 overflow-auto" style="top:3px; max-height:90vh">
 		<li>
 			<span class="caret"
 				  onclick="this.parentElement.querySelector('.nested').classList.toggle('active');this.classList.toggle('caret-down');">MENU</span>
 			<ul class="nested">
-				<li><a href="tts">⚙️Tanımlar</a></li>
-				<li>Coffee</li>
+				<li>
+					<a href="/" onclick="document.body.querySelector('.nested').classList.toggle('active')">
+						🏠 Home
+					</a>
+				</li>
+				<li>
+					<a href="tts" onclick="document.body.querySelector('.nested').classList.toggle('active')">
+						⚙️ Tanımlar
+					</a>
+				</li>
+				<li>
+					<a href="orderypnpending" onclick="document.body.querySelector('.nested').classList.toggle('active')">
+						📌 Aktif
+					</a>
+				</li>
+				<li>
+					<a href="orderypndone" onclick="document.body.querySelector('.nested').classList.toggle('active')">
+						💤 Arşiv
+					</a>
+				</li>
+				@if (string.IsNullOrEmpty(UsrTkn))
+				{
+					<li>
+						<a href="login" onclick="document.body.querySelector('.nested').classList.toggle('active')">
+							🔑 Login
+						</a>
+					</li>
+				}
+				else
+				{
+					<li>
+						<a href=@($"logout/{@rLCV.UEXId}") onclick="document.body.querySelector('.nested').classList.toggle('active')">
+							🧱 Logout
+						</a>
+					</li>
+				}
+
 				<li>
 					<span class="caret"
-						  onclick="this.parentElement.querySelector('.nested').classList.toggle('active');this.classList.toggle('caret-down');">Tea</span>
+						  onclick="this.parentElement.querySelector('.nested').classList.toggle('active');this.classList.toggle('caret-down');">Deneme</span>
 					<ul class="nested">
 						<li>Black Tea</li>
 						<li>White Tea</li>
@@ -29,7 +65,6 @@
 								<li>Gyokuro</li>
 								<li>
 									<a href="/" onclick="document.body.querySelector('.nested').classList.toggle('active')">
-										<span class="material-symbols-outlined">home</span>
 										Machua
 									</a>
 								</li>
@@ -38,14 +73,18 @@
 						</li>
 					</ul>
 				</li>
-				<li>Bidiğimiz Çay</li>
 			</ul>
 		</li>
 	</ul>
 </div>
+*@
 
+@if (!string.IsNullOrEmpty(UsrTkn))
+{
+	<div class="ml-auto">@rLCV.Ad</div>
+}
 
-<select @bind="slc" class="sener rounded px-2 py-1 h-6 bg-red-400 ml-auto">
+<select @bind="slc" class="rounded px-2 py-1 h-6 bg-red-100 text-black ml-auto">
 	<option value="">🔘 MENU</option>
 	<option value="counter">Counter</option>
 	<option value="tts">⚙️ Tanım</option>
@@ -61,8 +100,6 @@
 	}
 
 </select>
-
-
 @*
 <div class="top-row ps-3 navbar navbar-dark">
 	<div class="container-fluid">
@@ -181,8 +218,6 @@
 		var usr = db.LoadRec<ULE, dynamic>("select * from UEX_EXIT(@UEXId)", new { UEXId = rLCV.UEXId });
 	}
 
-
-
 	protected override void OnInitialized()
 	{
 		if (!string.IsNullOrWhiteSpace(UsrTkn))
@@ -196,6 +231,10 @@
 					rLCV.UsrId = usr.UsrId;
 					rLCV.UEXId = usr.UEXId;
 					rLCV.FrmId = usr.FFId;
+					rLCV.Ad = usr.Ad;
+					rLCV.Ytk1 = usr.Ytk1 == 1 ? true : false;
+					rLCV.Ytk3 = usr.Ytk2 == 1 ? true : false;
+					rLCV.Ytk3 = usr.Ytk3 == 1 ? true : false;
 				}
 				else
 				{

@@ -80,6 +80,34 @@
 							  @bind="tt.Adres"/>
 				</td>
 			</tr>
+
+			<tr>
+				<td colspan="2" class="text-center">Yetkiler</td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 px-2">Firma</td>
+				<td class="border border-slate-300">
+					<input type="checkbox"
+						   class="px-1"
+						   @bind="tt.Ytk1b" />
+				</td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 px-2">Departman</td>
+				<td class="border border-slate-300">
+					<input type="checkbox"
+						   class="px-1"
+						   @bind="tt.Ytk2b" />
+				</td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 px-2">Yapan</td>
+				<td class="border border-slate-300">
+					<input type="checkbox"
+						   class="px-1"
+						   @bind="tt.Ytk3b" />
+				</td>
+			</tr>
 		</tbody>
 	</table>
 }
@@ -116,7 +144,11 @@
 			TAG = tt.Tag,
 			ADRES = tt.Adres,
 			TEL = tt.Tel,
-			MAIL = tt.Mail
+			MAIL = tt.Mail,
+			Ytk1 = tt.Ytk1,
+			Ytk2 = tt.Ytk2,
+			Ytk3 = tt.Ytk3,
+
 		};
 
 		db.SaveRec("TT_MDF", rec);

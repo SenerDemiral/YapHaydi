@@ -8,9 +8,10 @@
 
 @if (ww != null)
 {
-	<table class="w-full text-sm text-left text-gray-500 xl:text-lg">
+	<table class="w-full text-left text-gray-500">
 		<thead class="text-xs text-gray-700 uppercase bg-gray-50">
 			<tr>
+				<th></th>
 				<th>Id</th>
 				<th>Konu</th>
 				<th>Beklenen BaşlangıÇ</th>
@@ -32,9 +33,9 @@
 					<td>@w.WWID</td>
 					<td>@w.Sbj</td>
 					<td>@w.SEDfm</td>
-					<td><input type="checkbox" class="form-check-input" checked="@w.Started" disabled></td>
+					<td><input type="checkbox" class="pointer-events-none" checked="@w.Started"></td>
 					<td>@w.FEDfm</td>
-					<td><input type="checkbox" class="form-check-input" checked="@w.Finishhed" disabled></td>
+					<td><input type="checkbox" class="pointer-events-none" checked="@w.Finishhed"></td>
 					@if (w.Started)
 					{
 						<td><input type="button" value="Başladı" class="btn btn-primary btn-sm" disabled /></td>
