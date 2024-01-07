@@ -1,8 +1,8 @@
 ﻿@implements IDisposable
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
-@page "/orderypnpending"
+@page "/orderfrmpending"
 
-<PageTitle>Bekleyenler</PageTitle>
+<PageTitle>FirmaAktifOrders</PageTitle>
 
 <h3>Bekleyenler</h3>
 
@@ -14,44 +14,56 @@
 				<th></th>
 				<th>Id</th>
 				<th>Konu</th>
-				<th>Beklenen BaşlangıÇ</th>
+				<th>Yapan</th>
+				<th>Bek.BAŞ</th>
 				<th>BaŞladı</th>
-				<th>Beklenen BİTİŞ</th>
+				<th></th>
+				<th>Bek.BİT</th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach (var w in ww)
 			{
-				<tr class="bg-white border-b">
+				<tr>
 					<td class="border border-slate-300">
-						<button class="bg-indigo-500 text-white rounded px-2 py-1"
+						<button class="bg-indigo-500 text-white rounded px-1 py-1"
 								@onclick="() => ShowModal(w.WWID)">
 							Edit
 						</button>
 					</td>
-					<td>@w.WWID</td>
-					<td>@w.Sbj</td>
-					<td>@w.SEDfm</td>
-					<td><input type="checkbox" class="pointer-events-none" checked="@w.Started"></td>
-					<td>@w.FEDfm</td>
-					<td><input type="checkbox" class="pointer-events-none" checked="@w.Finishhed"></td>
+					<td class="border border-slate-300 px-1">@w.WWID</td>
+					<td class="border border-slate-300 px-1">@w.Sbj</td>
+					<td class="border border-slate-300 px-1">@w.mWho</td>
+					<td class="border border-slate-300 px-1 @w.sClass">@w.SEDfm</td>
+					<td class="border border-slate-300 px-1 text-center">
+						<input type="checkbox" class="pointer-events-none" checked="@w.Started">
+					</td>
 					@if (w.Started)
 					{
-						<td><input type="button" value="Başladı" class="btn btn-primary btn-sm" disabled /></td>
+						<td class="border border-slate-300 pl-1"></td>
 					}
 					else
 					{
-						<td><input type="button" value="Başlat" class="btn btn-primary btn-sm" /></td>
+						<td class="pl-1">
+							<button class="bg-indigo-500 text-white rounded px-1 py-1 xl:px-4">
+								Başlat
+							</button>
+						</td>
 					}
+
+					<td class="border border-slate-300 px-1 @w.fClass">@w.FEDfm</td>
+					<td class="border border-slate-300 px-1">
+						<input type="checkbox" class="pointer-events-none" checked="@w.Finishhed">
+					</td>
 					@if (w.Finishhed)
 					{
-						<td><input type="button" value="Bitti" class="btn-bitti" disabled /></td>
+						<td class="border border-slate-300 px-1"></td>
 					}
 					else
 					{
-						<td>
-							<button class="bg-indigo-500 text-white rounded px-2 py-1 xl:px-4">
+						<td class="border border-slate-300 px-1">
+							<button class="bg-indigo-500 text-white rounded px-1 py-1">
 								Bitir
 							</button>
 						</td>
@@ -130,9 +142,9 @@
 
 	private void LoadData()
 	{
-		ww = db.LoadData<WW, dynamic>("select * from DBA_YPN(@ID)", new { ID = rLCV.UsrId });
-
+		ww = db.LoadData<WW, dynamic>("select * from DBA_FRM(@ID)", new { ID = rLCV.FrmId });
 	}
+
 	protected override void OnInitialized()
 	{
 		if(rLCV.UsrId > 0)

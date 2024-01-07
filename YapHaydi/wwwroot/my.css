@@ -19,3 +19,18 @@
 .pe-auto {
 	pointer-events: auto;
 }
+
+.delay-red {
+	background-color: red;
+	color: white;
+}
+
+.delay-yellow {
+	background-color: yellow;
+	color: black;
+}
+
+.delay-green {
+	background-color: green;
+	color: white;
+}

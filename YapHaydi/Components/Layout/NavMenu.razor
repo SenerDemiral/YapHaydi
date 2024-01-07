@@ -7,7 +7,7 @@
 
 @*
 <div style="display:block">
-	<ul id="myUL" class="rounded bg-red-100 text-black absolute left-24 overflow-auto" style="top:3px; max-height:90vh">
+	<ul id="myUL" class="rounded bg-red-100 text-black absolute left-24 overflow-auto top-[3px] max-h-[90vh]">
 		<li>
 			<span class="caret"
 				  onclick="this.parentElement.querySelector('.nested').classList.toggle('active');this.classList.toggle('caret-down');">MENU</span>
@@ -88,11 +88,20 @@
 	<option value="">🔘 MENU</option>
 	<option value="counter">Counter</option>
 	<option value="tts">⚙️ Tanım</option>
-	<option value="orderypnpending">📌 Aktif</option>
-	<option value="orderypndone">💤 Arşiv</option>
+	@if (rLCV.Ytk1)	// Firma
+	{
+		<option value="orderfrmpending">📌 FirmaAktif</option>
+		<option value="orderfrmdone">💤 FirmaArşiv</option>
+	}
+	else if (rLCV.Ytk3)	// Yapan
+	{
+		<option value="orderypnpending">📌 YapanAktif</option>
+		<option value="orderypndone">💤 YapanArşiv</option>
+	}
+
 	@if (string.IsNullOrEmpty(UsrTkn))
 	{
-		<option value="login">↗️ Login</option>
+		<option value=@($"login/{@rLCV.UEXId}")>↗️ Login</option>
 	}
 	else
 	{

@@ -57,8 +57,13 @@ public class WW
 	public bool Started => SAD != null;
     public bool Finishhed => FAD != null;
 
+    public int sdh;     // StartDelayHour
+    public int fdh;
+	public string sClass;
+	public string fClass;
 
-    public WW ShallowCopy()
+
+	public WW ShallowCopy()
     {
         return (WW)this.MemberwiseClone();
     }

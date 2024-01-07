@@ -1,5 +1,5 @@
 ﻿@inject NavigationManager Nav
-@page "/login"
+@page "/login/{uexid:int}"
 
 <EditForm Model="@Model" OnSubmit="@Submit" FormName="Starship1">
 	<table width="200px" class="m-auto">
@@ -23,9 +23,8 @@
 
 	[CascadingParameter]
 	public HttpContext? context { get; set; }
-
 	[Parameter]
-	public string aaa { get; set; }
+	public int UEXId { get; set; } = default;
 
 	[SupplyParameterFromForm]
 	public LgnMdl? Model { get; set; }
@@ -46,7 +45,7 @@
 		var oldTkn = context.Request.Cookies["sener"];
 		//usrDic.Remove(oldTkn);
 		if (oldTkn != null)
-			_ = db.LoadRec<ULE, dynamic>("select * from ULT_LOGOUT(@Tkn,0)", new { Tkn = oldTkn });
+			_ = db.LoadRec<ULE, dynamic>("select * from ULT_LOGOUT(@Tkn, @UEXId)", new { Tkn = oldTkn, UEXId = UEXId });
 
 		Model.Tkn = Guid.NewGuid().ToString("N");
 
@@ -55,17 +54,19 @@
 		var usr = db.LoadRec<ULE, dynamic>("select * from ULT_LOGIN(@Id, @Pwd, @Tkn)", new { Id = Model.Id, Pwd = Model.Pwd, Tkn = Model.Tkn });
 
 		//usrDic.Add(Model.Tkn, Model.Id);
+		if (usr?.ExpTS != null)
+		{
+			CookieOptions cookieOptions = new CookieOptions();
+			cookieOptions.Secure = false;
+			cookieOptions.Expires = usr!.ExpTS;   // Sure bitince browser silmiyor, ama null gonderiyor
+			cookieOptions.HttpOnly = true;
+			cookieOptions.SameSite = SameSiteMode.Strict;
+			context.Response.Cookies.Append("sener", Model.Tkn, cookieOptions);
 
-		CookieOptions cookieOptions = new CookieOptions();
-		cookieOptions.Secure = false;
-		cookieOptions.Expires = DateTime.Now.AddHours(1);   // Sure bitince browser silmiyor, ama null gonderiyor
-		cookieOptions.HttpOnly = true;
-		cookieOptions.SameSite = SameSiteMode.Strict;
-		context.Response.Cookies.Append("sener", Model.Tkn, cookieOptions);
-
-		// Debug da hata gekiyeor RunTime da geçiyor
-		Nav.NavigateTo("");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
-								//Nav.NavigateTo("/lgn");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
+			// Debug da hata gekiyeor RunTime da geçiyor
+			Nav.NavigateTo("");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
+									//Nav.NavigateTo("/lgn");  // HATA https://github.com/dotnet/aspnetcore/issues/53040
+		}
 	}
 
 	public class LgnMdl

@@ -99,7 +99,7 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Başlangıç</td>
         </tr>
         <tr>
-            <td>Contact</td>
+            <td>Kontak</td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -149,7 +149,7 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Bitiş</td>
         </tr>
         <tr>
-            <td>Contact</td>
+            <td>Kontak</td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -199,15 +199,15 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Destinasyon</td>
         </tr>
         <tr>
-            <td>Contact</td>
+            <td>Kontak</td>
             <td>
                 <input type="text" 
                        maxlength="30"
                        size="30"
                        list="TTXL"
-                       @bind="ww.sCnt"
+                       @bind="ww.dCnt"
                        @bind:event="onchange"
-                       @bind:after="(() => CheckTTX(ref ww.sCntID, ref ww.sCnt, oww!.sCnt))" />
+                       @bind:after="(() => CheckTTX(ref ww.dCntID, ref ww.dCnt, oww!.dCnt))" />
              </td>
         </tr>
         <tr>
@@ -336,7 +336,7 @@
             USRID = rLCV.UsrId,
             FFID = rLCV.FrmId,
             SBJID = ww.SbjID,
-            RWHOID = ww.mWhoID,
+            RWHOID = ww.rWhoID,
             RINF = ww.rInf,
             MDPTID = ww.mDptID,
             MWHOID = ww.mWhoID,
