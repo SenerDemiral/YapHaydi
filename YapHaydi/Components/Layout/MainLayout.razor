@@ -1,12 +1,12 @@
 ﻿@inherits LayoutComponentBase
 
 <div>
-	<div class="relative">
-		<div class="w-dvw bg-sky-500 text-white h-7 flex items-center justify-start px-2 fixed">
+	<div>
+		<div class="w-dvw bg-sky-500 text-white h-9 items-center justify-start px-2 flex fixed z-50">
 			<NavMenu UsrTkn="@usrTkn" />
 		</div>
-		<main>
-			<article class="px-4 py-8">
+		<main class="relative top-10">
+			<article >
 				@Body
 			</article>
 		</main>

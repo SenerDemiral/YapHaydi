@@ -6,16 +6,15 @@
 
 @if (ww != null)
 {
-	<table class="mx-auto text-left text-gray-500">
+	<table class="mx-auto text-left text-gray-500 @pointerEvent">
 		<thead class="text-xs text-gray-700 uppercase bg-gray-50">
-			<tr>
+			<tr class="text-center">
 				<th></th>
 				<th>Id</th>
 				<th>Konu</th>
 				<th>Yapan</th>
-				<th>Bek.BAŞ</th>
-				<th></th>
-				<th>Bek.BİT</th>
+				<th>BAŞLANGIÇ</th>
+				<th>BİTİŞ</th>
 				<th></th>
 			</tr>
 		</thead>
@@ -32,41 +31,41 @@
 					<td class="border border-slate-300 px-1">@w.WWID</td>
 					<td class="border border-slate-300 px-1">@w.Sbj</td>
 					<td class="border border-slate-300 px-1">@w.mWho</td>
-					<td class="border border-slate-300 px-1 @w.sClass">@w.SEDfm</td>
 					@if (w.Started)
 					{
-						<td class="border border-slate-300 pl-1 text-center">
+						<td class="border border-slate-300 px-1">
+							@w.SADfs
 							<span class="material-symbols-outlined">done</span>
 						</td>
 					}
 					else
 					{
-						<td class="border border-slate-300 px-1">
-							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => Started(w)">
-								<span class="material-symbols-outlined">done</span>
+						<td class="border border-slate-300 text-center">
+							<button class="bg-indigo-500 text-white rounded px-1 @w.sClass" @onclick="() => Started(w)">
+								@w.SEDfm
 							</button>
 						</td>
 					}
 
-					<td class="border border-slate-300 px-1 @w.fClass">@w.FEDfm</td>
 					@if (w.Finishhed)
 					{
-						<td class="border border-slate-300 pl-1 text-center">
-							<span class="material-symbols-outlined">done_all</span>
+						<td class="border border-slate-300 px-1">
+							@w.FADfs
+							<span class="material-symbols-outlined">done</span>
 						</td>
 					}
 					else
 					{
-						<td class="border border-slate-300 px-1">
-							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => Finished(w)">
-								<span class="material-symbols-outlined">done_all</span>
+						<td class="border border-slate-300 text-center">
+							<button class="bg-indigo-500 text-white rounded px-1 @w.fClass" @onclick="() => Finished(w)">
+								@w.FEDfm
 							</button>
 						</td>
 					}
 
 					@if (w.UpdatePending)
 					{
-						<td class="border border-slate-300 px-1">
+						<td>
 							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => UpdRec(w)">
 								<span class="material-symbols-outlined">checklist_rtl</span>
 							</button>
@@ -95,7 +94,7 @@
 
 @if (showModal)
 {
-    <div class="modal">
+    <div class="modal shadow-lg shadow-black rounded">
         <InpWW ID=@mdlId OnSaved="Saved" OnCancelled="Cancelled" />
     </div>
 }
@@ -187,10 +186,14 @@
 		ww = db.LoadData<WW, dynamic>("select * from DBA_FRM(@ID)", new { ID = rLCV.FrmId });
 	}
 
-	protected override void OnInitialized()
+	protected override void OnParametersSet()
 	{
 		if(rLCV.UsrId > 0)
 			LoadData();
+		base.OnParametersSet();
+	}
+	protected override void OnInitialized()
+	{
 	}
 
 	public void Dispose()

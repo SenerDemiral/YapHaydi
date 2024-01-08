@@ -2,7 +2,7 @@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @* <div onclick="document.querySelector('.sener').classList.toggle('can');"> *@
-<a href="/">YapHaydi</a>
+<a href="#" @onclick="GoHome">YapHaydi</a>
 @* <div onclick="document.querySelector('.sener').classList.toggle('bg-red-400')">xxxx</div> *@
 
 @*
@@ -81,11 +81,11 @@
 
 @if (!string.IsNullOrEmpty(UsrTkn))
 {
-	<div class="ml-auto">@rLCV.Ad</div>
+	<div class="ml-auto font-bold shadow-sm shadow-black rounded px-2">@rLCV.Ad</div>
 }
 
-<select @bind="slc" class="rounded px-2 py-1 h-6 bg-red-100 text-black ml-auto">
-	<option value="">🔘 MENU</option>
+<select @bind="menu" class="rounded px-2 bg-red-100 text-black ml-auto py-1 shadow-md shadow-black">
+	<option value="">🔴 MENU</option>
 	<option value="counter">Counter</option>
 	<option value="tts">⚙️ Tanım</option>
 	@if (rLCV.Ytk1)	// Firma
@@ -211,13 +211,18 @@
 	[Parameter]
 	public string? UsrTkn { get; set; } = default;
 
-	private string menu;
-	public string slc
+	private void GoHome() 
 	{
-		get => menu;
+		menu = "";
+	}
+
+	private string _menu;
+	public string menu
+	{
+		get => _menu;
 		set
 		{
-			menu = value;
+			_menu = value;
 			NM.NavigateTo(value);
 		}
 	}
