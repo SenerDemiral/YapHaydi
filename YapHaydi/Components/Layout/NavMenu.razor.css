@@ -37,19 +37,4 @@ ul > li {
 	margin: 2px 12px 2px 12px;
 }
 
-.material-symbols-outlined {
-	font-family: 'Material Symbols Outlined';
-	font-weight: normal;
-	font-style: normal;
-	font-size: inherit; /*24px; 20*/
-	line-height: inherit;
-	letter-spacing: normal;
-	text-transform: none;
-	display: inline-block;
-	white-space: nowrap;
-	word-wrap: normal;
-	direction: ltr;
-	-moz-font-feature-settings: 'liga';
-	-moz-osx-font-smoothing: grayscale;
-	vertical-align: bottom;
-}
+

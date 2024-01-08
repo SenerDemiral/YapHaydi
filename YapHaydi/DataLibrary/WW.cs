@@ -57,6 +57,9 @@ public class WW
 	public bool Started => SAD != null;
     public bool Finishhed => FAD != null;
 
+    public bool UpdatePending = false;
+    public int UpdateSoF;   // 1:Started, 2:Finished
+
     public int sdh;     // StartDelayHour
     public int fdh;
 	public string sClass;

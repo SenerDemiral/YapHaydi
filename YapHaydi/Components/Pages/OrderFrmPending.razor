@@ -4,8 +4,6 @@
 
 <PageTitle>FirmaAktifOrders</PageTitle>
 
-<h3>Bekleyenler</h3>
-
 @if (ww != null)
 {
 	<table class="mx-auto text-left text-gray-500">
@@ -16,7 +14,6 @@
 				<th>Konu</th>
 				<th>Yapan</th>
 				<th>Bek.BAŞ</th>
-				<th>BaŞladı</th>
 				<th></th>
 				<th>Bek.BİT</th>
 				<th></th>
@@ -27,47 +24,55 @@
 			{
 				<tr>
 					<td class="border border-slate-300">
-						<button class="bg-indigo-500 text-white rounded px-1 py-1"
+						<button class="bg-indigo-500 text-white rounded px-1"
 								@onclick="() => ShowModal(w.WWID)">
-							Edit
+							<span class="material-symbols-outlined">input</span>
 						</button>
 					</td>
 					<td class="border border-slate-300 px-1">@w.WWID</td>
 					<td class="border border-slate-300 px-1">@w.Sbj</td>
 					<td class="border border-slate-300 px-1">@w.mWho</td>
 					<td class="border border-slate-300 px-1 @w.sClass">@w.SEDfm</td>
-					<td class="border border-slate-300 px-1 text-center">
-						<input type="checkbox" class="pointer-events-none" checked="@w.Started">
-					</td>
 					@if (w.Started)
 					{
-						<td class="border border-slate-300 pl-1"></td>
+						<td class="border border-slate-300 pl-1 text-center">
+							<span class="material-symbols-outlined">done</span>
+						</td>
 					}
 					else
 					{
-						<td class="pl-1">
-							<button class="bg-indigo-500 text-white rounded px-1 py-1 xl:px-4">
-								Başlat
+						<td class="border border-slate-300 px-1">
+							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => Started(w)">
+								<span class="material-symbols-outlined">done</span>
 							</button>
 						</td>
 					}
 
 					<td class="border border-slate-300 px-1 @w.fClass">@w.FEDfm</td>
-					<td class="border border-slate-300 px-1">
-						<input type="checkbox" class="pointer-events-none" checked="@w.Finishhed">
-					</td>
 					@if (w.Finishhed)
 					{
-						<td class="border border-slate-300 px-1"></td>
+						<td class="border border-slate-300 pl-1 text-center">
+							<span class="material-symbols-outlined">done_all</span>
+						</td>
 					}
 					else
 					{
 						<td class="border border-slate-300 px-1">
-							<button class="bg-indigo-500 text-white rounded px-1 py-1">
-								Bitir
+							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => Finished(w)">
+								<span class="material-symbols-outlined">done_all</span>
 							</button>
 						</td>
 					}
+
+					@if (w.UpdatePending)
+					{
+						<td class="border border-slate-300 px-1">
+							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => UpdRec(w)">
+								<span class="material-symbols-outlined">checklist_rtl</span>
+							</button>
+						</td>
+					}
+
 				</tr>
 
 			}
@@ -140,6 +145,43 @@
 		LoadData();
 	}
 
+	public void Started(WW w)
+	{
+		w.SAD = DateTime.Now;
+		w.UpdateSoF = 1;
+		w.UpdatePending = true;
+	}
+
+	public void UpdRec(WW w)
+	{
+		string S_F = "";
+		if (w.UpdateSoF == 1)
+			S_F = "S";
+		else if (w.UpdateSoF == 2)
+			S_F = "F";
+
+		var xx = db.LoadRec<XX, dynamic>("select * from DBA_UPD(@WWID, @S_F)", new { WWID = w.WWID, S_F = S_F });
+
+		w.SAD = xx.SAD;
+		w.FAD = xx.FAD;
+		w.sClass = xx.sClass;
+		w.fClass = xx.fClass;
+
+
+		w.UpdatePending = false;
+
+	}
+
+	public void Finished(WW w)
+	{
+		if (w.SAD is null)
+			w.SAD = DateTime.Now;
+
+		w.FAD = DateTime.Now;
+		w.UpdateSoF = 2;
+		w.UpdatePending = true;
+	}
+
 	private void LoadData()
 	{
 		ww = db.LoadData<WW, dynamic>("select * from DBA_FRM(@ID)", new { ID = rLCV.FrmId });
@@ -154,5 +196,13 @@
 	public void Dispose()
 	{
 
+	}
+
+	public sealed class XX
+	{
+		public DateTime? SAD;
+		public DateTime? FAD;
+		public string sClass;
+		public string fClass;
 	}
 }
