@@ -1,27 +1,25 @@
 ﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @inject IDataAccess db
 
-<h3>InpTT</h3>
-
 @if (tt is not null)
 {
 
-	<div class="flex justify-between">
+	<div class="flex justify-between  text-base">
+		<button disabled="@RO"
+				@onclick="Cancel">
+			🚫Vazgeç
+		</button>
+		<button disabled="@RO"
+				@onclick="NewRec">
+			➕Yeni
+		</button>
 		<button disabled="@RO"
 				@onclick="Save">
 			✅Kaydet
 		</button>
-		<button disabled="@RO"
-				@onclick="NewRec" style="margin-right: 10px;">
-			➕Yeni
-		</button>
-		<button disabled="@RO"
-				@onclick="Cancel" style="margin-right: 10px;">
-			🚫Vazgeç
-		</button>
 	</div>
 
-	<table class="table-edit">
+	<table>
 		<tbody>
 			<tr>
 				<td class="border border-slate-300 px-2">Id</td>
@@ -82,29 +80,26 @@
 			</tr>
 
 			<tr>
-				<td colspan="2" class="text-center">Yetkiler</td>
+				<td colspan="2" class="border border-slate-300 px-2 text-center">Yetkiler</td>
 			</tr>
 			<tr>
 				<td class="border border-slate-300 px-2">Firma</td>
-				<td class="border border-slate-300">
+				<td class="border border-slate-300 px-2">
 					<input type="checkbox"
-						   class="px-1"
 						   @bind="tt.Ytk1b" />
 				</td>
 			</tr>
 			<tr>
 				<td class="border border-slate-300 px-2">Departman</td>
-				<td class="border border-slate-300">
+				<td class="border border-slate-300 px-2">
 					<input type="checkbox"
-						   class="px-1"
 						   @bind="tt.Ytk2b" />
 				</td>
 			</tr>
 			<tr>
 				<td class="border border-slate-300 px-2">Yapan</td>
-				<td class="border border-slate-300">
+				<td class="border border-slate-300 px-2">
 					<input type="checkbox"
-						   class="px-1"
 						   @bind="tt.Ytk3b" />
 				</td>
 			</tr>

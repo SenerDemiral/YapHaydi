@@ -3,37 +3,35 @@
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @* @page "/inp/{id:int}" *@
 
-<h2 class="text-center">WorkOrder</h2>
-
-
-@if(ww is not null) {
-    <div class="flex justify-between">
+<div class="@pointerEvent">
+    @if(ww is not null) {
+    <div class="flex justify-between text-sm">
         <button disabled="@RO"
                 @onclick="Cancel">
-            🚫 Vazgeç
+            🚫Vazgeç
         </button>
         <button disabled="@RO"
                 @onclick="Clone">
-            🐑 Klon
+            🐑Klon
         </button>
         <button disabled="@RO"
                 @onclick="NewRec">
-            ➕ Yeni
+            ➕Yeni
         </button>
         <button disabled="@RO"
                 @onclick="Save">
-            ✅ Kaydet
+            ✅Kaydet
         </button>
     </div>
     
-    <table class="table-edit">
+    <table >
         <tbody>
         <tr>
             <td>Id</td>
             <td>@ww.WWID</td>
         </tr>
         <tr>
-            <td>Konu</td>
+            <td><button @onclick="() => ShowModal(ww.SbjID)">Konu</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -247,6 +245,14 @@
         }
     </datalist>
 }
+</div>
+
+@if (showModal)
+{
+	<div class="modal modal-tt h-auto  shadow-lg shadow-black rounded">
+		<InpTT TTId=@inpTTid OnSaved="Saved" OnCancelled="Cancelled" />
+	</div>
+}
 
 @code {
     [CascadingParameter] 
@@ -264,6 +270,42 @@
     private bool RO = false;
     private int FFID;
     private Dictionary<string, int>? ttx, tts, ttd;
+
+    private int inpTTid;
+    private string pointerEvent = "pe-auto";
+    private bool _showModal;
+    private bool showModal
+    {
+        get => _showModal;
+        set
+        {
+            _showModal = value;
+            pointerEvent = _showModal ? "pe-none" : "pe-auto";
+        }
+    }
+    private void ShowModal(int? ttId)
+    {
+        ttId ??= 0;
+
+        if (showModal)
+            showModal = false;
+        else
+        {
+            this.inpTTid = (int) ttId;
+            showModal = true;
+        }
+    }
+    public void Cancelled()
+    {
+        showModal = false;
+    }
+    public void Saved()
+    {
+        showModal = false;
+        LoadLookups();
+        //LoadData();
+    }
+
 
     private void CheckTTX(ref int? id, ref string? adx, string? oadx)
     {
@@ -361,7 +403,7 @@
         OnSaved.InvokeAsync();
     }
 
-    protected override async Task OnInitializedAsync()
+    private void LoadLookups()
     {
         FFID = rLCV.FrmId;
         var tt = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID)", new { FFId = FFID });
@@ -383,6 +425,12 @@
                 ttd.Add(r.AdX, r.TTId);
             }
         }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        FFID = rLCV.FrmId;
+        LoadLookups();
 
         //ttx = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID) where Typ='X'", new { FFId = FFID }).ToDictionary((k) => k.AdX);
 

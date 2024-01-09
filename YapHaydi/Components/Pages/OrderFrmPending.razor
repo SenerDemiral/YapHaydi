@@ -4,9 +4,10 @@
 
 <PageTitle>FirmaAktifOrders</PageTitle>
 
-@if (ww != null)
+<div class="@pointerEvent">
+	@if (ww != null)
 {
-	<table class="mx-auto text-left text-gray-500 @pointerEvent">
+	<table class="mx-auto text-left text-gray-500">
 		<thead class="text-xs text-gray-700 uppercase bg-gray-50">
 			<tr class="text-center">
 				<th></th>
@@ -78,6 +79,7 @@
 		</tbody>
 	</table>
 }
+</div>
 
 <style>
 	.btn-basladi {
@@ -94,7 +96,7 @@
 
 @if (showModal)
 {
-    <div class="modal shadow-lg shadow-black rounded">
+    <div class="modal modal-ww shadow-lg shadow-black rounded">
         <InpWW ID=@mdlId OnSaved="Saved" OnCancelled="Cancelled" />
     </div>
 }
