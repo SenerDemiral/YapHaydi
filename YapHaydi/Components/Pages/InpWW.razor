@@ -1,4 +1,5 @@
-﻿@inject NavigationManager NM 
+﻿@inject INewsContainer News
+@inject NavigationManager NM 
 @inject IDataAccess db
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 @* @page "/inp/{id:int}" *@
@@ -6,22 +7,13 @@
 <div class="@pointerEvent">
     @if(ww is not null) {
     <div class="flex justify-between text-sm">
-        <button disabled="@RO"
-                @onclick="Cancel">
-            🚫Vazgeç
-        </button>
-        <button disabled="@RO"
-                @onclick="Clone">
-            🐑Klon
-        </button>
-        <button disabled="@RO"
-                @onclick="NewRec">
-            ➕Yeni
-        </button>
-        <button disabled="@RO"
-                @onclick="Save">
-            ✅Kaydet
-        </button>
+        <button disabled="@RO" @onclick="Cancel">⬅️</button>
+		@if (appState.Ytk1)
+        {
+            <button disabled="@RO" @onclick="Clone">🐑Klon</button>
+            <button disabled="@RO" @onclick="NewRec">➕</button>
+            <button disabled="@RO" @onclick="Save">✅Kaydet</button>
+        }
     </div>
     
     <table >
@@ -31,7 +23,7 @@
             <td>@ww.WWID</td>
         </tr>
         <tr>
-            <td><button @onclick="() => ShowModal(ww.SbjID)">Konu</button></td>
+            <td><button @onclick="() => ShowModal(ww.SbjID)" tabindex="-1">Konu</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -46,7 +38,7 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Request</td>
         </tr>
         <tr>
-            <td>Kim</td>
+            <td><button @onclick="() => ShowModal(ww.rWhoID)" tabindex="-1">Kim</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -70,7 +62,7 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Yapan</td>
         </tr>
         <tr>
-            <td>Dept</td>
+            <td><button @onclick="() => ShowModal(ww.mDptID)" tabindex="-1">Dept</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -82,7 +74,7 @@
              </td>
         </tr>
         <tr>
-            <td>Kişi</td>
+            <td><button @onclick="() => ShowModal(ww.mWhoID)" tabindex="-1">Kişi</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -97,7 +89,7 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Başlangıç</td>
         </tr>
         <tr>
-            <td>Kontak</td>
+            <td><button @onclick="() => ShowModal(ww.sCntID)" tabindex="-1">Kontak</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -109,7 +101,7 @@
              </td>
         </tr>
         <tr>
-            <td>Adres</td>
+            <td><button @onclick="() => ShowModal(ww.sAdrID)" tabindex="-1">Adres</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -147,7 +139,7 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Bitiş</td>
         </tr>
         <tr>
-            <td>Kontak</td>
+            <td><button @onclick="() => ShowModal(ww.fCntID)" tabindex="-1">Kontak</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -159,7 +151,7 @@
              </td>
         </tr>
         <tr>
-            <td>Adres</td>
+            <td><button @onclick="() => ShowModal(ww.fAdrID)" tabindex="-1">Adres</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -197,7 +189,7 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Destinasyon</td>
         </tr>
         <tr>
-            <td>Kontak</td>
+            <td><button @onclick="() => ShowModal(ww.dCntID)" tabindex="-1">Kontak</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -209,7 +201,7 @@
              </td>
         </tr>
         <tr>
-            <td>Adres</td>
+            <td><button @onclick="() => ShowModal(ww.dAdrID)" tabindex="-1">Adres</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -256,9 +248,9 @@
 
 @code {
     [CascadingParameter] 
-    public RLCV rLCV { get; set; }
+    public AppState appState { get; set; }
     [Inject] 
-    CascadingValueSource<RLCV>? RLCVsource { get; set; } = default;
+    CascadingValueSource<AppState>? appStateCource { get; set; } = default;
     [Parameter] 
     public int ID { get; set; }
     [Parameter] 
@@ -269,7 +261,7 @@
     private WW? ww, oww;
     private bool RO = false;
     private int FFID;
-    private Dictionary<string, int>? ttx, tts, ttd;
+    private Dictionary<string, int?>? ttx, tts, ttd;
 
     private int inpTTid;
     private string pointerEvent = "pe-auto";
@@ -304,6 +296,7 @@
         showModal = false;
         LoadLookups();
         //LoadData();
+
     }
 
 
@@ -345,7 +338,7 @@
 
     private void Cancel()
     {
-        //RLCVsource?.NotifyChangedAsync();
+        //appStateSource?.NotifyChangedAsync();
 
         // zaten buradan geri dönecek, ilk değerlerini geri almaya gerek yok. ww = oww Bu çalışmaz birbirine eşitliyor copy yapmıyor;
         // ww = oww.ShallowCopy(); //Gerekirse bu OK 
@@ -365,18 +358,21 @@
 
     private void Save()
     {
+        TimeSpan sedt = ww.SEDt == null ? new TimeSpan(0) : ww.SEDt.Value.TimeOfDay;
+        TimeSpan fedt = ww.FEDt == null ? new TimeSpan(0) : ww.FEDt.Value.TimeOfDay;
+
         // Join Date & Time (SED.Date + SED.Time)
         DateTime? sed = null, fed = null;
         if(ww.SED != null)
-            sed = ww?.SED?.Date.Add(ww.SEDt.Value.TimeOfDay);
+            sed = ww?.SED?.Date.Add(sedt);
         if(ww.FED != null)
-            fed = ww?.FED?.Date.Add(ww.FEDt.Value.TimeOfDay);
+            fed = ww?.FED?.Date.Add(fedt);
 
         var ppm = new   // Sirasi onemli Procedure Input sirasiyla ayni olmali
         {
             WWID = ww.WWID,
-            USRID = rLCV.UsrId,
-            FFID = rLCV.FrmId,
+            USRID = appState.UsrId,
+            FFID = appState.FrmId,
             SBJID = ww.SbjID,
             RWHOID = ww.rWhoID,
             RINF = ww.rInf,
@@ -387,29 +383,37 @@
             SINF = ww.sInf,
             SED = sed,
             SAD = ww.SAD,
-            SADOK = 1,
             FCNTID = ww.fCntID,
             FADRID = ww.fAdrID,
             FINF = ww.fInf,
             FED = fed,
             FAD = ww.FAD,
-            FADOK = 0,
             DCNTID = ww.dCntID,
             DADRID = ww.dAdrID,
             DINF = ww.dInf
         };
 
         db.SaveRec("WW_MDF", ppm);
+
+        NewsMdl news = new()
+		{
+			FrmId = appState.FrmId,
+			YpnId = ww.mWhoID ?? 0,
+		};
+        News.NotifyChanged(news);
+
         OnSaved.InvokeAsync();
     }
 
     private void LoadLookups()
     {
-        FFID = rLCV.FrmId;
+        FFID = appState.FrmId;
         var tt = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID)", new { FFId = FFID });
         ttx = new();
         tts = new();
         ttd = new();
+
+        ttx.Add("", null);
         foreach(var r in tt)
         {
             if(r.Typ == "X")
@@ -429,7 +433,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        FFID = rLCV.FrmId;
+        FFID = appState.FrmId;
         LoadLookups();
 
         //ttx = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID) where Typ='X'", new { FFId = FFID }).ToDictionary((k) => k.AdX);

@@ -1,4 +1,5 @@
-﻿@implements IDisposable
+﻿@inject INewsContainer News
+@inject NavigationManager NM 
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
 @page "/orderfrmpending"
 
@@ -106,7 +107,7 @@
 	IDataAccess db { get; set; }
 
 	[CascadingParameter]
-	public RLCV? rLCV { get; set; } = default;
+	public AppState? appState { get; set; } = default;
 
 	public IEnumerable<WW> ww;
 
@@ -185,22 +186,30 @@
 
 	private void LoadData()
 	{
-		ww = db.LoadData<WW, dynamic>("select * from DBA_FRM(@ID)", new { ID = rLCV.FrmId });
+		ww = db.LoadData<WW, dynamic>("select * from DBA_FRM(@ID)", new { ID = appState.FrmId });
 	}
 
 	protected override void OnParametersSet()
 	{
-		if(rLCV.UsrId > 0)
+		if(appState.UsrId > 0)
 			LoadData();
 		base.OnParametersSet();
 	}
 	protected override void OnInitialized()
 	{
+		News.OnChange += NewsChanged;
 	}
-
+	public void NewsChanged(NewsMdl news)
+	{
+		if (news.FrmId == appState.FrmId) 
+		{
+			LoadData();
+			InvokeAsync(StateHasChanged);
+		}
+	}
 	public void Dispose()
 	{
-
+		News.OnChange -= NewsChanged;
 	}
 
 	public sealed class XX

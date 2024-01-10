@@ -49,8 +49,6 @@
 
 		Model.Tkn = Guid.NewGuid().ToString("N");
 
-		//var usr = db.LoadRec<ULE, dynamic>("select * from UEX_EXIT(@UEXId)", new { UEXId = rLCV.UEXId });
-
 		var usr = db.LoadRec<ULE, dynamic>("select * from ULT_LOGIN(@Id, @Pwd, @Tkn)", new { Id = Model.Id, Pwd = Model.Pwd, Tkn = Model.Tkn });
 
 		//usrDic.Add(Model.Tkn, Model.Id);

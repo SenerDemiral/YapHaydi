@@ -1,0 +1,256 @@
+﻿@inject IDataAccess db
+@inject NavigationManager NM
+@inject CascadingValueSource<AppState>? appStateSource
+@implements IDisposable
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+@* <div onclick="document.querySelector('.sener').classList.toggle('can');"> *@
+<a href="#" @onclick="GoHome">YapHaydi</a>
+@* <div onclick="document.querySelector('.sener').classList.toggle('bg-red-400')">xxxx</div> *@
+
+@*
+<div style="display:block">
+	<ul id="myUL" class="rounded bg-red-100 text-black absolute left-24 overflow-auto top-[3px] max-h-[90vh]">
+		<li>
+			<span class="caret"
+				  onclick="this.parentElement.querySelector('.nested').classList.toggle('active');this.classList.toggle('caret-down');">MENU</span>
+			<ul class="nested">
+				<li>
+					<a href="/" onclick="document.body.querySelector('.nested').classList.toggle('active')">
+						🏠 Home
+					</a>
+				</li>
+				<li>
+					<a href="tts" onclick="document.body.querySelector('.nested').classList.toggle('active')">
+						⚙️ Tanımlar
+					</a>
+				</li>
+				<li>
+					<a href="orderypnpending" onclick="document.body.querySelector('.nested').classList.toggle('active')">
+						📌 Aktif
+					</a>
+				</li>
+				<li>
+					<a href="orderypndone" onclick="document.body.querySelector('.nested').classList.toggle('active')">
+						💤 Arşiv
+					</a>
+				</li>
+				@if (string.IsNullOrEmpty(UsrTkn))
+				{
+					<li>
+						<a href="login" onclick="document.body.querySelector('.nested').classList.toggle('active')">
+							🔑 Login
+						</a>
+					</li>
+				}
+				else
+				{
+					<li>
+						<a href=@($"logout/{@appState.UEXId}") onclick="document.body.querySelector('.nested').classList.toggle('active')">
+							🧱 Logout
+						</a>
+					</li>
+				}
+
+				<li>
+					<span class="caret"
+						  onclick="this.parentElement.querySelector('.nested').classList.toggle('active');this.classList.toggle('caret-down');">Deneme</span>
+					<ul class="nested">
+						<li>Black Tea</li>
+						<li>White Tea</li>
+						<li>
+							<span class="caret"
+								  onclick="this.parentElement.querySelector('.nested').classList.toggle('active');this.classList.toggle('caret-down');">
+								Green Tea
+							</span>
+							<ul class="nested">
+								<li>Sencha</li>
+								<li>Gyokuro</li>
+								<li>
+									<a href="/" onclick="document.body.querySelector('.nested').classList.toggle('active')">
+										Machua
+									</a>
+								</li>
+								<li>Pi Lo Chun</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</li>
+	</ul>
+</div>
+*@
+
+@if (!string.IsNullOrEmpty(UsrTkn))
+{
+	<div class="ml-auto font-bold shadow-sm shadow-black rounded px-2">@appState.Ad</div>
+}
+
+<select @bind="menu" class="rounded px-2 bg-red-100 text-black ml-auto py-1 shadow-md shadow-black">
+	<option value="">🔴 MENU</option>
+	<option value="counter">Counter</option>
+	<option value="tts">⚙️ Tanım</option>
+	@if (appState.Ytk1)    // Firma
+	{
+		<option value="orderfrmpending">📌 FirmaAktif</option>
+		<option value="orderfrmdone">💤 FirmaArşiv</option>
+	}
+	else if (appState.Ytk3) // Yapan
+	{
+		<option value="orderypnpending">📌 YapanAktif</option>
+		<option value="orderypndone">💤 YapanArşiv</option>
+	}
+
+	@if (string.IsNullOrEmpty(UsrTkn))
+	{
+		<option value=@($"login/{appState.UEXId}")>↗️ Login</option>
+	}
+	else
+	{
+		<option value=@($"logout/{appState.UEXId}")>↙️ Logout</option>
+	}
+
+</select>
+@*
+<div class="top-row ps-3 navbar navbar-dark">
+	<div class="container-fluid">
+		<a class="text-white" href=""><span>YapHaydi</span> <span class="material-symbols-outlined mt-2 relative top-1 ">family_home</span></a>
+	</div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+	<nav class="flex-column">
+
+
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href="counter" Match="NavLinkMatch.All">
+				<span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
+			</NavLink>
+		</div>
+
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href="orderypnpending">
+				<span class="material-symbols-outlined pr-2 text-8xl">cycle</span>
+				Aktif
+			</NavLink>
+		</div>
+
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href="orderypndone">
+				<span class="material-symbols-outlined pr-2 text-lg">done_all</span>
+				Arşiv
+			</NavLink>
+		</div>
+
+		<div class="nav-item px-3">
+			<NavLink class="nav-link" href="tts">
+				<span class="material-symbols-outlined pr-2 text-lg">settings</span>
+				Tanımlar
+			</NavLink>
+		</div>
+
+		@if (string.IsNullOrEmpty(UsrTkn))
+		{
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href="/login">
+					<span class="material-symbols-outlined pr-2">login</span>
+					Login
+				</NavLink>
+			</div>
+		}
+		else
+		{
+			<div class="nav-item px-3">
+				<NavLink class="nav-link" href=@($"logout/{@appState.UEXId}")>
+					<span class="material-symbols-outlined pr-2">logout</span>
+					Logout
+				</NavLink>
+			</div>
+		}
+
+		<select @bind="slc" class="rounded px-2 py-1 ">
+			<option value="">🔘 MENU</option>
+			<option value="counter">Counter</option>
+			<option value="tts">⚙️ Tanım</option>
+			<option value="orderypnpending">📌 Aktif</option>
+			<option value="orderypndone">💤 Arşiv</option>
+			@if (string.IsNullOrEmpty(UsrTkn))
+			{
+				<option value="login">↗️ Login</option>
+			}
+			else
+			{
+				<option value=@($"logout/{@appState.UEXId}")>↙️ Logout</option>
+			}
+		</select>
+	</nav>
+</div>
+*@
+<style>
+
+	span.sz-48 {
+		font-size: 48px;
+		font-variation-settings: 'OPSZ' 48;
+	}
+</style>
+
+
+@code {
+	[CascadingParameter]
+	public AppState? appState { get; set; } = default;
+
+	[Parameter]
+	public string? UsrTkn { get; set; } = default;
+
+	private void GoHome()
+	{
+		menu = "";
+	}
+
+	private string _menu;
+	public string menu
+	{
+		get => _menu;
+		set
+		{
+			_menu = value;
+			NM.NavigateTo(value);
+		}
+	}
+
+	public void Dispose()
+	{
+		var usr = db.LoadRec<ULE, dynamic>("select * from UEX_EXIT(@UEXId)", new { UEXId = appState.UEXId });
+	}
+
+	protected override void OnInitialized()
+	{
+		if (!string.IsNullOrWhiteSpace(UsrTkn))
+		{
+			var usr = db.LoadRec<ULE, dynamic>("select * from UEX_ENTER(@Tkn)", new { Tkn = UsrTkn });
+			if (usr != null)
+			{
+				if (usr.UsrId > 0)
+				{
+					appState.UsrTkn = UsrTkn;
+					appState.UsrId = usr.UsrId;
+					appState.UEXId = usr.UEXId;
+					appState.FrmId = usr.FFId;
+					appState.Ad = usr.Ad;
+					appState.Ytk1 = usr.Ytk1 == 1 ? true : false;
+					appState.Ytk3 = usr.Ytk2 == 1 ? true : false;
+					appState.Ytk3 = usr.Ytk3 == 1 ? true : false;
+				}
+				else
+				{
+					UsrTkn = "";
+				}
+			}
+		}
+	}
+
+
+}

@@ -16,14 +16,14 @@ public class WW
     public int? sAdrID;
     public string? sInf;
     public DateTime? SED;
-    public DateTime? SEDt;
+    public DateTime? SEDt = DateTime.Today;
     public DateTime? SAD;
 
     public int? fCntID;
     public int? fAdrID;
     public string? fInf;
     public DateTime? FED;
-    public DateTime? FEDt;
+    public DateTime? FEDt = DateTime.Today;
     public DateTime? FAD;
 
     public int? dCntID;

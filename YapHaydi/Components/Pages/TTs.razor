@@ -74,7 +74,7 @@
 	IDataAccess db { get; set; }
 
 	[CascadingParameter]
-	public RLCV? rLCV { get; set; } = default;
+	public AppState? appState { get; set; } = default;
 
 	public IEnumerable<TT> tt;
 
@@ -116,8 +116,8 @@
 
 	private void LoadData()
 	{
-		if(rLCV.Ytk1)
-			tt = db.LoadData<TT, dynamic>("select * from TT where FFId = @FFId order by Typ, Tag, Ad", new { FFId = rLCV.FrmId });
+		if(appState.Ytk1)
+			tt = db.LoadData<TT, dynamic>("select * from TT where FFId = @FFId order by Typ, Tag, Ad", new { FFId = appState.FrmId });
 	}
 
 	protected override void OnInitialized()

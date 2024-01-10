@@ -1,6 +1,6 @@
-﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+﻿@inject INewsContainer News
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 @implements IDisposable
-@inject INewsContainer News
 @page "/counter"
 
 <PageTitle>Counter</PageTitle>
@@ -13,7 +13,7 @@
 @code {
 	// DENEME
 	[CascadingParameter]
-	public RLCV? rLCV { get; set; } = default;
+	public AppState? appState { get; set; } = default;
 
 	private int currentCount = 0;
 
@@ -35,7 +35,7 @@
 
 	public void NewsChanged(NewsMdl news)
 	{
-		if (news.FrmId == rLCV.FrmId) 
+		if (news.FrmId == appState.FrmId) 
 		{
 			currentCount += news.YpnId;
 			InvokeAsync(StateHasChanged);

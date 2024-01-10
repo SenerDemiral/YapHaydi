@@ -43,7 +43,7 @@
 	IDataAccess db { get; set; }
 
 	[CascadingParameter]
-	public RLCV? rLCV { get; set; } = default;
+	public AppState? appState { get; set; } = default;
 
 	public IEnumerable<WW> ww;
 
@@ -76,7 +76,7 @@
 
 	protected override void OnInitialized()
 	{
-		ww = db.LoadData<WW, dynamic>("select * from DBA_YPN(@ID)", new { ID = rLCV.UsrId });
+		ww = db.LoadData<WW, dynamic>("select * from DBA_YPN(@ID)", new { ID = appState.UsrId });
 	}
 
 	public void Dispose()

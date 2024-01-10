@@ -1,6 +1,6 @@
 ﻿namespace YapHaydi.DataLibrary;
 
-public class RLCV
+public class AppState
 {
     public int FrmId { get; set; } = 0;
     public int UsrId { get; set; } = 0;
@@ -11,15 +11,4 @@ public class RLCV
 	public bool Ytk2 { get; set; }
 	public bool Ytk3 { get; set; }
 
-	public void SetVal(int usrId, string usrName)
-    {
-        UsrId = usrId;
-        Ad = usrName;
-    }
 }
-
-public class DDD
-{
-    public string usrId { get; set; }
-}
-

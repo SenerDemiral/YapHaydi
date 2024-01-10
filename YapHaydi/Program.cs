@@ -20,14 +20,14 @@ builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
 // RootLevelCascadingValue
 builder.Services.AddScoped((sp) =>
 {
-    var daleks = new RLCV { UsrId = -1, UsrTkn = "Tanımsız" };
-    return new CascadingValueSource<RLCV>(daleks, isFixed: false);
+    var daleks = new AppState { UsrId = -1, UsrTkn = "Tanımsız" };
+    return new CascadingValueSource<AppState>(daleks, isFixed: false);
 });
 // use
 // @inject CascadingValueSource<RLCV> CVS
 // CVS?.NotifyChangedAsync();
 
-builder.Services.AddCascadingValue(sp => sp.GetRequiredService<CascadingValueSource<RLCV>>());
+builder.Services.AddCascadingValue(sp => sp.GetRequiredService<CascadingValueSource<AppState>>());
 // use
 // [CascadingParameter] public RLCV? rLCV { get; set; }
 // rLCV.SetVal(toto.Value.usrid, "Şener");

@@ -5,18 +5,12 @@
 {
 
 	<div class="flex justify-between  text-base">
-		<button disabled="@RO"
-				@onclick="Cancel">
-			🚫Vazgeç
-		</button>
-		<button disabled="@RO"
-				@onclick="NewRec">
-			➕Yeni
-		</button>
-		<button disabled="@RO"
-				@onclick="Save">
-			✅Kaydet
-		</button>
+		<button disabled="@RO" @onclick="Cancel">⬅️</button>
+		@if (appState.Ytk1)
+		{
+			<button disabled="@RO" @onclick="NewRec">➕</button>
+			<button disabled="@RO" @onclick="Save">✅Kaydet	</button>
+		}
 	</div>
 
 	<table>
@@ -109,7 +103,7 @@
 
 @code {
 	[CascadingParameter] 
-	public RLCV rLCV { get; set; }
+	public AppState appState { get; set; }
 	[Parameter] public int TTId { get; set; }
 	private TT tt;
 	private bool RO = false;
@@ -133,7 +127,7 @@
 		var rec = new
 		{
 			TTID = tt.TTID,
-			FFID = rLCV.FrmId,
+			FFID = appState.FrmId,
 			TYP = tt.Typ,
 			AD = tt.Ad,
 			TAG = tt.Tag,
@@ -152,6 +146,9 @@
 
 	protected override void OnInitialized()
 	{
-		tt = db.LoadRec<TT, dynamic>("select * from TT where TTId = @TTId", new { TTId = TTId });
+		if (TTId == 0)
+			tt = new();
+		else
+			tt = db.LoadRec<TT, dynamic>("select * from TT where TTId = @TTId", new { TTId = TTId });
 	}
 }
