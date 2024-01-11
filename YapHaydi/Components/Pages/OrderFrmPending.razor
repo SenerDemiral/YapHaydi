@@ -7,8 +7,8 @@
 
 <div class="@pointerEvent">
 	@if (ww != null)
-{
-	<table class="mx-auto text-left text-gray-500">
+	{
+		<table class="mx-auto text-left text-gray-500">
 		<thead class="text-xs text-gray-700 uppercase bg-gray-50">
 			<tr class="text-center">
 				<th></th>
@@ -73,13 +73,11 @@
 							</button>
 						</td>
 					}
-
 				</tr>
-
 			}
 		</tbody>
 	</table>
-}
+	}
 </div>
 
 <style>
@@ -124,7 +122,6 @@
 			pointerEvent = _showModal ? "pe-none" : "pe-auto";
 		}
 	}
-
 	private void ShowModal(int id)
 	{
 		if (showModal)
@@ -135,12 +132,10 @@
 			showModal = true;
 		}
 	}
-
 	public void Cancelled()
 	{
 		showModal = false;
 	}
-
 	public void Saved()
 	{
 		showModal = false;
@@ -169,9 +164,7 @@
 		w.sClass = xx.sClass;
 		w.fClass = xx.fClass;
 
-
 		w.UpdatePending = false;
-
 	}
 
 	public void Finished(WW w)
@@ -191,7 +184,7 @@
 
 	protected override void OnParametersSet()
 	{
-		if(appState.UsrId > 0)
+		if(appState.UsrId > 0 && appState.Ytk1)
 			LoadData();
 		base.OnParametersSet();
 	}

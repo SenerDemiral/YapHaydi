@@ -1,67 +1,84 @@
-﻿@implements IDisposable
+﻿@inject INewsContainer News
+@inject NavigationManager NM 
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
 @page "/orderypnpending"
 
-<PageTitle>Bekleyenler</PageTitle>
+<PageTitle>YapanAktifOrders</PageTitle>
 
-<h3>Bekleyenler</h3>
-
-@if (ww != null)
-{
-	<table class="mx-auto text-left text-gray-500">
+<div class="@pointerEvent">
+	@if (ww != null)
+	{
+		<table class="mx-auto text-left text-gray-500">
 		<thead class="text-xs text-gray-700 uppercase bg-gray-50">
-			<tr>
+			<tr class="text-center">
 				<th></th>
 				<th>Id</th>
 				<th>Konu</th>
-				<th>Beklenen BaşlangıÇ</th>
-				<th>BaŞladı</th>
-				<th>Beklenen BİTİŞ</th>
+				<th>Yapan</th>
+				<th>BAŞLANGIÇ</th>
+				<th>BİTİŞ</th>
 				<th></th>
 			</tr>
 		</thead>
 		<tbody>
 			@foreach (var w in ww)
 			{
-				<tr class="bg-white border-b">
+				<tr>
 					<td class="border border-slate-300">
-						<button class="bg-indigo-500 text-white rounded px-2 py-1"
+						<button class="bg-indigo-500 text-white rounded px-1"
 								@onclick="() => ShowModal(w.WWID)">
-							Edit
+							<span class="material-symbols-outlined">input</span>
 						</button>
 					</td>
-					<td>@w.WWID</td>
-					<td>@w.Sbj</td>
-					<td>@w.SEDfm</td>
-					<td><input type="checkbox" class="pointer-events-none" checked="@w.Started"></td>
-					<td>@w.FEDfm</td>
-					<td><input type="checkbox" class="pointer-events-none" checked="@w.Finishhed"></td>
+					<td class="border border-slate-300 px-1">@w.WWID</td>
+					<td class="border border-slate-300 px-1">@w.Sbj</td>
+					<td class="border border-slate-300 px-1">@w.mWho</td>
 					@if (w.Started)
 					{
-						<td><input type="button" value="Başladı" class="btn btn-primary btn-sm" disabled /></td>
+						<td class="border border-slate-300 px-1">
+							@w.SADfs
+							<span class="material-symbols-outlined">done</span>
+						</td>
 					}
 					else
 					{
-						<td><input type="button" value="Başlat" class="btn btn-primary btn-sm" /></td>
+						<td class="border border-slate-300 text-center">
+							<button class="bg-indigo-500 text-white rounded px-1 @w.sClass" @onclick="() => Started(w)">
+								@w.SEDfm
+							</button>
+						</td>
 					}
+
 					@if (w.Finishhed)
 					{
-						<td><input type="button" value="Bitti" class="btn-bitti" disabled /></td>
+						<td class="border border-slate-300 px-1">
+							@w.FADfs
+							<span class="material-symbols-outlined">done</span>
+						</td>
 					}
 					else
 					{
+						<td class="border border-slate-300 text-center">
+							<button class="bg-indigo-500 text-white rounded px-1 @w.fClass" @onclick="() => Finished(w)">
+								@w.FEDfm
+							</button>
+						</td>
+					}
+
+					@if (w.UpdatePending)
+					{
 						<td>
-							<button class="bg-indigo-500 text-white rounded px-2 py-1 xl:px-4">
-								Bitir
+							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => UpdRec(w)">
+								<span class="material-symbols-outlined">checklist_rtl</span>
 							</button>
 						</td>
 					}
 				</tr>
-
 			}
 		</tbody>
 	</table>
-}
+	}
+</div>
 
 <style>
 	.btn-basladi {
@@ -78,7 +95,7 @@
 
 @if (showModal)
 {
-    <div class="modal">
+    <div class="modal modal-ww shadow-lg shadow-black rounded">
         <InpWW ID=@mdlId OnSaved="Saved" OnCancelled="Cancelled" />
     </div>
 }
@@ -105,7 +122,6 @@
 			pointerEvent = _showModal ? "pe-none" : "pe-auto";
 		}
 	}
-
 	private void ShowModal(int id)
 	{
 		if (showModal)
@@ -116,31 +132,84 @@
 			showModal = true;
 		}
 	}
-
 	public void Cancelled()
 	{
 		showModal = false;
 	}
-
 	public void Saved()
 	{
 		showModal = false;
 		LoadData();
 	}
 
+	public void Started(WW w)
+	{
+		w.SAD = DateTime.Now;
+		w.UpdateSoF = 1;
+		w.UpdatePending = true;
+	}
+
+	public void UpdRec(WW w)
+	{
+		string S_F = "";
+		if (w.UpdateSoF == 1)
+			S_F = "S";
+		else if (w.UpdateSoF == 2)
+			S_F = "F";
+
+		var xx = db.LoadRec<XX, dynamic>("select * from DBA_UPD(@WWID, @S_F)", new { WWID = w.WWID, S_F = S_F });
+
+		w.SAD = xx.SAD;
+		w.FAD = xx.FAD;
+		w.sClass = xx.sClass;
+		w.fClass = xx.fClass;
+
+		w.UpdatePending = false;
+	}
+
+	public void Finished(WW w)
+	{
+		if (w.SAD is null)
+			w.SAD = DateTime.Now;
+
+		w.FAD = DateTime.Now;
+		w.UpdateSoF = 2;
+		w.UpdatePending = true;
+	}
+
 	private void LoadData()
 	{
 		ww = db.LoadData<WW, dynamic>("select * from DBA_YPN(@ID)", new { ID = appState.UsrId });
+	}
 
+	protected override void OnParametersSet()
+	{
+		if(appState.UsrId > 0 && appState.Ytk3)
+			LoadData();
+		base.OnParametersSet();
 	}
 	protected override void OnInitialized()
 	{
-		if(appState.UsrId > 0)
-			LoadData();
+		News.OnChange += NewsChanged;
 	}
-
+	public void NewsChanged(NewsMdl news)
+	{
+		if (news.FrmId == appState.FrmId && news.YpnId == appState.UsrId) 
+		{
+			LoadData();
+			InvokeAsync(StateHasChanged);
+		}
+	}
 	public void Dispose()
 	{
+		News.OnChange -= NewsChanged;
+	}
 
+	public sealed class XX
+	{
+		public DateTime? SAD;
+		public DateTime? FAD;
+		public string sClass;
+		public string fClass;
 	}
 }
