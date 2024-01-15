@@ -1,5 +1,8 @@
 ﻿@inject INewsContainer News
 @inject NavigationManager NM 
+@inject IDbCon dbCon
+@inject	IDataAccess db
+
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
 @page "/orderypnpending"
 
@@ -101,13 +104,10 @@
 }
 
 @code {
-	[Inject]
-	IDataAccess db { get; set; }
-
 	[CascadingParameter]
 	public AppState? appState { get; set; } = default;
 
-	public IEnumerable<WW> ww;
+	private IEnumerable<WW> ww;
 
 	private int mdlId;
 	private string pointerEvent = "pe-auto";
@@ -142,14 +142,14 @@
 		LoadData();
 	}
 
-	public void Started(WW w)
+	private void Started(WW w)
 	{
 		w.SAD = DateTime.Now;
 		w.UpdateSoF = 1;
 		w.UpdatePending = true;
 	}
 
-	public void UpdRec(WW w)
+	private void UpdRec(WW w)
 	{
 		string S_F = "";
 		if (w.UpdateSoF == 1)
@@ -167,7 +167,7 @@
 		w.UpdatePending = false;
 	}
 
-	public void Finished(WW w)
+	private void Finished(WW w)
 	{
 		if (w.SAD is null)
 			w.SAD = DateTime.Now;
@@ -179,12 +179,15 @@
 
 	private void LoadData()
 	{
-		ww = db.LoadData<WW, dynamic>("select * from DBA_YPN(@ID)", new { ID = appState.UsrId });
+		using var conn = dbCon.GetConnection();
+		ww = conn.Query<WW>("select * from DBA_YPN(@ID)", new { ID = appState!.UsrId });
+
+		//ww = db.LoadData<WW, dynamic>("select * from DBA_YPN(@ID)", new { ID = appState.UsrId });
 	}
 
 	protected override void OnParametersSet()
 	{
-		if(appState.UsrId > 0 && appState.Ytk3)
+		if(appState!.UsrId > 0 && appState.Ytk3)
 			LoadData();
 		base.OnParametersSet();
 	}
@@ -194,7 +197,7 @@
 	}
 	public void NewsChanged(NewsMdl news)
 	{
-		if (news.FrmId == appState.FrmId && news.YpnId == appState.UsrId) 
+		if (news.FrmId == appState!.FrmId && news.YpnId == appState.UsrId) 
 		{
 			LoadData();
 			InvokeAsync(StateHasChanged);

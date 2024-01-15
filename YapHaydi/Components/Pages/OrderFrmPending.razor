@@ -1,4 +1,5 @@
-﻿@inject INewsContainer News
+﻿@inject IDataAccess db
+@inject INewsContainer News
 @inject NavigationManager NM 
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
 @page "/orderfrmpending"
@@ -101,8 +102,6 @@
 }
 
 @code {
-	[Inject]
-	IDataAccess db { get; set; }
 
 	[CascadingParameter]
 	public AppState? appState { get; set; } = default;

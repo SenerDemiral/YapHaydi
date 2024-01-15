@@ -10,9 +10,11 @@
 @using YapHaydi.Components
 @using YapHaydi.DataLibrary
 
-@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@using Microsoft.AspNetCore.Components.QuickGrid
 
 
-public static IComponentRenderMode InteractiveServerWithoutPrerendering { get; } =
-    new InteractiveServerRenderMode(prerender: false);
+@using Dapper;
+@using FirebirdSql.Data.FirebirdClient;
+@using System.Data;
+
 

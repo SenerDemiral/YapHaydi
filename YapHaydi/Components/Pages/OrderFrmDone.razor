@@ -1,7 +1,8 @@
-﻿@inject INewsContainer News
+﻿@inject IDataAccess db
+@inject INewsContainer News
 @inject NavigationManager NM 
 @rendermode @(new InteractiveServerRenderMode(prerender: true))
-@page "/orderypndone"
+@page "/orderfrmdone"
 
 <PageTitle>FirmaArşivOrders</PageTitle>
 
@@ -57,9 +58,6 @@
 }
 
 @code {
-	[Inject]
-	IDataAccess db { get; set; }
-
 	[CascadingParameter]
 	public AppState? appState { get; set; } = default;
 
@@ -135,7 +133,7 @@
 
 	private void LoadData()
 	{
-		ww = db.LoadData<WW, dynamic>("select * from DBD_YPN(@ID)", new { ID = appState.UsrId });
+		ww = db.LoadData<WW, dynamic>("select * from DBD_FRM(@ID)", new { ID = appState.FrmId });
 	}
 
 	protected override void OnParametersSet()

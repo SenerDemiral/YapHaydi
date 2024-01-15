@@ -1,0 +1,103 @@
+﻿@inject IDataAccess db
+@inject IDbCon dbCon
+
+@rendermode @(new InteractiveServerRenderMode(prerender: true))
+
+@page "/orderdone"
+
+<WwQry OnQryArgsSelected="@QryArgsSelected" qry="qry" />
+
+@if (ww != null)
+{
+	<table class="mx-auto text-left text-gray-500">
+		<thead class="text-xs text-gray-700 bg-gray-50">
+			<tr class="text-center">
+				<th></th>
+				<th>Id</th>
+				<th>Konu</th>
+				<th>İsteyen</th>
+				<th>YapanDpt</th>
+				<th>YapanKişi</th>
+				<th>Başlangıç</th>
+				<th>±S</th>
+				<th>Bitiş</th>
+				<th>±S</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var w in ww)
+			{
+				<tr>
+					<td class="border border-slate-300">
+						<button class="bg-indigo-500 text-white rounded px-1"
+								@onclick="() => ShowModal(w.WWID)">
+							<span class="material-symbols-outlined">input</span>
+						</button>
+					</td>
+					<td class="border border-slate-300 px-1">@w.WWID</td>
+					<td class="border border-slate-300 px-1">@w.Sbj</td>
+					<td class="border border-slate-300 px-1">@w.rWho</td>
+					<td class="border border-slate-300 px-1">@w.mDpt</td>
+					<td class="border border-slate-300 px-1">@w.mWho</td>
+					<td class="border border-slate-300 px-1">@w.SADfs</td>
+					<td class="border border-slate-300 px-1 text-right">@w.sdh</td>
+					<td class="border border-slate-300 px-1">@w.FADfs</td>
+					<td class="border border-slate-300 px-1 text-right">@w.fdh</td>
+				</tr>
+			}
+		</tbody>
+	</table>
+}
+
+@code {
+	[CascadingParameter]
+	public AppState? appState { get; set; } = default;
+
+	IQueryable<WW> ww;
+	QuickGrid<WW> ppGrid;
+	private string sbjFilter;
+	private string mWhoFilter;
+	public WwQryArgs qry = new();
+
+	private void ShowModal(int id)
+	{
+		
+	}
+
+	public void QryArgsSelected(WwQryArgs qryArgs)
+	{
+		qry = qryArgs;
+		LoadData();
+	}
+
+	private void LoadData()
+	{
+		var prms = new
+		{
+			FFID = qry.FFId,
+			RngFld = qry.rngFld,
+			RngGE = qry.rngGE,
+			RngLT = qry.rngLT,
+			FltFld = qry.fltFld,
+			FltCnd = qry.fltCnd,
+			FltVal = qry.fltVal,
+			OrdFld = qry.ordFld,
+			OrdVal = qry.ordVal
+		};
+
+		using var conn = dbCon.GetConnection();
+		//pp = conn.Query<WW>("select * from WW_QRY(@FFID,@RNGFLD,@RNGGE,@RNGLT,@FLTFLD,@FLTCND,@FLTVAL,@ORDFLD,@ORDVAL)", qry ).AsQueryable();
+		ww = conn.Query<WW>("WW_QRY", prms, commandType: CommandType.StoredProcedure).AsQueryable();
+
+
+		//pp = db.LoadData<WW, dynamic>("select * from WW_QRY(@FFID,)", qry).AsQueryable();
+	}
+
+	protected override void OnParametersSet()
+	{
+		if (appState.UsrId > 0 && appState.Ytk1)
+			LoadData();
+		base.OnParametersSet();
+	}
+
+}

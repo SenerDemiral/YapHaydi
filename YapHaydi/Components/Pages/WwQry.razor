@@ -1,0 +1,81 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+<table class="bg-slate-200 m-auto">
+	<tr>
+		<td class="border border-slate-300 px-1 text-red-700">Tarih aralığı</td>
+		<td class="border border-slate-300">
+			<select id="rngFld" name="rngFld" @bind="qry.rngFld" class="w-24 px-1">
+				<option value="INSTS">İstek</option>
+				<option value="SED">ThmnBaş</option>
+				<option value="SAD">GrçkBaş</option>
+				<option value="FED">TkmnBit</option>
+				<option value="FAD" selected>GrçkBit</option>
+			</select>
+		</td>
+		<td class="border border-slate-300 text-center">
+			<input type="date" @bind="qry.rngGE" placeholder="Başlangıç tarih >=" />
+		</td>
+		<td class="border border-slate-300 text-center">
+			<input type="date" @bind="qry.rngLT" placeholder="Bitiş tarih <" />
+		</td>
+	</tr>
+	<tr>
+		<td class="border border-slate-300 px-1 text-red-700">Filtre</td>
+		<td class="border border-slate-300">
+			<select id="fltFld" name="fltFld" @bind="qry.fltFld" class="w-24 px-1">
+				<option value="sbj">Konu</option>
+				<option value="rwho">İstynKişi</option>
+				<option value="mdpt">İstynDept</option>
+				<option value="mwho" selected>Yapan</option>
+				<option value="sdh">BaşGckmSaat</option>
+				<option value="fdh">BitGckmSaat</option>
+			</select>
+		</td>
+		<td class="border border-slate-300">
+			<select id="cars" name="cars" @bind="qry.fltCnd" class="w-24 px-1">
+				<option value="containing" selected>İçeren</option>
+				<option value="starting">Başlayan</option>
+				<option value=">=">EşitBüyük</option>
+				<option value="<">Küçük</option>
+			</select>
+		</td>
+		<td class="border border-slate-300">
+			<input type="search" class="w-24 px-1" @bind="qry.fltVal" @bind:event="oninput" placeholder="..." />
+		</td>
+	</tr>
+	<tr>
+		<td class="border border-slate-300 px-1 text-red-700">Order</td>
+		<td class="border border-slate-300">
+			<select id="ordFld" name="ordFld" @bind="qry.ordFld" class="w-24 px-1">
+				<option value="INSTS">İstek</option>
+				<option value="SED">ThmnBaş</option>
+				<option value="SAD">GrçkBaş</option>
+				<option value="FED">ThmnBit</option>
+				<option value="FAD" selected>GrçkBit</option>
+			</select>
+		</td>
+		<td class="border border-slate-300">
+			<select id="ordVal" name="ordVal" @bind="qry.ordVal" class="w-24 px-1">
+				<option value="asc" selected>Artan</option>
+				<option value="desc">Azalan</option>
+			</select>
+		</td>
+		<td class="text-center">
+			<button type="button" @onclick="QryArgsSelected">🔎 ARA</button>
+		</td>
+	</tr>
+</table>
+
+
+@code {
+	[Parameter]
+	public WwQryArgs qry { get; set; }
+
+	[Parameter]
+	public EventCallback<WwQryArgs> OnQryArgsSelected { get; set; }
+
+	public void QryArgsSelected()
+	{
+		OnQryArgsSelected.InvokeAsync(qry);
+	}
+}

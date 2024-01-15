@@ -15,6 +15,8 @@ builder.Configuration.AddJsonFile("C:\\AspNetConfig\\YapHaydi.json",
                        reloadOnChange: true);
 
 builder.Services.AddSingleton<IDataAccess, FBDataAccess>();
+builder.Services.AddSingleton<IDbCon, DbCon>();
+
 //builder.Services.AddSingleton<IUsrDic, UsrDic>();
 
 // RootLevelCascadingValue
