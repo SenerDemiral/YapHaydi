@@ -19,7 +19,6 @@ public class DbCon : IDbCon
         csb.PacketSize = 16384;
         csb.ClientLibrary = "fbclient.dll"; //Default: fbembed
         conStr = csb.ConnectionString;
-
     }
 
     public IDbConnection GetConnection()

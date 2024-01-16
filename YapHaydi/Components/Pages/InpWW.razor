@@ -408,25 +408,30 @@
     private void LoadLookups()
     {
         FFID = appState.FrmId;
-        var tt = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID)", new { FFId = FFID });
         ttx = new();
         tts = new();
         ttd = new();
 
         ttx.Add("", null);
-        foreach(var r in tt)
+
+        if (appState.Ytk1)
         {
-            if(r.Typ == "X")
+            var tt = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID)", new { FFId = FFID });
+
+            foreach (var r in tt)
             {
-                ttx.Add(r.AdX, r.TTId);
-            }
-            else if(r.Typ == "S")
-            {
-                tts.Add(r.AdX, r.TTId);
-            }
-            if(r.Typ == "D")
-            {
-                ttd.Add(r.AdX, r.TTId);
+                if (r.Typ == "X")
+                {
+                    ttx.Add(r.AdX, r.TTId);
+                }
+                else if (r.Typ == "S")
+                {
+                    tts.Add(r.AdX, r.TTId);
+                }
+                if (r.Typ == "D")
+                {
+                    ttd.Add(r.AdX, r.TTId);
+                }
             }
         }
     }

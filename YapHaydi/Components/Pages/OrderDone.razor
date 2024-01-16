@@ -1,7 +1,7 @@
 ﻿@inject IDataAccess db
 @inject IDbCon dbCon
 
-@rendermode @(new InteractiveServerRenderMode(prerender: true))
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 @page "/orderdone"
 
@@ -54,14 +54,11 @@
 	public AppState? appState { get; set; } = default;
 
 	IQueryable<WW> ww;
-	QuickGrid<WW> ppGrid;
-	private string sbjFilter;
-	private string mWhoFilter;
 	public WwQryArgs qry = new();
 
 	private void ShowModal(int id)
 	{
-		
+
 	}
 
 	public void QryArgsSelected(WwQryArgs qryArgs)
@@ -84,11 +81,14 @@
 			OrdFld = qry.ordFld,
 			OrdVal = qry.ordVal
 		};
+		using (IDbConnection conn = dbCon.GetConnection())
+		{
+			ww = conn.Query<WW>("WW_QRY", prms, commandType: CommandType.StoredProcedure).AsQueryable();
+		}
 
-		using var conn = dbCon.GetConnection();
+		//using var conn = dbCon.GetConnection();
 		//pp = conn.Query<WW>("select * from WW_QRY(@FFID,@RNGFLD,@RNGGE,@RNGLT,@FLTFLD,@FLTCND,@FLTVAL,@ORDFLD,@ORDVAL)", qry ).AsQueryable();
-		ww = conn.Query<WW>("WW_QRY", prms, commandType: CommandType.StoredProcedure).AsQueryable();
-
+		//ww = conn.Query<WW>("WW_QRY", prms, commandType: CommandType.StoredProcedure).AsQueryable();
 
 		//pp = db.LoadData<WW, dynamic>("select * from WW_QRY(@FFID,)", qry).AsQueryable();
 	}
