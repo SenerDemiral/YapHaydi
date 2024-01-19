@@ -23,7 +23,7 @@
             <td>@ww.WWID</td>
         </tr>
         <tr>
-            <td><button @onclick="() => ShowModal(ww.SbjID)" tabindex="-1">Konu</button></td>
+            <td><button @onclick="() => ShowModal(ww.SbjID)" tabindex="-1" class="text-blue-700 shadow-md">Konu</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -38,7 +38,7 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Request</td>
         </tr>
         <tr>
-            <td><button @onclick="() => ShowModal(ww.rWhoID)" tabindex="-1">Kim</button></td>
+            <td><button @onclick="() => ShowModal(ww.rWhoID)" tabindex="-1" class="text-blue-700 shadow-md">Kim</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -62,7 +62,7 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Yapan</td>
         </tr>
         <tr>
-            <td><button @onclick="() => ShowModal(ww.mDptID)" tabindex="-1">Dept</button></td>
+            <td><button @onclick="() => ShowModal(ww.mDptID)" tabindex="-1" class="text-blue-700 shadow-md">Dept</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -74,7 +74,7 @@
              </td>
         </tr>
         <tr>
-            <td><button @onclick="() => ShowModal(ww.mWhoID)" tabindex="-1">Kişi</button></td>
+            <td><button @onclick="() => ShowModal(ww.mWhoID)" tabindex="-1" class="text-blue-700 shadow-md">Kişi</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -89,7 +89,7 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Başlangıç</td>
         </tr>
         <tr>
-            <td><button @onclick="() => ShowModal(ww.sCntID)" tabindex="-1">Kontak</button></td>
+            <td><button @onclick="() => ShowModal(ww.sCntID)" tabindex="-1" class="text-blue-700 shadow-md">Kontak</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -101,7 +101,7 @@
              </td>
         </tr>
         <tr>
-            <td><button @onclick="() => ShowModal(ww.sAdrID)" tabindex="-1">Adres</button></td>
+            <td><button @onclick="() => ShowModal(ww.sAdrID)" tabindex="-1" class="text-blue-700 shadow-md">Adres</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -139,7 +139,7 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Bitiş</td>
         </tr>
         <tr>
-            <td><button @onclick="() => ShowModal(ww.fCntID)" tabindex="-1">Kontak</button></td>
+            <td><button @onclick="() => ShowModal(ww.fCntID)" tabindex="-1" class="text-blue-700 shadow-md">Kontak</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -151,7 +151,7 @@
              </td>
         </tr>
         <tr>
-            <td><button @onclick="() => ShowModal(ww.fAdrID)" tabindex="-1">Adres</button></td>
+            <td><button @onclick="() => ShowModal(ww.fAdrID)" tabindex="-1" class="text-blue-700 shadow-md">Adres</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -189,7 +189,7 @@
             <td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Destinasyon</td>
         </tr>
         <tr>
-            <td><button @onclick="() => ShowModal(ww.dCntID)" tabindex="-1">Kontak</button></td>
+            <td><button @onclick="() => ShowModal(ww.dCntID)" tabindex="-1" class="text-blue-700 shadow-md">Kontak</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -201,7 +201,7 @@
              </td>
         </tr>
         <tr>
-            <td><button @onclick="() => ShowModal(ww.dAdrID)" tabindex="-1">Adres</button></td>
+            <td><button @onclick="() => ShowModal(ww.dAdrID)" tabindex="-1" class="text-blue-700 shadow-md">Adres</button></td>
             <td>
                 <input type="text" 
                        maxlength="30"
@@ -211,6 +211,15 @@
                        @bind:event="onchange"
                        @bind:after="(() => CheckTTX(ref ww.dAdrID, ref ww.dAdr, oww!.dAdr))" />
              </td>
+        </tr>
+        <tr>
+            <td>Info</td>
+            <td>
+                <textarea readonly="@RO"
+                          rows="4" cols="30"
+                          @bind="ww.dInf" 
+                          style="resize:vertical;height:42px" />
+            </td>
         </tr>
         </tbody>
     </table>
@@ -444,7 +453,7 @@
         //ttx = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID) where Typ='X'", new { FFId = FFID }).ToDictionary((k) => k.AdX);
 
         //if (ScpC.IsAdm || ScpC.IsTnm)
-        ww = db.LoadRec<WW, dynamic>("select * from WW_SEL(@WWId,@FFId,@UsrId)", new { WWId=ID, FFId=FFID, UsrId=1 });
+        ww = db.LoadRec<WW, dynamic>("select * from WW_SEL(@WWId,@FFId,@UsrId)", new { WWId = ID, FFId = FFID, UsrId = appState.UsrId });
         // else
         // NM.NavigateTo("login");
         //pp = db.LoadRec<PP, dynamic>("select * from PP where PPId = @PPId", new { PPId = PPId });

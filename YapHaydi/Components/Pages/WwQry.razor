@@ -7,9 +7,9 @@
 {
 	<table class="bg-slate-200 m-auto"> 
 		<tr>
-			<td class="border border-slate-300 px-1 text-red-700">Tarih aralığı</td>
+			<td class="border border-slate-300 px-1 text-red-700 font-bold">Tarih aralığı</td>
 			<td class="border border-slate-300">
-				<select id="rngFld" name="rngFld" @bind="qry.rngFld" class="w-24 px-1">
+				<select id="rngFld" name="rngFld" @bind="appState.rngFld" class="w-24 px-1">
 					@foreach(var r in rf)
 					{
 						<option value="@r.OptVal">@r.OptTxt</option>
@@ -17,16 +17,16 @@
 				</select>
 			</td>
 			<td class="border border-slate-300 text-center">
-				<input type="date" @bind="qry.rngGE" placeholder="Başlangıç tarih >=" />
+				<input type="date" @bind="appState.rngGE" placeholder="Başlangıç tarih >=" />
 			</td>
 			<td class="border border-slate-300 text-center">
-				<input type="date" @bind="qry.rngLT" placeholder="Bitiş tarih <" />
+				<input type="date" @bind="appState.rngLT" placeholder="Bitiş tarih <" />
 			</td>
 		</tr>
 		<tr>
-			<td class="border border-slate-300 px-1 text-red-700">Filtre</td>
+			<td class="border border-slate-300 px-1 text-red-700 font-bold">Filtre</td>
 			<td class="border border-slate-300">
-				<select id="fltFld" name="fltFld" @bind="qry.fltFld" class="w-24 px-1">
+				<select id="fltFld" name="fltFld" @bind="appState.fltFld" class="w-24 px-1">
 					@foreach(var r in ff)
 					{
 						<option value="@r.OptVal">@r.OptTxt</option>
@@ -34,7 +34,7 @@
 				</select>
 			</td>
 			<td class="border border-slate-300">
-				<select id="cars" name="cars" @bind="qry.fltCnd" class="w-24 px-1">
+				<select id="cars" name="cars" @bind="appState.fltCnd" class="w-24 px-1">
 					@foreach(var r in fc)
 					{
 						<option value="@r.OptVal">@r.OptTxt</option>
@@ -42,13 +42,13 @@
 				</select>
 			</td>
 			<td class="border border-slate-300">
-				<input type="search" class="w-24 px-1" @bind="qry.fltVal" @bind:event="oninput" placeholder="..." />
+				<input type="search" class="w-24 px-1" @bind="appState.fltVal" @bind:event="oninput" placeholder="❓" />
 			</td>
 		</tr>
 		<tr>
-			<td class="border border-slate-300 px-1 text-red-700">Order</td>
+			<td class="border border-slate-300 px-1 text-red-700 font-bold">Sıralama</td>
 			<td class="border border-slate-300">
-				<select id="ordFld" name="ordFld" @bind="qry.ordFld" class="w-24 px-1">
+				<select id="ordFld" name="ordFld" @bind="appState.ordFld" class="w-24 px-1">
 					@foreach(var r in of)
 					{
 						<option value="@r.OptVal">@r.OptTxt</option>
@@ -56,7 +56,7 @@
 				</select>
 			</td>
 			<td class="border border-slate-300">
-				<select id="ordVal" name="ordVal" @bind="qry.ordVal" class="w-24 px-1">
+				<select id="ordVal" name="ordVal" @bind="appState.ordVal" class="w-24 px-1">
 					@foreach(var r in oc)
 					{
 						<option value="@r.OptVal">@r.OptTxt</option>
@@ -71,11 +71,16 @@
 }
 
 @code {
-	[Parameter]
-	public WwQryArgs qry { get; set; } = new();
+	[CascadingParameter]
+	public AppState? appState { get; set; } = default;
 
+	//[Parameter]
+	//public WwQryArgs Qry { get; set; } = new();
+
+	//[Parameter]
+	//public EventCallback<WwQryArgs> OnQryArgsSelected { get; set; }
 	[Parameter]
-	public EventCallback<WwQryArgs> OnQryArgsSelected { get; set; }
+	public EventCallback OnQryArgsSelected { get; set; }
 
 	public IEnumerable<WQP> wqp;
 	public List<WQP> rf = new();
@@ -86,7 +91,8 @@
 
 	public void QryArgsSelected()
 	{
-		OnQryArgsSelected.InvokeAsync(qry);
+		//OnQryArgsSelected.InvokeAsync(Qry);
+		OnQryArgsSelected.InvokeAsync();
 	}
 
 	protected override void OnInitialized()
@@ -94,10 +100,10 @@
 		// using IDbConnection conn = dbCon.GetConnection();
 		// wqp = conn.Query<WQP>("select * from WQP");
 		// wqp = db.LoadData<WQP, dynamic>("select * from WQP", new { });
-		
+
 		using (IDbConnection conn = dbCon.GetConnection())
 		{
-			wqp = conn.Query<WQP>("select * from WQP");
+			wqp = conn.Query<WQP>("select * from WQP order by ID");
 		}
 
 		foreach(var p in wqp)
@@ -113,7 +119,6 @@
 			else if (p.Typ == "OC")
 				oc.Add(p);
 		}
-
 	}
 
 	public sealed class WQP 
@@ -121,6 +126,5 @@
 		public string Typ;
 		public string OptTxt;
 		public string OptVal;
-
 	}
 }

@@ -2,13 +2,23 @@
 
 public class AppState
 {
-    public int FrmId { get; set; } = 0;
-    public int UsrId { get; set; } = 0;
-    public string Ad { get; set; } = string.Empty;
-    public string? UsrTkn { get; set; }
-    public int UEXId { get; set; }
-	public bool Ytk1 { get; set; }
-	public bool Ytk2 { get; set; }
-	public bool Ytk3 { get; set; }
+    public int FrmId = 0;
+    public int UsrId = 0;
+	public int UEXId = 0;
+    public string Ad = string.Empty;
+	public string? UsrTkn = null;
+	public bool Ytk1 = false;
+	public bool Ytk2 = false;
+	public bool Ytk3 = false;
 
+	public string rngFld = "INSTS";
+	public DateTime rngGE = DateTime.Today.AddDays(-15);
+	public DateTime rngLT = DateTime.Today.AddDays(1);
+
+	public string fltFld = "";
+	public string fltCnd = "containing";
+	public string fltVal = "";
+
+	public string ordFld = "FAD";
+	public string ordVal = "desc";
 }

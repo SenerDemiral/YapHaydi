@@ -1,0 +1,356 @@
+﻿@inject INewsContainer News
+@inject NavigationManager NM
+@inject IDataAccess db
+@inject IDbCon dbCon
+@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@* @page "/inp/{id:int}" *@
+
+<div class="@pointerEvent">
+	@if (oo is not null)
+	{
+		<div class="flex justify-between text-sm">
+			<button disabled="@RO" @onclick="Cancel">⬅️</button>
+			@if (appState.Ytk1)
+			{
+				<button disabled="@RO" @onclick="Clone">🐑Klon</button>
+				<button disabled="@RO" @onclick="NewRec">➕</button>
+				<button disabled="@RO" @onclick="Save">✅Kaydet</button>
+			}
+		</div>
+
+		<table>
+			<tbody>
+				<tr>
+					<td>Id</td>
+					<td>@oo.OOID</td>
+				</tr>
+				<tr>
+					<td><button @onclick="() => ShowModal(oo.SbjID)" tabindex="-1" class="text-blue-700 shadow-md">Konu</button></td>
+					<td>
+						<input type="text"
+							   maxlength="30"
+							   size="30"
+							   list="TTSL"
+							   @bind="oo.Sbj"
+							   @bind:event="onchange"
+							   @bind:after="(() => CheckTTS(ref oo.SbjID, ref oo.Sbj, ooo!.Sbj))" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Request</td>
+				</tr>
+				<tr>
+					<td><button @onclick="() => ShowModal(oo.ReqID)" tabindex="-1" class="text-blue-700 shadow-md">İsteyen</button></td>
+					<td>
+						<input type="text"
+							   maxlength="30"
+							   size="30"
+							   list="TTXL"
+							   @bind="oo.Req"
+							   @bind:event="onchange"
+							   @bind:after="(() => CheckTTX(ref oo.ReqID, ref oo.Req, ooo!.Req))" />
+					</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td>@oo.RQDfs</td>
+				</tr>
+				<tr>
+					<td>Info</td>
+					<td>
+						<textarea readonly="@RO"
+								  rows="4" cols="30"
+								  @bind="oo.Inf"
+								  style="resize:vertical;height:42px" />
+					</td>
+				</tr>
+
+				<tr>
+					<td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Yapan</td>
+				</tr>
+				<tr>
+					<td><button @onclick="() => ShowModal(oo.ActID)" tabindex="-1" class="text-blue-700 shadow-md">Kişi</button></td>
+					<td>
+						<input type="text"
+							   maxlength="30"
+							   size="30"
+							   list="TTDL"
+							   @bind="oo.Act"
+							   @bind:event="onchange"
+							   @bind:after="(() => CheckTTX(ref oo.ActID, ref oo.Act, ooo!.Act))" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Başlangıç</td>
+				</tr>
+				<tr>
+					<td>Tahmini</td>
+					<td>
+						<input readonly="@RO" type="date" @bind="oo.ESD" />
+						<input readonly="@RO" type="time" @bind="oo.ESDt" />
+					</td>
+				</tr>
+				<tr>
+					<td>Gerçek</td>
+					<td>@oo.ASDfs</td>
+				</tr>
+				<tr>
+					<td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Bitiş</td>
+				</tr>
+				<tr>
+					<td>Tahmini</td>
+					<td>
+						<input readonly="@RO" type="date" @bind="oo.EFD" />
+						<input readonly="@RO" type="time" @bind="oo.EFDt" />
+					</td>
+				</tr>
+				<tr>
+					<td>Gerçek</td>
+					<td>@oo.AFDfs</td>
+				</tr>
+			</tbody>
+		</table>
+
+
+		<datalist id="TTXL">
+			@foreach (var r in ttx!)
+			{
+				<option value="@r.Key" />
+			}
+		</datalist>
+
+		<datalist id="TTSL">
+			@foreach (var r in tts!)
+			{
+				<option value="@r.Key" />
+			}
+		</datalist>
+
+		<datalist id="TTDL">
+			@foreach (var r in ttd!)
+			{
+				<option value="@r.Key" />
+			}
+		</datalist>
+	}
+</div>
+
+@if (showModal)
+{
+	<div class="modal modal-tt h-auto  shadow-lg shadow-black rounded">
+		<InpTT TTId=@inpTTid OnSaved="Saved" OnCancelled="Cancelled" />
+	</div>
+}
+
+@code {
+	[CascadingParameter]
+	public AppState appState { get; set; }
+	[Inject]
+	CascadingValueSource<AppState>? appStateSource { get; set; } = default;
+	[Parameter]
+	public int ID { get; set; }
+	[Parameter]
+	public EventCallback OnSaved { get; set; }
+	[Parameter]
+	public EventCallback OnCancelled { get; set; }
+
+	private OO? oo, ooo;
+	private bool RO = false;
+	private int FFID;
+	private Dictionary<string, int?>? ttx, tts, ttd;
+
+	private int inpTTid;
+	private string pointerEvent = "pe-auto";
+	private bool _showModal;
+	private bool showModal
+	{
+		get => _showModal;
+		set
+		{
+			_showModal = value;
+			pointerEvent = _showModal ? "pe-none" : "pe-auto";
+		}
+	}
+	private void ShowModal(int ttId)
+	{
+		//ttId ??= 0;
+
+		if (showModal)
+			showModal = false;
+		else
+		{
+			this.inpTTid = (int)ttId;
+			showModal = true;
+		}
+	}
+	public void Cancelled()
+	{
+		showModal = false;
+	}
+	public void Saved()
+	{
+		showModal = false;
+		LoadLookups();
+		//LoadData();
+
+	}
+
+
+	private void CheckTTX(ref int id, ref string? adx, string? oadx)
+	{
+		if (ttx!.TryGetValue(adx!, out var nid))
+		{
+			id = (int)nid;
+		}
+		else
+		{
+			adx = oadx;
+		}
+	}
+
+	private void CheckTTS(ref int id, ref string? adx, string? oadx)
+	{
+		if (tts!.TryGetValue(adx!, out var nid))
+		{
+			id = (int)nid;
+		}
+		else
+		{
+			adx = oadx;
+		}
+	}
+
+	private void CheckTTD(ref int id, ref string? adx, string? oadx)
+	{
+		if (ttd!.TryGetValue(adx!, out var nid))
+		{
+			id = (int)nid;
+		}
+		else
+		{
+			adx = oadx;
+		}
+	}
+
+	private void Cancel()
+	{
+		//appStateSource?.NotifyChangedAsync();
+
+		// zaten buradan geri dönecek, ilk değerlerini geri almaya gerek yok. ww = oww Bu çalışmaz birbirine eşitliyor copy yapmıyor;
+		// ww = oww.ShallowCopy(); //Gerekirse bu OK
+		OnCancelled.InvokeAsync();
+	}
+
+	private void Clone()
+	{
+		oo.OOID = 0;
+	}
+
+	private void NewRec()
+	{
+		oo = new();
+		ooo = new();
+	}
+
+	private void Save()
+	{
+		TimeSpan ESDt = oo.ESDt == null ? new TimeSpan(0) : oo.ESDt.Value.TimeOfDay;
+		TimeSpan EFDt = oo.EFDt == null ? new TimeSpan(0) : oo.EFDt.Value.TimeOfDay;
+
+		// Join Date & Time (ESD.Date + ESD.Time)
+		DateTime? ESD = null, EFD = null;
+		if (oo.ESD != null)
+			ESD = oo?.ESD?.Date.Add(ESDt);
+		if (oo.EFD != null)
+			EFD = oo?.EFD?.Date.Add(EFDt);
+
+		var prms = new   // Sirasi onemli Procedure Input sirasiyla ayni olmali
+		{
+			OOID = oo.OOID,
+			USRID = appState.UsrId,
+			FFID = appState.FrmId,
+			SBJID = oo.SbjID,
+			REQID = oo.ReqID,
+			ACTID = oo.ActID,
+			ESD = ESD,
+			ASD = oo.ASD,
+			EFD = EFD,
+			AFD = oo.AFD,
+			INF = oo.Inf,
+			MSJ = oo.Msj
+		};
+
+		//db.SaveRec("OO_MDF", prms);
+		using var conn = dbCon.GetConnection();
+		conn.Execute("OO_MDF", prms, commandType: CommandType.StoredProcedure);
+
+		NewsMdl news = new()
+			{
+				FrmId = appState.FrmId,
+				YpnId = oo.ActID, //oo.ActID ?? 0,
+			};
+		News.NotifyChanged(news);
+
+		OnSaved.InvokeAsync();
+	}
+
+	private void LoadLookups()
+	{
+		FFID = appState.FrmId;
+		ttx = new();
+		tts = new();
+		ttd = new();
+
+		ttx.Add("", null);
+
+		if (appState.Ytk1)
+		{
+			var tt = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID)", new { FFId = FFID });
+
+			foreach (var r in tt)
+			{
+				if (r.Typ == "X")
+				{
+					ttx.Add(r.AdX, r.TTId);
+				}
+				else if (r.Typ == "S")
+				{
+					tts.Add(r.AdX, r.TTId);
+				}
+				if (r.Typ == "D")
+				{
+					ttd.Add(r.AdX, r.TTId);
+				}
+			}
+		}
+	}
+
+	protected override async Task OnInitializedAsync()
+	{
+		FFID = appState.FrmId;
+		LoadLookups();
+
+		var prms = new
+		{
+			WWId = ID,
+			FFId = FFID,
+			UsrId = appState.UsrId
+		};
+		using (IDbConnection conn = dbCon.GetConnection())
+		{
+			oo = conn.QueryFirstOrDefault<OO>("OO_SEL", prms, commandType: CommandType.StoredProcedure);
+		}
+
+		//oo = db.LoadRec<OO, dynamic>("select * from OO_SEL(@OOId,@FFId,@UsrId)", new { WWId = ID, FFId = FFID, UsrId = appState.UsrId });
+		
+		ooo = oo.ShallowCopy();
+	}
+
+	private sealed class TT
+	{
+		public int TTId { get; set; }
+		public string Typ { get; set; }
+		public string AdX { get; set; }
+	}
+
+}

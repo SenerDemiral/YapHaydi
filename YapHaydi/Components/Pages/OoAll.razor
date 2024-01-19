@@ -3,12 +3,12 @@
 
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
-@page "/orderdone"
+@page "/ooall"
 
-<WwQry OnQryArgsSelected="@QryArgsSelected" />
+@* <WwQry OnQryArgsSelected="@QryArgsSelected" /> *@
 @* <WwQry OnQryArgsSelected="@QryArgsSelected" Qry="qry" /> *@
 
-@if (ww != null)
+@if (oo != null)
 {
 	<table class="mx-auto text-left text-gray-500 @pointerEvent">
 		<thead class="text-xs text-gray-700 bg-gray-50">
@@ -30,37 +30,35 @@
 			@{
 				int i = 1;
 			}
-			@foreach (var w in ww)
+			@foreach (var o in oo)
 			{
 				<tr>
 					<td class="pr-1 text-right text-red-600">@(i++)</td>
 					<td class="border border-slate-300">
 						<button class="bg-indigo-500 text-white rounded px-1"
-								@onclick="() => ShowModal(w.WWID)">
-							<span class="material-symbols-outlined">input</span>
+								@onclick="() => ShowModal(o.OOID)">
+							<span class="material-symbols-outlined">input</span>@o.OOID
 						</button>
 					</td>
-					<td class="border border-slate-300 px-1 text-right">@w.WWID</td>
-					<td class="border border-slate-300 px-1">@w.Sbj</td>
-					<td class="border border-slate-300 px-1">@w.rWho</td>
-					<td class="border border-slate-300 px-1">@w.mDpt</td>
-					<td class="border border-slate-300 px-1">@w.mWho</td>
-					<td class="border border-slate-300 px-1">@w.SADfs</td>
-					<td class="border border-slate-300 px-1 text-right">@w.sdh</td>
-					<td class="border border-slate-300 px-1">@w.FADfs</td>
-					<td class="border border-slate-300 px-1 text-right">@w.fdh</td>
+					<td class="border border-slate-300 px-1 text-right">@o.OOID</td>
+					<td class="border border-slate-300 px-1">@o.Sbj</td>
+					<td class="border border-slate-300 px-1">@o.Req</td>
+					<td class="border border-slate-300 px-1">@o.Act</td>
+					<td class="border border-slate-300 px-1">@o.ASDfs</td>
+					<td class="border border-slate-300 px-1 text-right">@o.sdh</td>
+					<td class="border border-slate-300 px-1">@o.AFDfs</td>
+					<td class="border border-slate-300 px-1 text-right">@o.fdh</td>
 				</tr>
 			}
 		</tbody>
 	</table>
 }
 
-<m-d>17.01.24 22:50</m-d> <m-u>Tuğba Uzal #4</m-u><br /><m-i>Abidik</m-i><hr /><m-d>17.01.24 22:50</m-d> <m-u>Kezban Yavuz #3</m-u><hr /><m-i>asdfaskjf sfaslkfjas dfsafkas fasfdkasf</m-i><hr />
 @if (showModal)
 {
-    <div class="modal modal-ww shadow-lg shadow-black rounded">
-        <InpWW ID=@mdlId OnSaved="Saved" OnCancelled="Cancelled" />
-    </div>
+	<div class="modal modal-ww shadow-lg shadow-black rounded">
+		<InpOO ID=@mdlId OnSaved="Saved" OnCancelled="Cancelled" />
+	</div>
 }
 
 
@@ -68,8 +66,7 @@
 	[CascadingParameter]
 	public AppState appState { get; set; }
 
-	IEnumerable<WW> ww;
-	//public WwQryArgs qry = new();
+	IEnumerable<OO> oo;
 
 	private int mdlId;
 	private string pointerEvent = "pe-auto";
@@ -104,35 +101,29 @@
 		LoadData();
 	}
 
-
 	public void QryArgsSelected()
 	{
 		LoadData();
 	}
 
-	// public void QryArgsSelected(WwQryArgs qryArgs)
-	// {
-	// 	//qry = qryArgs;
-	// 	LoadData();
-	// }
-
 	private void LoadData()
 	{
 		var prms = new
 		{
-			FFID = appState.FrmId,
-			RngFld = appState.rngFld,
-			RngGE = appState.rngGE,
-			RngLT = appState.rngLT,
-			FltFld = appState.fltFld,
-			FltCnd = appState.fltCnd,
-			FltVal = appState.fltVal,
-			OrdFld = appState.ordFld,
-			OrdVal = appState.ordVal
+			FFID = 101,
+			RngFld = "RQD",
+			RngGE = DateTime.Today.AddDays(-10),
+			RngLT = DateTime.Today.AddDays(1),
+			S1F = "SbjId",
+			S1V = 1,
+			S2F = "",
+			S2V = 0,
+			S3F = "",
+			S3V = 0,
 		};
 		using (IDbConnection conn = dbCon.GetConnection())
 		{
-			ww = conn.Query<WW>("WW_QRY", prms, commandType: CommandType.StoredProcedure);
+			oo = conn.Query<OO>("OO_QRY", prms, commandType: CommandType.StoredProcedure);
 		}
 
 		//using var conn = dbCon.GetConnection();
