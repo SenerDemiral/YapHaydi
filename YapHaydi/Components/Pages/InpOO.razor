@@ -53,7 +53,7 @@
 				</tr>
 				<tr>
 					<td></td>
-					<td>@oo.RQDfs</td>
+					<td>@oo.InsTSfs</td>
 				</tr>
 				<tr>
 					<td>Info</td>
@@ -86,13 +86,13 @@
 				<tr>
 					<td>Tahmini</td>
 					<td>
-						<input readonly="@RO" type="date" @bind="oo.ESD" />
-						<input readonly="@RO" type="time" @bind="oo.ESDt" />
+						<input readonly="@RO" type="date" @bind="oo.RSD" />
+						<input readonly="@RO" type="time" @bind="oo.RSDt" />
 					</td>
 				</tr>
 				<tr>
 					<td>Gerçek</td>
-					<td>@oo.ASDfs</td>
+					<td>@oo.ASDfs <sup>@oo.sdh.ToString("#")</sup></td>
 				</tr>
 				<tr>
 					<td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Bitiş</td>
@@ -100,13 +100,13 @@
 				<tr>
 					<td>Tahmini</td>
 					<td>
-						<input readonly="@RO" type="date" @bind="oo.EFD" />
-						<input readonly="@RO" type="time" @bind="oo.EFDt" />
+						<input readonly="@RO" type="date" @bind="oo.RFD" />
+						<input readonly="@RO" type="time" @bind="oo.RFDt" />
 					</td>
 				</tr>
 				<tr>
 					<td>Gerçek</td>
-					<td>@oo.AFDfs</td>
+					<td>@oo.AFDfs  <sup>@oo.fdh.ToString("#")</sup></td>
 				</tr>
 			</tbody>
 		</table>
@@ -121,13 +121,6 @@
 
 		<datalist id="TTSL">
 			@foreach (var r in tts!)
-			{
-				<option value="@r.Key" />
-			}
-		</datalist>
-
-		<datalist id="TTDL">
-			@foreach (var r in ttd!)
 			{
 				<option value="@r.Key" />
 			}
@@ -157,7 +150,7 @@
 	private OO? oo, ooo;
 	private bool RO = false;
 	private int FFID;
-	private Dictionary<string, int?>? ttx, tts, ttd;
+	private Dictionary<string, int?>? ttx, tts;
 
 	private int inpTTid;
 	private string pointerEvent = "pe-auto";
@@ -198,7 +191,7 @@
 
 	private void CheckTTX(ref int id, ref string? adx, string? oadx)
 	{
-		if (ttx!.TryGetValue(adx!, out var nid))
+		if (ttx!.TryGetValue(adx, out var nid))
 		{
 			id = (int)nid;
 		}
@@ -210,19 +203,7 @@
 
 	private void CheckTTS(ref int id, ref string? adx, string? oadx)
 	{
-		if (tts!.TryGetValue(adx!, out var nid))
-		{
-			id = (int)nid;
-		}
-		else
-		{
-			adx = oadx;
-		}
-	}
-
-	private void CheckTTD(ref int id, ref string? adx, string? oadx)
-	{
-		if (ttd!.TryGetValue(adx!, out var nid))
+		if (tts!.TryGetValue(adx, out var nid))
 		{
 			id = (int)nid;
 		}
@@ -244,6 +225,14 @@
 	private void Clone()
 	{
 		oo.OOID = 0;
+		oo.RSD = DateTime.Today;
+		oo.RSDt = DateTime.Today.AddHours(8);
+		oo.ASD = null;
+		oo.RFD = DateTime.Today;
+		oo.RFDt = DateTime.Today.AddHours(16);
+		oo.AFD = null;
+		oo.sdh = 0;
+		oo.fdh = 0;
 	}
 
 	private void NewRec()
@@ -254,15 +243,15 @@
 
 	private void Save()
 	{
-		TimeSpan ESDt = oo.ESDt == null ? new TimeSpan(0) : oo.ESDt.Value.TimeOfDay;
-		TimeSpan EFDt = oo.EFDt == null ? new TimeSpan(0) : oo.EFDt.Value.TimeOfDay;
+		TimeSpan RSDt = oo.RSDt == null ? new TimeSpan(0) : oo.RSDt.Value.TimeOfDay;
+		TimeSpan RFDt = oo.RFDt == null ? new TimeSpan(0) : oo.RFDt.Value.TimeOfDay;
 
 		// Join Date & Time (ESD.Date + ESD.Time)
-		DateTime? ESD = null, EFD = null;
-		if (oo.ESD != null)
-			ESD = oo?.ESD?.Date.Add(ESDt);
-		if (oo.EFD != null)
-			EFD = oo?.EFD?.Date.Add(EFDt);
+		DateTime? RSD = null, RFD = null;
+		if (oo.RSD != null)
+			RSD = oo?.RSD?.Date.Add(RSDt);
+		if (oo.RFD != null)
+			RFD = oo?.RFD?.Date.Add(RFDt);
 
 		var prms = new   // Sirasi onemli Procedure Input sirasiyla ayni olmali
 		{
@@ -272,12 +261,11 @@
 			SBJID = oo.SbjID,
 			REQID = oo.ReqID,
 			ACTID = oo.ActID,
-			ESD = ESD,
+			RSD = RSD,
 			ASD = oo.ASD,
-			EFD = EFD,
+			RFD = RFD,
 			AFD = oo.AFD,
 			INF = oo.Inf,
-			MSJ = oo.Msj
 		};
 
 		//db.SaveRec("OO_MDF", prms);
@@ -299,7 +287,6 @@
 		FFID = appState.FrmId;
 		ttx = new();
 		tts = new();
-		ttd = new();
 
 		ttx.Add("", null);
 
@@ -316,10 +303,6 @@
 				else if (r.Typ == "S")
 				{
 					tts.Add(r.AdX, r.TTId);
-				}
-				if (r.Typ == "D")
-				{
-					ttd.Add(r.AdX, r.TTId);
 				}
 			}
 		}
@@ -342,7 +325,7 @@
 		}
 
 		//oo = db.LoadRec<OO, dynamic>("select * from OO_SEL(@OOId,@FFId,@UsrId)", new { WWId = ID, FFId = FFID, UsrId = appState.UsrId });
-		
+
 		ooo = oo.ShallowCopy();
 	}
 

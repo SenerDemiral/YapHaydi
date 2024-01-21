@@ -1,5 +1,4 @@
-﻿@inject IDataAccess db
-@inject IDbCon dbCon
+﻿@inject IDbCon dbCon
 
 @rendermode @(new InteractiveServerRenderMode(prerender: false))
 
@@ -15,15 +14,46 @@
 			<tr class="text-center bg-orange-600 text-white">
 				<th></th>
 				<th></th>
-				<th class="font-thin">Id</th>
 				<th class="font-thin">Konu</th>
 				<th class="font-thin">İsteyen</th>
-				<th class="font-thin">YapanDpt</th>
-				<th class="font-thin">YapanKişi</th>
+				<th class="font-thin">Yapan</th>
 				<th class="font-thin">Başlangıç</th>
-				<th class="font-thin">±S</th>
 				<th class="font-thin">Bitiş</th>
-				<th class="font-thin">±S</th>
+			</tr>
+			<tr>
+				<th></th>
+				<th class="border border-slate-300 px-1 text-center">
+					<button type="button" @onclick="QryArgsSelected">🔎</button>
+				</th>
+				<th class="border border-slate-300 px-1 font-thin">
+					<input type="text"
+						   maxlength="30"
+						   size="15"
+						   list="TTSL"
+						   @bind="sSbj"
+						   @bind:event="onchange"
+						   @bind:after="(() => CheckTTS(ref sSbjId, ref sSbj))" />
+				</th>
+				<th class="border border-slate-300 px-1 font-thin">
+					<input type="text"
+						   maxlength="30"
+						   size="15"
+						   list="TTXL"
+						   @bind="sReq"
+						   @bind:event="onchange"
+						   @bind:after="(() => CheckTTX(ref sReqId, ref sReq))" />
+				</th>
+				<th class="border border-slate-300 px-1 font-thin">
+					<input type="text"
+						   maxlength="30"
+						   size="15"
+						   list="TTXL"
+						   @bind="sAct"
+						   @bind:event="onchange"
+						   @bind:after="(() => CheckTTX(ref sActId, ref sAct))" />
+				</th>
+				<th></th>
+				<th></th>
 			</tr>
 		</thead>
 		<tbody>
@@ -37,21 +67,75 @@
 					<td class="border border-slate-300">
 						<button class="bg-indigo-500 text-white rounded px-1"
 								@onclick="() => ShowModal(o.OOID)">
-							<span class="material-symbols-outlined">input</span>@o.OOID
+							<span class="material-symbols-outlined">input</span>
+							<sup class="text-[.5rem]">@o.OOID</sup>
 						</button>
 					</td>
-					<td class="border border-slate-300 px-1 text-right">@o.OOID</td>
 					<td class="border border-slate-300 px-1">@o.Sbj</td>
 					<td class="border border-slate-300 px-1">@o.Req</td>
 					<td class="border border-slate-300 px-1">@o.Act</td>
-					<td class="border border-slate-300 px-1">@o.ASDfs</td>
-					<td class="border border-slate-300 px-1 text-right">@o.sdh</td>
-					<td class="border border-slate-300 px-1">@o.AFDfs</td>
-					<td class="border border-slate-300 px-1 text-right">@o.fdh</td>
+
+					@if (o.Started)
+					{
+						<td class="border border-slate-300 px-1">
+							@o.ASDfs
+							<span class="material-symbols-outlined">done</span>
+							<sup>@o.sdh</sup>
+						</td>
+					}
+					else
+					{
+						<td class="border border-slate-300 text-center">
+							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => Started(o)">
+								@o.RSDfs
+							</button>
+						</td>
+					}
+
+					@if (o.Finishhed)
+					{
+						<td class="border border-slate-300 px-1">
+							@o.AFDfs
+							<span class="material-symbols-outlined">done</span>
+							<sup>@o.fdh</sup>
+						</td>
+					}
+					else
+					{
+						<td class="border border-slate-300 text-center">
+							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => Finished(o)">
+								@o.RFDfs
+							</button>
+						</td>
+					}
+
+					@if (o.UpdatePending)
+					{
+						<td>
+							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => UpdRec(o)">
+								<span class="material-symbols-outlined">checklist_rtl</span>
+							</button>
+						</td>
+					}
+
 				</tr>
 			}
 		</tbody>
 	</table>
+
+	<datalist id="TTXL">
+		@foreach (var r in ttx!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+
+	<datalist id="TTSL">
+		@foreach (var r in tts!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
 }
 
 @if (showModal)
@@ -68,8 +152,41 @@
 
 	IEnumerable<OO> oo;
 
+	private Dictionary<string, int?>? ttx, tts;
+	private string sSbj;
+	private string sReq;
+	private string sAct;
+	private int sSbjId = -1;
+	private int sReqId = -1;
+	private int sActId = -1;
+
 	private int mdlId;
 	private string pointerEvent = "pe-auto";
+
+	private void CheckTTS(ref int id, ref string? adx)
+	{
+		if (tts!.TryGetValue(adx, out var nid))
+		{
+			id = (int)nid;
+		}
+		else
+		{
+			id = -1;
+			adx = "";
+		}
+	}
+	private void CheckTTX(ref int id, ref string? adx)
+	{
+		if (ttx!.TryGetValue(adx, out var nid))
+		{
+			id = (int)nid;
+		}
+		else
+		{
+			id = -1;
+			adx = "";
+		}
+	}
 
 	private bool _showModal;
 	private bool showModal
@@ -101,6 +218,42 @@
 		LoadData();
 	}
 
+	public void Started(OO o)
+	{
+		o.ASD = DateTime.Now;
+		o.UpdateSoF = 1;
+		o.UpdatePending = true;
+	}
+	public void Finished(OO o)
+	{
+		if (o.ASD is null)
+			o.ASD = DateTime.Now;
+
+		o.AFD = DateTime.Now;
+		o.UpdateSoF = 2;
+		o.UpdatePending = true;
+	}
+	public void UpdRec(OO o)
+	{
+		string S_F = "";
+		if (o.UpdateSoF == 1)
+			S_F = "S";
+		else if (o.UpdateSoF == 2)
+			S_F = "F";
+
+		//var xx = db.LoadRec<XX, dynamic>("select * from OO_UPD_SF(@OOID, @S_F)", new { OOID = o.OOID, S_F = S_F });
+		using var conn = dbCon.GetConnection();
+		var xx = conn.QueryFirst<XX>("OO_UPD_SF", new { OOID = o.OOID, S_F = S_F }, commandType: CommandType.StoredProcedure);
+		o.ASD = xx.ASD;
+		o.AFD = xx.AFD;
+		o.sdh = xx.SDH;
+		o.fdh = xx.FDH;
+
+		o.UpdatePending = false;
+	}
+
+
+
 	public void QryArgsSelected()
 	{
 		LoadData();
@@ -110,16 +263,16 @@
 	{
 		var prms = new
 		{
-			FFID = 101,
-			RngFld = "RQD",
+			FFID = appState.FrmId,
+			RngFld = "InsTS",
 			RngGE = DateTime.Today.AddDays(-10),
 			RngLT = DateTime.Today.AddDays(1),
 			S1F = "SbjId",
-			S1V = 1,
-			S2F = "",
-			S2V = 0,
-			S3F = "",
-			S3V = 0,
+			S1V = sSbjId,
+			S2F = "ReqId",
+			S2V = sReqId,
+			S3F = "ActId",
+			S3V = sActId,
 		};
 		using (IDbConnection conn = dbCon.GetConnection())
 		{
@@ -136,8 +289,56 @@
 	protected override void OnParametersSet()
 	{
 		if (appState.UsrId > 0 && appState.Ytk1)
+		{
+			LoadLookups();
 			LoadData();
+		}
 		base.OnParametersSet();
+	}
+
+	private void LoadLookups()
+	{
+		ttx = new();
+		tts = new();
+
+		tts.Add("", -1);	// tümü
+		tts.Add("-boş-", 0);
+		ttx.Add("", -1);
+		ttx.Add("-boş-", 0);
+
+		if (appState.Ytk1)
+		{
+			using var conn = dbCon.GetConnection();
+			var tt = conn.Query<TT>("select * from TT_LU(@FFID)", new { FFId = appState.FrmId });
+
+			foreach (var r in tt)
+			{
+				if (r.Typ == "X")
+				{
+					ttx.Add(r.AdX, r.TTId);
+				}
+				else if (r.Typ == "S")
+				{
+					tts.Add(r.AdX, r.TTId);
+				}
+			}
+		}
+	}
+
+
+	public sealed class XX
+	{
+		public DateTime? ASD;
+		public DateTime? AFD;
+		public int SDH;
+		public int FDH;
+	}
+
+	private sealed class TT
+	{
+		public int TTId { get; set; }
+		public string Typ { get; set; }
+		public string AdX { get; set; }
 	}
 
 }
