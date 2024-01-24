@@ -22,12 +22,12 @@
 			<tbody>
 				<tr>
 					<td>Id</td>
-					<td>@oo.OOID</td>
+					<td><span class="text-white bg-black rounded px-1">@oo.OOID</span></td>
 				</tr>
 				<tr>
 					<td><button @onclick="() => ShowModal(oo.SbjID)" tabindex="-1" class="text-blue-700 shadow-md">Konu</button></td>
 					<td>
-						<input type="text"
+						<input type="text" class="px-1"
 							   maxlength="30"
 							   size="30"
 							   list="TTSL"
@@ -42,7 +42,7 @@
 				<tr>
 					<td><button @onclick="() => ShowModal(oo.ReqID)" tabindex="-1" class="text-blue-700 shadow-md">İsteyen</button></td>
 					<td>
-						<input type="text"
+						<input type="text" class="px-1"
 							   maxlength="30"
 							   size="30"
 							   list="TTXL"
@@ -58,7 +58,7 @@
 				<tr>
 					<td>Info</td>
 					<td>
-						<textarea readonly="@RO"
+						<textarea readonly="@RO" class="px-1"
 								  rows="4" cols="30"
 								  @bind="oo.Inf"
 								  style="resize:vertical;height:42px" />
@@ -71,10 +71,10 @@
 				<tr>
 					<td><button @onclick="() => ShowModal(oo.ActID)" tabindex="-1" class="text-blue-700 shadow-md">Kişi</button></td>
 					<td>
-						<input type="text"
+						<input type="text" class="px-1"
 							   maxlength="30"
 							   size="30"
-							   list="TTDL"
+							   list="TTXL"
 							   @bind="oo.Act"
 							   @bind:event="onchange"
 							   @bind:after="(() => CheckTTX(ref oo.ActID, ref oo.Act, ooo!.Act))" />
@@ -84,29 +84,29 @@
 					<td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Başlangıç</td>
 				</tr>
 				<tr>
-					<td>Tahmini</td>
+					<td class="pr-1">İstek</td>
 					<td>
 						<input readonly="@RO" type="date" @bind="oo.RSD" />
 						<input readonly="@RO" type="time" @bind="oo.RSDt" />
 					</td>
 				</tr>
 				<tr>
-					<td>Gerçek</td>
-					<td>@oo.ASDfs <sup>@oo.sdh.ToString("#")</sup></td>
+					<td class="pr-1">Gerçek</td>
+					<td class="pl-1">@oo.ASDfs <sup>@oo.sdh.ToString("#")</sup></td>
 				</tr>
 				<tr>
 					<td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Bitiş</td>
 				</tr>
 				<tr>
-					<td>Tahmini</td>
+					<td class="pr-1">İstek</td>
 					<td>
 						<input readonly="@RO" type="date" @bind="oo.RFD" />
 						<input readonly="@RO" type="time" @bind="oo.RFDt" />
 					</td>
 				</tr>
 				<tr>
-					<td>Gerçek</td>
-					<td>@oo.AFDfs  <sup>@oo.fdh.ToString("#")</sup></td>
+					<td class="pr-1">Gerçek</td>
+					<td class="pl-1">@oo.AFDfs  <sup>@oo.fdh.ToString("#")</sup></td>
 				</tr>
 			</tbody>
 		</table>
@@ -164,9 +164,9 @@
 			pointerEvent = _showModal ? "pe-none" : "pe-auto";
 		}
 	}
-	private void ShowModal(int ttId)
+	private void ShowModal(int? ttId)
 	{
-		//ttId ??= 0;
+		ttId ??= 0;
 
 		if (showModal)
 			showModal = false;
@@ -189,11 +189,11 @@
 	}
 
 
-	private void CheckTTX(ref int id, ref string? adx, string? oadx)
+	private void CheckTTX(ref int? id, ref string? adx, string? oadx)
 	{
-		if (ttx!.TryGetValue(adx, out var nid))
+		if (ttx!.TryGetValue(adx!, out var nid))
 		{
-			id = (int)nid;
+			id = nid;
 		}
 		else
 		{
@@ -201,11 +201,11 @@
 		}
 	}
 
-	private void CheckTTS(ref int id, ref string? adx, string? oadx)
+	private void CheckTTS(ref int? id, ref string? adx, string? oadx)
 	{
-		if (tts!.TryGetValue(adx, out var nid))
+		if (tts!.TryGetValue(adx!, out var nid))
 		{
-			id = (int)nid;
+			id = nid;
 		}
 		else
 		{
@@ -275,7 +275,7 @@
 		NewsMdl news = new()
 			{
 				FrmId = appState.FrmId,
-				YpnId = oo.ActID, //oo.ActID ?? 0,
+				YpnId = oo.ActID ?? 0,
 			};
 		News.NotifyChanged(news);
 

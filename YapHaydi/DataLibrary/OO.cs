@@ -4,9 +4,9 @@ public class OO
 {
 	public int OOID;
 
-	public int SbjID;
-	public int ReqID;
-	public int ActID;
+	public int? SbjID;
+	public int? ReqID;
+	public int? ActID;
 
 
 	public DateTime? RSD;

@@ -62,7 +62,7 @@
 			}
 			@foreach (var o in oo)
 			{
-				<tr>
+				<tr class="border border-slate-300">
 					<td class="pr-1 text-right text-red-600">@(i++)</td>
 					<td class="border border-slate-300">
 						<button class="bg-indigo-500 text-white rounded px-1"
@@ -112,12 +112,19 @@
 					@if (o.UpdatePending)
 					{
 						<td>
-							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => UpdRec(o)">
-								<span class="material-symbols-outlined">checklist_rtl</span>
+							<button @onclick="() => UpdRec(o)">
+								✔️
 							</button>
 						</td>
 					}
-
+					@if (o.UpdateSoF > 0)
+					{
+						<td>
+							<button  @onclick="() => CancelPending(o)">
+								❌
+							</button>
+						</td>
+					}
 				</tr>
 			}
 		</tbody>
@@ -226,20 +233,37 @@
 	}
 	public void Finished(OO o)
 	{
-		if (o.ASD is null)
-			o.ASD = DateTime.Now;
-
 		o.AFD = DateTime.Now;
-		o.UpdateSoF = 2;
+		o.UpdateSoF += 2;
 		o.UpdatePending = true;
+
+		if (o.ASD is null)
+		{
+			o.UpdateSoF = 3;
+			o.ASD = DateTime.Now;
+		}
+	}
+	public void CancelPending(OO o)
+	{
+		if(o.UpdateSoF == 1)
+		{
+			o.ASD = null;
+		}
+		else if (o.UpdateSoF == 2)
+		{
+			o.AFD = null;
+		}
+		else if (o.UpdateSoF == 3)
+		{
+			o.ASD = null;
+			o.AFD = null;
+		}
+		o.UpdateSoF = 0;
+		o.UpdatePending = false;
 	}
 	public void UpdRec(OO o)
 	{
-		string S_F = "";
-		if (o.UpdateSoF == 1)
-			S_F = "S";
-		else if (o.UpdateSoF == 2)
-			S_F = "F";
+		string S_F = o.UpdateSoF == 1 ? "S" : "F";
 
 		//var xx = db.LoadRec<XX, dynamic>("select * from OO_UPD_SF(@OOID, @S_F)", new { OOID = o.OOID, S_F = S_F });
 		using var conn = dbCon.GetConnection();
@@ -249,10 +273,9 @@
 		o.sdh = xx.SDH;
 		o.fdh = xx.FDH;
 
+		o.UpdateSoF = 0;
 		o.UpdatePending = false;
 	}
-
-
 
 	public void QryArgsSelected()
 	{
@@ -265,7 +288,7 @@
 		{
 			FFID = appState.FrmId,
 			RngFld = "InsTS",
-			RngGE = DateTime.Today.AddDays(-10),
+			RngGE = DateTime.Today.AddDays(-100),
 			RngLT = DateTime.Today.AddDays(1),
 			S1F = "SbjId",
 			S1V = sSbjId,
