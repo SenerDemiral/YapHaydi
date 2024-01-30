@@ -30,25 +30,25 @@
 						<input type="text" class="px-1"
 							   maxlength="30"
 							   size="30"
-							   list="TTSL"
+							   list="TSL"
 							   @bind="oo.Sbj"
 							   @bind:event="onchange"
-							   @bind:after="(() => CheckTTS(ref oo.SbjID, ref oo.Sbj, ooo!.Sbj))" />
+							   @bind:after="CheckSbj" />
 					</td>
 				</tr>
 				<tr>
 					<td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Request</td>
 				</tr>
 				<tr>
-					<td><button @onclick="() => ShowModal(oo.ReqID)" tabindex="-1" class="text-blue-700 shadow-md">İsteyen</button></td>
+					<td><button @onclick="() => ShowModal(oo.ReqID)" tabindex="-1" class="text-blue-700 shadow-md">İstek</button></td>
 					<td>
 						<input type="text" class="px-1"
 							   maxlength="30"
 							   size="30"
-							   list="TTXL"
+							   list="TRL"
 							   @bind="oo.Req"
 							   @bind:event="onchange"
-							   @bind:after="(() => CheckTTX(ref oo.ReqID, ref oo.Req, ooo!.Req))" />
+							   @bind:after="CheckReq" />
 					</td>
 				</tr>
 				<tr>
@@ -69,15 +69,15 @@
 					<td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Yapan</td>
 				</tr>
 				<tr>
-					<td><button @onclick="() => ShowModal(oo.ActID)" tabindex="-1" class="text-blue-700 shadow-md">Kişi</button></td>
+					<td><button @onclick="() => ShowModal(oo.ActID)" tabindex="-1" class="text-blue-700 shadow-md">Yapan</button></td>
 					<td>
 						<input type="text" class="px-1"
 							   maxlength="30"
 							   size="30"
-							   list="TTXL"
+							   list="TAL"
 							   @bind="oo.Act"
 							   @bind:event="onchange"
-							   @bind:after="(() => CheckTTX(ref oo.ActID, ref oo.Act, ooo!.Act))" />
+							   @bind:after="CheckAct" />
 					</td>
 				</tr>
 				<tr>
@@ -111,6 +111,24 @@
 			</tbody>
 		</table>
 
+		<datalist id="TSL">
+			@foreach (var r in tsd!)
+			{
+				<option value="@r.Key" />
+			}
+		</datalist>
+		<datalist id="TRL">
+			@foreach (var r in trd!)
+			{
+				<option value="@r.Key" />
+			}
+		</datalist>
+		<datalist id="TAL">
+			@foreach (var r in tad!)
+			{
+				<option value="@r.Key" />
+			}
+		</datalist>
 
 		<datalist id="TTXL">
 			@foreach (var r in ttx!)
@@ -150,7 +168,12 @@
 	private OO? oo, ooo;
 	private bool RO = false;
 	private int FFID;
+	private IEnumerable<TT> tt;
+	private IEnumerable<TS> ts;
+	private IEnumerable<TR> tr;
+	private IEnumerable<TA> ta;
 	private Dictionary<string, int?>? ttx, tts;
+	private Dictionary<string, int?>? tsd, trd, tad;
 
 	private int inpTTid;
 	private string pointerEvent = "pe-auto";
@@ -185,31 +208,43 @@
 		showModal = false;
 		LoadLookups();
 		//LoadData();
-
 	}
 
 
-	private void CheckTTX(ref int? id, ref string? adx, string? oadx)
+	private void CheckSbj()
 	{
-		if (ttx!.TryGetValue(adx!, out var nid))
+		if (tts!.TryGetValue(oo.Sbj, out var nid))
 		{
-			id = nid;
+			oo.SbjID = nid;
 		}
 		else
 		{
-			adx = oadx;
+			oo.Sbj = ooo.Sbj;
 		}
 	}
-
-	private void CheckTTS(ref int? id, ref string? adx, string? oadx)
+	private void CheckReq()
 	{
-		if (tts!.TryGetValue(adx!, out var nid))
+		if (ttx!.TryGetValue(oo.Req, out var nid))
 		{
-			id = nid;
+			oo.ReqID = nid;
+			var xx = tt.First(x => x.TTId == nid).Inf;
+			if (!string.IsNullOrEmpty(xx))
+				oo.Inf = xx;
 		}
 		else
 		{
-			adx = oadx;
+			oo.Req = ooo.Req;
+		}
+	}
+	private void CheckAct()
+	{
+		if (ttx!.TryGetValue(oo.Act, out var nid))
+		{
+			oo.ActID = nid;
+		}
+		else
+		{
+			oo.Act = ooo.Act;
 		}
 	}
 
@@ -284,15 +319,20 @@
 
 	private void LoadLookups()
 	{
-		FFID = appState.FrmId;
+		tsd = new();
+		trd = new();
+		tad = new();
+
 		ttx = new();
 		tts = new();
 
 		ttx.Add("", null);
+		tsd.Add("", null);
+		tad.Add("", null);
 
 		if (appState.Ytk1)
 		{
-			var tt = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID)", new { FFId = FFID });
+			tt = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID)", new { FFId = appState.FrmId });
 
 			foreach (var r in tt)
 			{
@@ -305,18 +345,34 @@
 					tts.Add(r.AdX, r.TTId);
 				}
 			}
+			using var conn = dbCon.GetConnection();
+			ts = conn.Query<TS>("select * from TS where FFId = @FFId", new { FFId = appState.FrmId });
+			foreach (var r in ts)
+			{
+				trd.Add(r.Ad, r.TSID);
+			}
+			tr = conn.Query<TR>("select * from TR where FFId = @FFId", new { FFId = appState.FrmId });
+			foreach (var r in tr)
+			{
+				trd.Add(r.Ad, r.TRID);
+			}
+			ta = conn.Query<TA>("select * from TA where FFId = @FFId", new { FFId = appState.FrmId });
+			foreach (var r in ta)
+			{
+				tad.Add(r.Ad, r.TAID);
+			}
+
 		}
 	}
 
 	protected override async Task OnInitializedAsync()
 	{
-		FFID = appState.FrmId;
 		LoadLookups();
 
 		var prms = new
 		{
 			WWId = ID,
-			FFId = FFID,
+			FFId = appState.FrmId,
 			UsrId = appState.UsrId
 		};
 		using (IDbConnection conn = dbCon.GetConnection())
@@ -334,6 +390,7 @@
 		public int TTId { get; set; }
 		public string Typ { get; set; }
 		public string AdX { get; set; }
+		public string Inf { get; set; }
 	}
 
 }

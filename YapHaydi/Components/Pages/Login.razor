@@ -52,7 +52,7 @@
 		var usr = db.LoadRec<ULE, dynamic>("select * from ULT_LOGIN(@Id, @Pwd, @Tkn)", new { Id = Model.Id, Pwd = Model.Pwd, Tkn = Model.Tkn });
 
 		//usrDic.Add(Model.Tkn, Model.Id);
-		if (usr?.ExpTS != null)
+		if (usr?.ExpTS != null)   // Login olamadıysa null gelir
 		{
 			CookieOptions cookieOptions = new CookieOptions();
 			cookieOptions.Secure = false;

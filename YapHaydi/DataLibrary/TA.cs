@@ -1,17 +1,16 @@
 ﻿namespace YapHaydi.DataLibrary;
-
-public class TT
+// Actor
+public class TA
 {
-	public int TTID;
-	public string? Typ;
+	public int TAID;
+	public int FFID;
 	public string? Ad;
-	public string? Tag;
 	public string? Tel;
 	public string? Adres;
 	public string? Mail;
 	public string? Inf;
 	public int Ytk1;
-    public int Ytk2;
+	public int Ytk2;
 	public int Ytk3;
 
 	public bool Ytk1b
@@ -38,4 +37,5 @@ public class TT
 			Ytk3 = value == false ? 0 : 1;
 		}
 	}
+
 }
