@@ -25,14 +25,15 @@
 					<td><span class="text-white bg-black rounded px-1">@oo.OOID</span></td>
 				</tr>
 				<tr>
-					<td><button @onclick="() => ShowModal(oo.SbjID)" tabindex="-1" class="text-blue-700 shadow-md">Konu</button></td>
+
+					<td><button @onclick='() => ShowModal("S", oo.SbjID)' tabindex="-1" class="text-blue-700 shadow-md">Konu</button></td>
 					<td>
 						<input type="text" class="px-1"
 							   maxlength="30"
 							   size="30"
-							   list="TSL"
+							   list="TSL2"
 							   @bind="oo.Sbj"
-							   @bind:event="onchange"
+							   @bind:event="oninput"
 							   @bind:after="CheckSbj" />
 					</td>
 				</tr>
@@ -40,12 +41,12 @@
 					<td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Request</td>
 				</tr>
 				<tr>
-					<td><button @onclick="() => ShowModal(oo.ReqID)" tabindex="-1" class="text-blue-700 shadow-md">İstek</button></td>
+					<td><button @onclick='() => ShowModal("R", oo.ReqID)' tabindex="-1" class="text-blue-700 shadow-md">İstek</button></td>
 					<td>
 						<input type="text" class="px-1"
 							   maxlength="30"
 							   size="30"
-							   list="TRL"
+							   list="TRL2"
 							   @bind="oo.Req"
 							   @bind:event="onchange"
 							   @bind:after="CheckReq" />
@@ -69,12 +70,12 @@
 					<td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Yapan</td>
 				</tr>
 				<tr>
-					<td><button @onclick="() => ShowModal(oo.ActID)" tabindex="-1" class="text-blue-700 shadow-md">Yapan</button></td>
+					<td><button @onclick='() => ShowModal("A", oo.ActID)' tabindex="-1" class="text-blue-700 shadow-md">Yapan</button></td>
 					<td>
 						<input type="text" class="px-1"
 							   maxlength="30"
 							   size="30"
-							   list="TAL"
+							   list="TAL2"
 							   @bind="oo.Act"
 							   @bind:event="onchange"
 							   @bind:after="CheckAct" />
@@ -111,34 +112,21 @@
 			</tbody>
 		</table>
 
-		<datalist id="TSL">
+
+		<datalist id="TSL2">
 			@foreach (var r in tsd!)
 			{
 				<option value="@r.Key" />
 			}
 		</datalist>
-		<datalist id="TRL">
+		<datalist id="TRL2">
 			@foreach (var r in trd!)
 			{
 				<option value="@r.Key" />
 			}
 		</datalist>
-		<datalist id="TAL">
+		<datalist id="TAL2">
 			@foreach (var r in tad!)
-			{
-				<option value="@r.Key" />
-			}
-		</datalist>
-
-		<datalist id="TTXL">
-			@foreach (var r in ttx!)
-			{
-				<option value="@r.Key" />
-			}
-		</datalist>
-
-		<datalist id="TTSL">
-			@foreach (var r in tts!)
 			{
 				<option value="@r.Key" />
 			}
@@ -149,7 +137,18 @@
 @if (showModal)
 {
 	<div class="modal modal-tt h-auto  shadow-lg shadow-black rounded">
-		<InpTT TTId=@inpTTid OnSaved="Saved" OnCancelled="Cancelled" />
+		@if (inpTtyp == "S")
+		{
+			<InpTS ID=@inpTid OnSaved="Saved" OnCancelled="Cancelled" />
+		}
+		else if (inpTtyp == "R")
+		{
+			<InpTR ID=@inpTid OnSaved="Saved" OnCancelled="Cancelled" />
+		}
+		else if (inpTtyp == "A")
+		{
+			<InpTA ID=@inpTid OnSaved="Saved" OnCancelled="Cancelled" />
+		}
 	</div>
 }
 
@@ -168,14 +167,13 @@
 	private OO? oo, ooo;
 	private bool RO = false;
 	private int FFID;
-	private IEnumerable<TT> tt;
 	private IEnumerable<TS> ts;
 	private IEnumerable<TR> tr;
 	private IEnumerable<TA> ta;
-	private Dictionary<string, int?>? ttx, tts;
 	private Dictionary<string, int?>? tsd, trd, tad;
 
-	private int inpTTid;
+	private int inpTid;
+	private string inpTtyp;
 	private string pointerEvent = "pe-auto";
 	private bool _showModal;
 	private bool showModal
@@ -187,15 +185,16 @@
 			pointerEvent = _showModal ? "pe-none" : "pe-auto";
 		}
 	}
-	private void ShowModal(int? ttId)
+	private void ShowModal(string typ, int? id)
 	{
-		ttId ??= 0;
+		id ??= 0;
 
 		if (showModal)
 			showModal = false;
 		else
 		{
-			this.inpTTid = (int)ttId;
+			inpTid = (int)id;
+			inpTtyp = typ;
 			showModal = true;
 		}
 	}
@@ -210,42 +209,40 @@
 		//LoadData();
 	}
 
-
-	private void CheckSbj()
+	int sc = 200;
+	private async Task CheckSbj()
 	{
-		if (tts!.TryGetValue(oo.Sbj, out var nid))
-		{
+		if (tsd!.TryGetValue(oo.Sbj, out var nid))
 			oo.SbjID = nid;
-		}
 		else
 		{
-			oo.Sbj = ooo.Sbj;
+			if (oo.Sbj.Length > 2)
+			{
+				tsd.Add(sc.ToString(), sc);
+				sc++;
+				StateHasChanged();
+			}
+			//oo.Sbj = ooo.Sbj;
 		}
 	}
 	private void CheckReq()
 	{
-		if (ttx!.TryGetValue(oo.Req, out var nid))
+		if (trd!.TryGetValue(oo.Req, out var nid))
 		{
 			oo.ReqID = nid;
-			var xx = tt.First(x => x.TTId == nid).Inf;
+			var xx = tr.First(x => x.TRID == nid).Inf;
 			if (!string.IsNullOrEmpty(xx))
 				oo.Inf = xx;
 		}
 		else
-		{
 			oo.Req = ooo.Req;
-		}
 	}
 	private void CheckAct()
 	{
-		if (ttx!.TryGetValue(oo.Act, out var nid))
-		{
+		if (tad!.TryGetValue(oo.Act, out var nid))
 			oo.ActID = nid;
-		}
 		else
-		{
 			oo.Act = ooo.Act;
-		}
 	}
 
 	private void Cancel()
@@ -323,33 +320,16 @@
 		trd = new();
 		tad = new();
 
-		ttx = new();
-		tts = new();
-
-		ttx.Add("", null);
 		tsd.Add("", null);
 		tad.Add("", null);
 
 		if (appState.Ytk1)
 		{
-			tt = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID)", new { FFId = appState.FrmId });
-
-			foreach (var r in tt)
-			{
-				if (r.Typ == "X")
-				{
-					ttx.Add(r.AdX, r.TTId);
-				}
-				else if (r.Typ == "S")
-				{
-					tts.Add(r.AdX, r.TTId);
-				}
-			}
 			using var conn = dbCon.GetConnection();
 			ts = conn.Query<TS>("select * from TS where FFId = @FFId", new { FFId = appState.FrmId });
 			foreach (var r in ts)
 			{
-				trd.Add(r.Ad, r.TSID);
+				tsd.Add(r.Ad, r.TSID);
 			}
 			tr = conn.Query<TR>("select * from TR where FFId = @FFId", new { FFId = appState.FrmId });
 			foreach (var r in tr)
@@ -377,7 +357,7 @@
 		};
 		using (IDbConnection conn = dbCon.GetConnection())
 		{
-			oo = conn.QueryFirstOrDefault<OO>("OO_SEL", prms, commandType: CommandType.StoredProcedure);
+			oo = conn.QueryFirst<OO>("OO_SEL", prms, commandType: CommandType.StoredProcedure);
 		}
 
 		//oo = db.LoadRec<OO, dynamic>("select * from OO_SEL(@OOId,@FFId,@UsrId)", new { WWId = ID, FFId = FFID, UsrId = appState.UsrId });

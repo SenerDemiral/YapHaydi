@@ -1,12 +1,11 @@
-﻿@page "/logout/{uexid:int}"
+﻿@inject IDataAccess db
+@inject NavigationManager Nav
+
+@page "/logout/{uexid:int}"
 
 @code {
 	[CascadingParameter]
 	public HttpContext? context { get; set; }
-	[Inject]
-	IDataAccess db { get; set; }
-	[Inject]
-	NavigationManager Nav { get; set; }
 	[Parameter]
 	public int UEXId { get; set; } = default;
 

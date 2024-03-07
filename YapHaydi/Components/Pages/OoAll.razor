@@ -29,28 +29,28 @@
 					<input type="text"
 						   maxlength="30"
 						   size="15"
-						   list="TTSL"
+						   list="TSL"
 						   @bind="sSbj"
 						   @bind:event="onchange"
-						   @bind:after="(() => CheckTTS(ref sSbjId, ref sSbj))" />
+						   @bind:after="CheckSbj" />
 				</th>
 				<th class="border border-slate-300 px-1 font-thin">
 					<input type="text"
 						   maxlength="30"
 						   size="15"
-						   list="TTXL"
+						   list="TRL"
 						   @bind="sReq"
 						   @bind:event="onchange"
-						   @bind:after="(() => CheckTTX(ref sReqId, ref sReq))" />
+						   @bind:after="CheckReq" />
 				</th>
 				<th class="border border-slate-300 px-1 font-thin">
 					<input type="text"
 						   maxlength="30"
 						   size="15"
-						   list="TTXL"
+						   list="TAL"
 						   @bind="sAct"
 						   @bind:event="onchange"
-						   @bind:after="(() => CheckTTX(ref sActId, ref sAct))" />
+						   @bind:after="CheckAct" />
 				</th>
 				<th></th>
 				<th></th>
@@ -130,15 +130,22 @@
 		</tbody>
 	</table>
 
-	<datalist id="TTXL">
-		@foreach (var r in ttx!)
+	<datalist id="TSL">
+		@foreach (var r in tsd!)
 		{
 			<option value="@r.Key" />
 		}
 	</datalist>
 
-	<datalist id="TTSL">
-		@foreach (var r in tts!)
+	<datalist id="TRL">
+		@foreach (var r in trd!)
+		{
+			<option value="@r.Key" />
+		}
+	</datalist>
+
+	<datalist id="TAL">
+		@foreach (var r in tad!)
 		{
 			<option value="@r.Key" />
 		}
@@ -158,9 +165,11 @@
 	public AppState appState { get; set; }
 
 	IEnumerable<OO> oo;
+	private IEnumerable<TS> ts;
+	private IEnumerable<TR> tr;
+	private IEnumerable<TA> ta;
+	private Dictionary<string, int?>? tsd, trd, tad;
 
-	private Dictionary<string, int?>? ttx, tts;
-	private Dictionary<string, int?>? tr, ta;
 	private string sSbj;
 	private string sReq;
 	private string sAct;
@@ -171,28 +180,34 @@
 	private int mdlId;
 	private string pointerEvent = "pe-auto";
 
-	private void CheckTTS(ref int id, ref string? adx)
+	private void CheckSbj()
 	{
-		if (tts!.TryGetValue(adx, out var nid))
-		{
-			id = (int)nid;
-		}
+		if (tsd!.TryGetValue(sSbj, out int? nid))
+			sSbjId = (int)nid;
 		else
 		{
-			id = -1;
-			adx = "";
+			sSbjId = -1;
+			sSbj = "";
 		}
 	}
-	private void CheckTTX(ref int id, ref string? adx)
+	private void CheckReq()
 	{
-		if (ttx!.TryGetValue(adx, out var nid))
-		{
-			id = (int)nid;
-		}
+		if (trd!.TryGetValue(sReq, out var nid))
+			sReqId = (int)nid;
 		else
 		{
-			id = -1;
-			adx = "";
+			sReqId = -1;
+			sReq = "";
+		}
+	}
+	private void CheckAct()
+	{
+		if (tad!.TryGetValue(sAct, out var nid))
+			sActId = (int)nid;
+		else
+		{
+			sActId = -1;
+			sAct = "";
 		}
 	}
 
@@ -322,34 +337,38 @@
 
 	private void LoadLookups()
 	{
-		ttx = new();
-		tts = new();
+		tsd = new();
+		trd = new();
+		tad = new();
 
-		tts.Add("", -1);	// tümü
-		tts.Add("-boş-", 0);
-		ttx.Add("", -1);
-		ttx.Add("-boş-", 0);
+		tsd.Add("", -1);	// tümü
+		tsd.Add("-boş-", 0);
+		trd.Add("", -1);
+		trd.Add("-boş-", 0);
+		tad.Add("", -1);
+		tad.Add("-boş-", 0);
 
 		if (appState.Ytk1)
 		{
 			using var conn = dbCon.GetConnection();
-			var tt = conn.Query<TT>("select * from TT_LU(@FFID)", new { FFId = appState.FrmId });
 
-			foreach (var r in tt)
+			ts = conn.Query<TS>("select * from TS where FFId = @FFId", new { FFId = appState.FrmId });
+			foreach (var r in ts)
 			{
-				if (r.Typ == "X")
-				{
-					ttx.Add(r.AdX, r.TTId);
-				}
-				else if (r.Typ == "S")
-				{
-					tts.Add(r.AdX, r.TTId);
-				}
+				trd.Add(r.Ad, r.TSID);
 			}
-
+			tr = conn.Query<TR>("select * from TR where FFId = @FFId", new { FFId = appState.FrmId });
+			foreach (var r in tr)
+			{
+				trd.Add(r.Ad, r.TRID);
+			}
+			ta = conn.Query<TA>("select * from TA where FFId = @FFId", new { FFId = appState.FrmId });
+			foreach (var r in ta)
+			{
+				tad.Add(r.Ad, r.TAID);
+			}
 		}
 	}
-
 
 	public sealed class XX
 	{

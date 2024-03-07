@@ -1,0 +1,92 @@
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IDbCon dbCon
+
+@if (tr is not null)
+{
+
+	<div class="flex justify-between  text-base">
+		<button disabled="@RO" @onclick="Cancel">⬅️</button>
+		@if (appState.Ytk1)
+		{
+			<button disabled="@RO" @onclick="NewRec">➕</button>
+			<button disabled="@RO" @onclick="Save">✅Kaydet	</button>
+		}
+	</div>
+
+	<table>
+		<tbody>
+			<tr>
+				<td class="border border-slate-300 px-2">Id</td>
+				<td class="border border-slate-300 px-2">@tr.TRID</td>
+			</tr>
+			
+			<tr>
+				<td class="border border-slate-300 px-2">Ad</td>
+				<td class="border border-slate-300">
+					<input type="text"
+						   maxlength="50"
+						   size="30"
+						   class="px-1"
+						   @bind="tr.Ad" />
+				</td>
+			</tr>
+			<tr>
+				<td class="border border-slate-300 px-2">Info</td>
+				<td class="border border-slate-300">
+					<textarea readonly="@RO" class="px-1"
+							  rows="4" cols="30"
+							  @bind="tr.Inf"
+							  style="resize:vertical;height:42px" />
+				</td>
+			</tr>
+		</tbody>
+	</table>
+}
+
+@code {
+	[CascadingParameter]
+	public AppState appState { get; set; }
+	[Parameter] public int ID { get; set; }
+	private TR tr;
+	private bool RO = false;
+	[Parameter] public EventCallback OnSaved { get; set; }
+	[Parameter] public EventCallback OnCancelled { get; set; }
+
+	private void NewRec()
+	{
+		tr = new();
+	}
+
+	private void Cancel()
+	{
+		OnCancelled.InvokeAsync();
+	}
+
+	private void Save()
+	{
+		var prms = new
+		{
+			TRID = tr.TRID,
+			FFID = appState.FrmId,
+			AD = tr.Ad,
+			INF = tr.Inf,
+			ActID = tr.ActID,
+		};
+		using var conn = dbCon.GetConnection();
+		conn.Execute("TR_MDF", prms, commandType: CommandType.StoredProcedure);
+		OnSaved.InvokeAsync();
+	}
+
+	protected override void OnInitialized()
+	{
+		if (ID == 0)
+			tr = new();
+		else
+		{
+			using (IDbConnection conn = dbCon.GetConnection())
+			{
+				tr = conn.QueryFirst<TR>("TR_SEL", new { ID = ID }, commandType: CommandType.StoredProcedure);
+			}
+		}
+	}
+}

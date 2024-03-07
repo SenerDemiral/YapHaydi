@@ -19,7 +19,10 @@ builder.Services.AddSingleton<IDbCon, DbCon>();
 
 //builder.Services.AddSingleton<IUsrDic, UsrDic>();
 
-// RootLevelCascadingValue
+// RootLevelCascadingValue 
+// https://stackoverflow.com/questions/77426155/how-to-configure-root-level-cascading-values-with-isfixed-in-blazor
+// https://www.cazzulino.com/cascading-blazor.html // https://github.com/kzu/CascadingValueNotification/tree/main
+// https://github.com/dotnet/aspnetcore/issues/53257
 builder.Services.AddScoped((sp) =>
 {
     var daleks = new AppState { UsrId = -1, UsrTkn = "Tanımsız" };
