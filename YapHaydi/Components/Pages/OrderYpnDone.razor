@@ -1,6 +1,9 @@
-﻿@inject INewsContainer News
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: true))
+
+@inject INews News
 @inject NavigationManager NM 
-@rendermode @(new InteractiveServerRenderMode(prerender: true))
+@implements IDisposable
+
 @page "/orderypndone"
 
 <PageTitle>FirmaArşivOrders</PageTitle>

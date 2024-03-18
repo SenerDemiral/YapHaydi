@@ -1,5 +1,6 @@
 ﻿@inject NavigationManager Nav
 @inject	IDataAccess db
+
 @page "/login/{uexid:int}"
 
 <EditForm Model="@Model" OnSubmit="@Submit" FormName="Starship1">
@@ -41,7 +42,7 @@
 	{
 		//Logger.LogInformation("Id = {Id}", Model?.Id);
 
-		var oldTkn = context.Request.Cookies["sener"];
+		var oldTkn = context.Request.Cookies["YapHaydi"];
 		//usrDic.Remove(oldTkn);
 		if (oldTkn != null)
 			_ = db.LoadRec<ULE, dynamic>("select * from ULT_LOGOUT(@Tkn, @UEXId)", new { Tkn = oldTkn, UEXId = UEXId });
@@ -58,7 +59,7 @@
 			cookieOptions.Expires = usr!.ExpTS;   // Sure bitince browser silmiyor, ama null gonderiyor
 			cookieOptions.HttpOnly = true;
 			cookieOptions.SameSite = SameSiteMode.Strict;
-			context.Response.Cookies.Append("sener", Model.Tkn, cookieOptions);
+			context.Response.Cookies.Append("YapHaydi", Model.Tkn, cookieOptions);
 
 			// Debug da hata gekiyeor RunTime da geçiyor
 			Nav.NavigateTo("");  // HATA https://github.com/dotnet/aspnetcore/issues/53040

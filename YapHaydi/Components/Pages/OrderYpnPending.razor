@@ -1,9 +1,11 @@
-﻿@inject INewsContainer News
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: true))
+
+@inject INews News
 @inject NavigationManager NM 
 @inject IDbCon dbCon
 @inject	IDataAccess db
+@implements IDisposable
 
-@rendermode @(new InteractiveServerRenderMode(prerender: true))
 @page "/orderypnpending"
 
 <PageTitle>YapanAktifOrders</PageTitle>

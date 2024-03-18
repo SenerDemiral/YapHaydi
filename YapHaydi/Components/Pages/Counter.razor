@@ -1,6 +1,8 @@
-﻿@inject INewsContainer News
-@rendermode @(new InteractiveServerRenderMode(prerender: false))
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+@inject INews News
 @implements IDisposable
+
 @page "/counter"
 
 <PageTitle>Counter</PageTitle>

@@ -1,6 +1,6 @@
-﻿@inject IDbCon dbCon
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
-@rendermode @(new InteractiveServerRenderMode(prerender: false))
+@inject IDbCon dbCon
 
 @page "/ooall"
 

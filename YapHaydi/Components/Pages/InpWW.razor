@@ -1,7 +1,9 @@
-﻿@inject INewsContainer News
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+@inject INews News
 @inject NavigationManager NM 
 @inject IDataAccess db
-@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
 @* @page "/inp/{id:int}" *@
 
 <div class="@pointerEvent">

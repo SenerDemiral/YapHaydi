@@ -11,7 +11,7 @@
 
 	protected override void OnInitialized()
 	{
-		var usrTkn = context.Request.Cookies["sener"];
+		var usrTkn = context.Request.Cookies["YapHaydi"];
 
 		if (usrTkn != null)
 		{
@@ -20,7 +20,7 @@
 			// Cookie silinemiyor Tarihi öne alarak geçersiz yapılıyor
 			CookieOptions cookieOptions = new CookieOptions();
 			cookieOptions.Expires = DateTime.Now;
-			context.Response.Cookies.Append("sener", "..", cookieOptions);
+			context.Response.Cookies.Append("YapHaydi", "..", cookieOptions);
 		}
 
 		// Debug da hata gekiyeor RunTime da geçiyor

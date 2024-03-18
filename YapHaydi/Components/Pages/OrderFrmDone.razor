@@ -1,7 +1,10 @@
-﻿@inject IDataAccess db
-@inject INewsContainer News
-@inject NavigationManager NM 
-@rendermode @(new InteractiveServerRenderMode(prerender: true))
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: true))
+
+@inject IDataAccess db
+@inject INews News
+@inject NavigationManager NM
+@implements IDisposable
+
 @page "/orderfrmdone"
 
 <PageTitle>FirmaArşivOrders</PageTitle>

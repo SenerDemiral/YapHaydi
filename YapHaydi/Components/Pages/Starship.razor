@@ -38,7 +38,7 @@
     {
         //Logger.LogInformation("Id = {Id}", Model?.Id);
 
-        var oldTkn = context.Request.Cookies["sener"];
+        var oldTkn = context.Request.Cookies["YapHaydi"];
         //usrDic.Remove(oldTkn);
         if (oldTkn != null)
             _ = db.LoadRec<ULE, dynamic>("select * from ULT_LOGOUT(@Tkn)", new { Tkn = oldTkn });
@@ -56,7 +56,7 @@
         cookieOptions.Expires = DateTime.Now.AddHours(1);   // Sure bitince browser silmiyor, ama null gonderiyor
         cookieOptions.HttpOnly = true;
         cookieOptions.SameSite = SameSiteMode.Strict;
-        context.Response.Cookies.Append("sener", Model.Tkn, cookieOptions);
+        context.Response.Cookies.Append("YapHaydi", Model.Tkn, cookieOptions);
 
 
         //Nav.NavigateTo("/counter");  // HATA https://github.com/dotnet/aspnetcore/issues/53040

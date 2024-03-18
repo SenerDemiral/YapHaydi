@@ -1,8 +1,9 @@
-﻿@inject IDataAccess db
+﻿@rendermode @(new InteractiveServerRenderMode(prerender: false))
+
+@inject IDataAccess db
 @inject NavigationManager NM
 @inject CascadingValueSource<AppState>? appStateSource
 @implements IDisposable
-@rendermode @(new InteractiveServerRenderMode(prerender: false))
 
 <a href="#" @onclick="GoHome">YapHaydi</a>
 
