@@ -10,7 +10,7 @@
     @if(ww is not null) {
     <div class="flex justify-between text-sm">
         <button disabled="@RO" @onclick="Cancel">⬅️</button>
-		@if (appState.Ytk1)
+		@if (appState.IsFrm)
         {
             <button disabled="@RO" @onclick="Clone">🐑Klon</button>
             <button disabled="@RO" @onclick="NewRec">➕</button>
@@ -425,7 +425,7 @@
 
         ttx.Add("", null);
 
-        if (appState.Ytk1)
+        if (appState.IsFrm)
         {
             var tt = db.LoadData<TT, dynamic>("select * from TT_LU(@FFID)", new { FFId = FFID });
 

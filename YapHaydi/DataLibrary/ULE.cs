@@ -11,5 +11,4 @@ public class ULE
 	public int Ytk1 { get; set; }
 	public int Ytk2 { get; set; }
 	public int Ytk3 { get; set; }
-
 }

@@ -7,9 +7,10 @@ public class AppState
 	public int UEXId = 0;
     public string Ad = string.Empty;
 	public string? UsrTkn = null;
-	public bool Ytk1 = false;
-	public bool Ytk2 = false;
-	public bool Ytk3 = false;
+	
+	public bool IsFrm = false;
+	public bool IsDpt = false;
+	public bool IsYpn = false;
 
 	public string rngFld = "INSTS";
 	public DateTime rngGE = DateTime.Today.AddDays(-15);

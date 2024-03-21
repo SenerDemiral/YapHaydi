@@ -6,7 +6,7 @@
 
 	<div class="flex justify-between  text-base">
 		<button disabled="@RO" @onclick="Cancel">⬅️</button>
-		@if (appState.Ytk1)
+		@if (appState.IsFrm)
 		{
 			<button disabled="@RO" @onclick="NewRec">➕</button>
 			<button disabled="@RO" @onclick="Save">✅Kaydet	</button>
@@ -67,21 +67,21 @@
 				<td class="border border-slate-300 px-2">Firma</td>
 				<td class="border border-slate-300 px-2">
 					<input type="checkbox"
-						   @bind="ta.Ytk1b" />
+						   @bind="ta.IsFrm" />
 				</td>
 			</tr>
 			<tr>
 				<td class="border border-slate-300 px-2">Departman</td>
 				<td class="border border-slate-300 px-2">
 					<input type="checkbox"
-						   @bind="ta.Ytk2b" />
+						   @bind="ta.IsDpt" />
 				</td>
 			</tr>
 			<tr>
 				<td class="border border-slate-300 px-2">Yapan</td>
 				<td class="border border-slate-300 px-2">
 					<input type="checkbox"
-						   @bind="ta.Ytk3b" />
+						   @bind="ta.IsYpn" />
 				</td>
 			</tr>
 			<tr>
@@ -127,9 +127,9 @@
 			TEL = ta.Tel,
 			MAIL = ta.Mail,
 			INF = ta.Inf,
-			Ytk1 = ta.Ytk1,
-			Ytk2 = ta.Ytk2,
-			Ytk3 = ta.Ytk3,
+			IsFrm = ta.Ytk1,
+			IsDpt = ta.Ytk2,
+			IsYpn = ta.Ytk3,
 
 		};
 		using var conn = dbCon.GetConnection();

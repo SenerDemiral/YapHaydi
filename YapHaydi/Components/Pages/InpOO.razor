@@ -11,8 +11,9 @@
 	@if (oo is not null)
 	{
 		<div class="flex justify-between text-sm">
-			<button disabled="@RO" @onclick="Cancel">⬅️</button>
-			@if (appState.Ytk1)
+			@* <button disabled="@RO" @onclick="Cancel">⬅️</button> *@
+			<button @onclick="Cancel">⬅️</button>
+			@if (appState.IsFrm)
 			{
 				<button disabled="@RO" @onclick="Clone">🐑Klon</button>
 				<button disabled="@RO" @onclick="NewRec">➕</button>
@@ -211,21 +212,22 @@
 		//LoadData();
 	}
 
-	int sc = 200;
+	//int sc = 200;
 	private async Task CheckSbj()
 	{
 		if (tsd!.TryGetValue(oo.Sbj, out var nid))
 			oo.SbjID = nid;
 		else
-		{
-			if (oo.Sbj.Length > 2)
-			{
-				tsd.Add(sc.ToString(), sc);
-				sc++;
-				StateHasChanged();
-			}
-			//oo.Sbj = ooo.Sbj;
-		}
+			oo.Sbj = ooo.Sbj;
+
+		// {
+		// 	if (oo.Sbj.Length > 2)
+		// 	{
+		// 		tsd.Add(sc.ToString(), sc);
+		// 		sc++;
+		// 		StateHasChanged();
+		// 	}
+		// }
 	}
 	private void CheckReq()
 	{
@@ -325,7 +327,7 @@
 		tsd.Add("", null);
 		tad.Add("", null);
 
-		if (appState.Ytk1)
+		if (appState.IsFrm)
 		{
 			using var conn = dbCon.GetConnection();
 			ts = conn.Query<TS>("select * from TS where FFId = @FFId", new { FFId = appState.FrmId });
@@ -349,6 +351,10 @@
 
 	protected override async Task OnInitializedAsync()
 	{
+		RO = true;
+		if (appState.IsFrm)
+			RO = false;
+
 		LoadLookups();
 
 		var prms = new
@@ -367,12 +373,12 @@
 		ooo = oo.ShallowCopy();
 	}
 
-	private sealed class TT
-	{
-		public int TTId { get; set; }
-		public string Typ { get; set; }
-		public string AdX { get; set; }
-		public string Inf { get; set; }
-	}
+	// private sealed class TT
+	// {
+	// 	public int TTId { get; set; }
+	// 	public string Typ { get; set; }
+	// 	public string AdX { get; set; }
+	// 	public string Inf { get; set; }
+		// }
 
 }

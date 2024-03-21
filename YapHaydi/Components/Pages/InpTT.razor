@@ -6,7 +6,7 @@
 
 	<div class="flex justify-between  text-base">
 		<button disabled="@RO" @onclick="Cancel">⬅️</button>
-		@if (appState.Ytk1)
+		@if (appState.IsFrm)
 		{
 			<button disabled="@RO" @onclick="NewRec">➕</button>
 			<button disabled="@RO" @onclick="Save">✅Kaydet	</button>
@@ -80,21 +80,21 @@
 				<td class="border border-slate-300 px-2">Firma</td>
 				<td class="border border-slate-300 px-2">
 					<input type="checkbox"
-						   @bind="tt.Ytk1b" />
+						   @bind="tt.IsFrmb" />
 				</td>
 			</tr>
 			<tr>
 				<td class="border border-slate-300 px-2">Departman</td>
 				<td class="border border-slate-300 px-2">
 					<input type="checkbox"
-						   @bind="tt.Ytk2b" />
+						   @bind="tt.IsDptb" />
 				</td>
 			</tr>
 			<tr>
 				<td class="border border-slate-300 px-2">Yapan</td>
 				<td class="border border-slate-300 px-2">
 					<input type="checkbox"
-						   @bind="tt.Ytk3b" />
+						   @bind="tt.IsYpnb" />
 				</td>
 			</tr>
 			<tr>
@@ -144,9 +144,9 @@
 			TEL = tt.Tel,
 			MAIL = tt.Mail,
 			INF = tt.Inf,
-			Ytk1 = tt.Ytk1,
-			Ytk2 = tt.Ytk2,
-			Ytk3 = tt.Ytk3,
+			IsFrm = tt.IsFrm,
+			IsDpt = tt.IsDpt,
+			IsYpn = tt.IsYpn,
 
 		};
 

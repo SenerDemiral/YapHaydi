@@ -120,7 +120,7 @@
 					@if (o.UpdateSoF > 0)
 					{
 						<td>
-							<button  @onclick="() => CancelPending(o)">
+							<button @onclick="() => CancelPending(o)">
 								❌
 							</button>
 						</td>
@@ -261,7 +261,7 @@
 	}
 	public void CancelPending(OO o)
 	{
-		if(o.UpdateSoF == 1)
+		if (o.UpdateSoF == 1)
 		{
 			o.ASD = null;
 		}
@@ -298,8 +298,22 @@
 		LoadData();
 	}
 
+	protected override void OnParametersSet()
+	{
+		//if (appState.UsrId > 0 && appState.IsFrm)
+		if (appState.UsrId > 0)
+		{
+			LoadLookups();
+			LoadData();
+		}
+		base.OnParametersSet();
+	}
+
 	private void LoadData()
 	{
+		if (appState.IsYpn)  // Yapan ise sadece onunkilerini göster
+			sActId = appState.UsrId;
+
 		var prms = new
 		{
 			FFID = appState.FrmId,
@@ -313,26 +327,11 @@
 			S3F = "ActId",
 			S3V = sActId,
 		};
+
 		using (IDbConnection conn = dbCon.GetConnection())
 		{
 			oo = conn.Query<OO>("OO_QRY", prms, commandType: CommandType.StoredProcedure);
 		}
-
-		//using var conn = dbCon.GetConnection();
-		//pp = conn.Query<WW>("select * from WW_QRY(@FFID,@RNGFLD,@RNGGE,@RNGLT,@FLTFLD,@FLTCND,@FLTVAL,@ORDFLD,@ORDVAL)", qry ).AsQueryable();
-		//ww = conn.Query<WW>("WW_QRY", prms, commandType: CommandType.StoredProcedure).AsQueryable();
-
-		//pp = db.LoadData<WW, dynamic>("select * from WW_QRY(@FFID,)", qry).AsQueryable();
-	}
-
-	protected override void OnParametersSet()
-	{
-		if (appState.UsrId > 0 && appState.Ytk1)
-		{
-			LoadLookups();
-			LoadData();
-		}
-		base.OnParametersSet();
 	}
 
 	private void LoadLookups()
@@ -341,14 +340,14 @@
 		trd = new();
 		tad = new();
 
-		tsd.Add("", -1);	// tümü
+		tsd.Add("", -1);    // tümü
 		tsd.Add("-boş-", 0);
 		trd.Add("", -1);
 		trd.Add("-boş-", 0);
 		tad.Add("", -1);
 		tad.Add("-boş-", 0);
 
-		if (appState.Ytk1)
+		if (appState.IsFrm)
 		{
 			using var conn = dbCon.GetConnection();
 

@@ -10,32 +10,32 @@ public class TT
 	public string? Adres;
 	public string? Mail;
 	public string? Inf;
-	public int Ytk1;
-    public int Ytk2;
-	public int Ytk3;
+	public int IsFrm;
+    public int IsDpt;
+	public int IsYpn;
 
-	public bool Ytk1b
+	public bool IsFrmb
 	{
-		get => Ytk1 == 0 ? false : true;
+		get => IsFrm == 0 ? false : true;
 		set
 		{
-			Ytk1 = value == false ? 0 : 1;
+			IsFrm = value == false ? 0 : 1;
 		}
 	}
-	public bool Ytk2b
+	public bool IsDptb
 	{
-		get => Ytk2 == 0 ? false : true;
+		get => IsDpt == 0 ? false : true;
 		set
 		{
-			Ytk2 = value == false ? 0 : 1;
+			IsDpt = value == false ? 0 : 1;
 		}
 	}
-	public bool Ytk3b
+	public bool IsYpnb
 	{
-		get => Ytk3 == 0 ? false : true;
+		get => IsYpn == 0 ? false : true;
 		set
 		{
-			Ytk3 = value == false ? 0 : 1;
+			IsYpn = value == false ? 0 : 1;
 		}
 	}
 }

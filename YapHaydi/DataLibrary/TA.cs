@@ -13,7 +13,7 @@ public class TA
 	public int Ytk2;
 	public int Ytk3;
 
-	public bool Ytk1b
+	public bool IsFrm
 	{
 		get => Ytk1 == 0 ? false : true;
 		set
@@ -21,7 +21,7 @@ public class TA
 			Ytk1 = value == false ? 0 : 1;
 		}
 	}
-	public bool Ytk2b
+	public bool IsDpt
 	{
 		get => Ytk2 == 0 ? false : true;
 		set
@@ -29,7 +29,7 @@ public class TA
 			Ytk2 = value == false ? 0 : 1;
 		}
 	}
-	public bool Ytk3b
+	public bool IsYpn
 	{
 		get => Ytk3 == 0 ? false : true;
 		set

@@ -92,12 +92,12 @@
 	<option value="">🔴 MENU</option>
 	<option value="counter">Counter</option>
 	<option value="tts">⚙️ Tanım</option>
-	@if (appState.Ytk1)    // Firma
+	@if (appState.IsFrm)    // Firma
 	{
 		<option value="orderfrmpending">📌 FirmaAktif</option>
 		<option value="orderfrmdone">💤 FirmaArşiv</option>
 	}
-	else if (appState.Ytk3) // Yapan
+	else if (appState.IsYpn) // Yapan
 	{
 		<option value="orderypnpending">📌 YapanAktif</option>
 		<option value="orderypndone">💤 YapanArşiv</option>
@@ -241,9 +241,9 @@
 					appState.UEXId = usr.UEXId;
 					appState.FrmId = usr.FFId;
 					appState.Ad = usr.Ad;
-					appState.Ytk1 = usr.Ytk1 == 1 ? true : false;
-					appState.Ytk3 = usr.Ytk2 == 1 ? true : false;
-					appState.Ytk3 = usr.Ytk3 == 1 ? true : false;
+					appState.IsFrm = usr.Ytk1 == 1 ? true : false;
+					appState.IsYpn = usr.Ytk2 == 1 ? true : false;
+					appState.IsYpn = usr.Ytk3 == 1 ? true : false;
 				}
 				else
 				{
