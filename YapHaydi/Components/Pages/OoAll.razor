@@ -11,17 +11,8 @@
 {
 	<table class="mx-auto text-left text-gray-500 @pointerEvent">
 		<thead class="text-xs text-gray-700 bg-gray-50">
-			<tr class="text-center bg-orange-600 text-white">
-				<th></th>
-				<th></th>
-				<th class="font-thin">Konu</th>
-				<th class="font-thin">İsteyen</th>
-				<th class="font-thin">Yapan</th>
-				<th class="font-thin">Başlangıç</th>
-				<th class="font-thin">Bitiş</th>
-			</tr>
 			<tr>
-				<th></th>
+				<th colspan="2" class="border border-slate-300"></th>
 				<th class="border border-slate-300 px-1 text-center">
 					<button type="button" @onclick="QryArgsSelected">🔎</button>
 				</th>
@@ -52,8 +43,20 @@
 						   @bind:event="onchange"
 						   @bind:after="CheckAct" />
 				</th>
-				<th></th>
-				<th></th>
+				<th colspan="2" class="border border-slate-300 text-center">
+					Yeniler
+					<input type="checkbox" @bind="AlertOnly" />
+				</th>
+			</tr>
+			<tr class="text-center bg-orange-600 text-white">
+				<th>#</th>
+				<th class="font-thin">Dty</th>
+				<th class="font-thin">Msj</th>
+				<th class="font-thin">Konu</th>
+				<th class="font-thin">İstek</th>
+				<th class="font-thin">Yapan</th>
+				<th class="font-thin">Başlangıç</th>
+				<th class="font-thin">Bitiş</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -64,13 +67,46 @@
 			{
 				<tr class="border border-slate-300">
 					<td class="pr-1 text-right text-red-600">@(i++)</td>
-					<td class="border border-slate-300">
-						<button class="bg-indigo-500 text-white rounded px-1"
-								@onclick="() => ShowModal(o.OOID)">
-							<span class="material-symbols-outlined">input</span>
-							<sup class="text-[.5rem]">@o.OOID</sup>
-						</button>
-					</td>
+					@if (o.hasOrdAlert)
+					{
+						<td class="border border-slate-300 bg-red-700">
+							<button class=" text-white rounded px-1"
+									@onclick="() => ShowModal(o.OOID)">
+								<span class="material-symbols-outlined">maps_ugc</span>
+								@* <sup class="text-[.5rem]">@o.OOID</sup> *@
+							</button>
+						</td>
+					}
+					else
+					{
+						<td class="border border-slate-300 bg-indigo-500">
+							<button class=" text-white rounded px-1"
+									@onclick="() => ShowModal(o.OOID)">
+								<span class="material-symbols-outlined">outbound</span>
+								@* <sup class="text-[.5rem]">@o.OOID</sup> *@
+							</button>
+						</td>
+					}
+					@if (o.hasMsgAlert)
+					{
+						<td class="bg-amber-500 text-center">
+							<button class="text-white rounded px-1"
+									@onclick="() => ShowModal(o.OOID)">
+								<span class="material-symbols-outlined">mail</span>
+								@o.AlrtM
+							</button>
+						</td>
+					}
+					else
+					{
+						<td class="border border-slate-300 bg-indigo-500 ">
+							<button class="text-white rounded px-1"
+									@onclick="() => ShowModal(o.OOID)">
+								<span class="material-symbols-outlined">mail</span>
+							</button>
+						</td>
+					}
+
 					<td class="border border-slate-300 px-1">@o.Sbj</td>
 					<td class="border border-slate-300 px-1">@o.Req</td>
 					<td class="border border-slate-300 px-1">@o.Act</td>
@@ -163,6 +199,13 @@
 @code {
 	[CascadingParameter]
 	public AppState appState { get; set; }
+
+	private bool alertOnly = true;
+	public bool AlertOnly
+	{
+		get => alertOnly;
+		set { alertOnly = value; }
+	}
 
 	IEnumerable<OO> oo;
 	private IEnumerable<TS> ts;
@@ -283,7 +326,7 @@
 
 		//var xx = db.LoadRec<XX, dynamic>("select * from OO_UPD_SF(@OOID, @S_F)", new { OOID = o.OOID, S_F = S_F });
 		using var conn = dbCon.GetConnection();
-		var xx = conn.QueryFirst<XX>("OO_UPD_SF", new { OOID = o.OOID, S_F = S_F }, commandType: CommandType.StoredProcedure);
+		var xx = conn.QueryFirst<XX>("OO_UPD_SF", new { OOID = o.OOID, USRID = appState.UsrId, S_F = S_F }, commandType: CommandType.StoredProcedure);
 		o.ASD = xx.ASD;
 		o.AFD = xx.AFD;
 		o.sdh = xx.SDH;
@@ -317,7 +360,8 @@
 		var prms = new
 		{
 			FFID = appState.FrmId,
-			RngFld = "InsTS",
+			UsrId = 29,  // appState.UsrId,
+			RngFld = "UpdTS",
 			RngGE = DateTime.Today.AddDays(-100),
 			RngLT = DateTime.Today.AddDays(1),
 			S1F = "SbjId",
@@ -330,7 +374,10 @@
 
 		using (IDbConnection conn = dbCon.GetConnection())
 		{
-			oo = conn.Query<OO>("OO_QRY", prms, commandType: CommandType.StoredProcedure);
+			if (AlertOnly)
+				oo = conn.Query<OO>("select * from OO_QRY(@FFID,@USRID,@RNGFLD,@RNGGE,@RNGLT,@S1F,@S1V,@S2F,@S2V,@S3F,@S3V) where AlrtO > 0 or AlrtM > 0", prms);
+			else
+				oo = conn.Query<OO>("OO_QRY", prms, commandType: CommandType.StoredProcedure);
 		}
 	}
 

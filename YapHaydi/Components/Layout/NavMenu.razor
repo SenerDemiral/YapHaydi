@@ -11,9 +11,10 @@
 {
 	<div class="ml-auto font-bold shadow-sm shadow-black rounded px-2">@appState.Ad</div>
 }
-<span class="material-symbols-outlined">&#xE8B6;</span>
+@* <span class="material-symbols-outlined">&#xE8B6;</span> *@
+
 <select @bind="menu" class="rounded px-2 bg-red-100 text-black ml-auto py-1 shadow-md shadow-black" >
-	<option value="">🔴 MENU</option>
+	<option value="">🔴 HOME</option>
 	@* <option value="counter">Counter &#xE8B6;</option> *@
 	@* <option value="tts">⚙️ Tanım</option> *@
 	
@@ -40,8 +41,8 @@
 	}
 
 </select>
-<style>
 
+<style>
 	span.sz-48 {
 		font-size: 48px;
 		font-variation-settings: 'OPSZ' 48;

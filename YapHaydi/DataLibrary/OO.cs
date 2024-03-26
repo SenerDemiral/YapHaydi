@@ -46,6 +46,12 @@ public class OO
 	public bool UpdatePending = false;
 	public int UpdateSoF;   // 1:Started, 2:Finished
 
+	public int AlrtO;
+	public int AlrtM;
+
+	public bool hasOrdAlert => AlrtO != 0;
+	public bool hasMsgAlert => AlrtM != 0;
+
 	public OO ShallowCopy()
 	{
 		return (OO)this.MemberwiseClone();
