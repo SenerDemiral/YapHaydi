@@ -50,7 +50,7 @@
 	font-family: 'Material Symbols Outlined';
 	font-weight: normal;
 	font-style: normal;
-	font-size: inherit; /*24px; 20*/
+	/*font-size: 1.25rem; inherit; 24px; 20*/
 	line-height: inherit;
 	letter-spacing: normal;
 	text-transform: none;
@@ -62,3 +62,89 @@
 	-moz-osx-font-smoothing: grayscale;
 	vertical-align: bottom;
 }
+
+
+.oBox {
+	padding: 4px;
+	font-size: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	position: relative;
+}
+
+.topleft {
+	position: absolute;
+	top: 2px;
+	left: 4px;
+	font-size: x-small;
+	color: burlywood;
+}
+
+.oGrid {
+	display: grid;
+	grid-template-columns: 20% 40% auto;
+	grid-template-areas:
+		"oRecNo  oSbj oStart"
+		"oDtyBtn oReq oConfirm"
+		"oMsjBtn oAct oFinish";
+	border: 1px solid grey; /* Dış çizgi */
+	/*background-color: black;  Gap = iç çizgi */
+	margin-bottom: 4px;
+}
+
+@media only screen and (min-width: 600px) {
+	.oGrid {
+		grid-template-columns: 5% 5% 5% 15% 15% 15% 14% 14% auto;
+		grid-template-areas:
+			"oRecNo oDtyBtn oMsjBtn oSbj oReq oAct oStart oFinish oConfirm";
+	}
+}
+
+.oRecNo {
+	grid-area: oRecNo;
+	background-color:aquamarine;
+	justify-content: center;
+}
+
+.oDtyBtn {
+	grid-area: oDtyBtn;
+	justify-content: center;
+	text-align: center;
+}
+
+.oMsjBtn {
+	grid-area: oMsjBtn;
+	justify-content: center; /*Tek satır için*/
+	text-align: center; /*Çok satır için*/
+}
+
+.oSbj {
+	grid-area: oSbj;
+}
+
+.oReq {
+	grid-area: oReq;
+}
+
+.oAct {
+	grid-area: oAct;
+}
+
+.oStart {
+	grid-area: oStart;
+	justify-content: center;
+	text-align: center;
+}
+
+.oFinish {
+	grid-area: oFinish;
+	justify-content: center;
+	text-align: center;
+}
+
+.oConfirm {
+	grid-area: oConfirm;
+	font-size:large;
+}
+
