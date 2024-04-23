@@ -69,13 +69,13 @@
 	font-size: 100%;
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
+	/*justify-content: space-between;*/
 	position: relative;
 }
 
 .topleft {
 	position: absolute;
-	top: 2px;
+	top: -3px;
 	left: 4px;
 	font-size: x-small;
 	color: burlywood;
@@ -95,7 +95,7 @@
 
 @media only screen and (min-width: 600px) {
 	.oGrid {
-		grid-template-columns: 5% 5% 5% 15% 15% 15% 14% 14% auto;
+		grid-template-columns: 5% 5% 5% 15% 15% 15% 17% 17% auto;
 		grid-template-areas:
 			"oRecNo oDtyBtn oMsjBtn oSbj oReq oAct oStart oFinish oConfirm";
 	}
@@ -133,14 +133,14 @@
 
 .oStart {
 	grid-area: oStart;
-	justify-content: center;
-	text-align: center;
+	/*justify-content: center;*/
+	/*text-align: center;*/
 }
 
 .oFinish {
 	grid-area: oFinish;
-	justify-content: center;
-	text-align: center;
+	/*justify-content: center;*/
+	/*text-align: center;*/
 }
 
 .oConfirm {

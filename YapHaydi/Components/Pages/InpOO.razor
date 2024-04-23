@@ -44,15 +44,15 @@
 					<td colspan="2" style="background-color:gray;color:antiquewhite;text-align:center">Request</td>
 				</tr>
 				<tr>
-					<td><button @onclick='() => ShowModal("R", oo.ReqID)' tabindex="-1" class="text-blue-700 shadow-md">İstek</button></td>
+					<td><button @onclick='() => ShowModal("R", oo.TskID)' tabindex="-1" class="text-blue-700 shadow-md">İstek</button></td>
 					<td>
 						<input type="text" class="px-1"
 							   maxlength="30"
 							   size="30"
-							   list="TRL2"
-							   @bind="oo.Req"
+							   list="TTL2"
+							   @bind="oo.Tsk"
 							   @bind:event="onchange"
-							   @bind:after="CheckReq" />
+							   @bind:after="CheckTsk" />
 					</td>
 				</tr>
 				<tr>
@@ -122,8 +122,8 @@
 				<option value="@r.Key" />
 			}
 		</datalist>
-		<datalist id="TRL2">
-			@foreach (var r in trd!)
+		<datalist id="TTL2">
+			@foreach (var r in ttd!)
 			{
 				<option value="@r.Key" />
 			}
@@ -171,9 +171,9 @@
 	private bool RO = false;
 	private int FFID;
 	private IEnumerable<TS> ts;
-	private IEnumerable<TR> tr;
+	private IEnumerable<TT> tt;
 	private IEnumerable<TA> ta;
-	private Dictionary<string, int?>? tsd, trd, tad;
+	private Dictionary<string, int?>? tsd, ttd, tad;
 
 	private int inpTid;
 	private string inpTtyp;
@@ -229,14 +229,14 @@
 		// 	}
 		// }
 	}
-	private void CheckReq()
+	private void CheckTsk()
 	{
-		if (trd!.TryGetValue(oo.Req, out var nid))
+		if (ttd!.TryGetValue(oo.Req, out var nid))
 		{
-			oo.ReqID = nid;
-			var xx = tr.First(x => x.TRID == nid).Inf;
-			if (!string.IsNullOrEmpty(xx))
-				oo.Inf = xx;
+			oo.TskID = nid;
+			// var xx = tr.First(x => x.TRID == nid).Inf;
+			// if (!string.IsNullOrEmpty(xx))
+				// oo.Inf = xx;
 		}
 		else
 			oo.Req = ooo.Req;
@@ -295,7 +295,7 @@
 			USRID = appState.UsrId,
 			FFID = appState.FrmId,
 			SBJID = oo.SbjID,
-			REQID = oo.ReqID,
+			REQID = oo.TskID,
 			ACTID = oo.ActID,
 			RSD = RSD,
 			ASD = oo.ASD,
@@ -321,7 +321,7 @@
 	private void LoadLookups()
 	{
 		tsd = new();
-		trd = new();
+		ttd = new();
 		tad = new();
 
 		tsd.Add("", null);
@@ -335,10 +335,10 @@
 			{
 				tsd.Add(r.Ad, r.TSID);
 			}
-			tr = conn.Query<TR>("select * from TR where FFId = @FFId", new { FFId = appState.FrmId });
-			foreach (var r in tr)
+			tt = conn.Query<TT>("select * from TR where FFId = @FFId", new { FFId = appState.FrmId });
+			foreach (var r in tt)
 			{
-				trd.Add(r.Ad, r.TRID);
+				ttd.Add(r.Ad, r.TRID);
 			}
 			ta = conn.Query<TA>("select * from TA where FFId = @FFId", new { FFId = appState.FrmId });
 			foreach (var r in ta)

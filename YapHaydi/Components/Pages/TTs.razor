@@ -76,7 +76,7 @@
 	[CascadingParameter]
 	public AppState? appState { get; set; } = default;
 
-	public IEnumerable<TT> tt;
+	public IEnumerable<TTold> tt;
 
 	private int inpTTid;
 	private string pointerEvent = "pe-auto";
@@ -117,7 +117,7 @@
 	private void LoadData()
 	{
 		if(appState.IsFrm)
-			tt = db.LoadData<TT, dynamic>("select * from TT where FFId = @FFId order by Typ, Tag, Ad", new { FFId = appState.FrmId });
+			tt = db.LoadData<TTold, dynamic>("select * from TT where FFId = @FFId order by Typ, Tag, Ad", new { FFId = appState.FrmId });
 	}
 
 	protected override void OnInitialized()

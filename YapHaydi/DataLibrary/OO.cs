@@ -5,7 +5,7 @@ public class OO
 	public int OOID;
 
 	public int? SbjID;
-	public int? ReqID;
+	public int? TskID;
 	public int? ActID;
 
 
@@ -27,6 +27,7 @@ public class OO
 	public int sdh;
 	public int fdh;
 
+	public string Tsk;
 	public string Sbj;
 	public string Req;
 	public string Act;

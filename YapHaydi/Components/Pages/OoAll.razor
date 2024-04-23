@@ -9,7 +9,72 @@
 
 @if (oo != null)
 {
-	<div class="m-1">
+	<div class="mx-1">
+		<div class="flex justify-center">
+			<button @onclick="ToggleQry">
+				<span class="material-symbols-outlined text-xl text-red-500">swap_vertical_circle</span>
+			</button>
+		</div>
+
+		<div class="@(HideQuery ? "hidden" : string.Empty)">
+			<table class="mx-auto text-left text-gray-500 @pointerEvent">
+				<tr>
+					<td class="border border-slate-300 px-1 font-thin">Filtre</td>
+					<td class="border border-slate-300 px-1">
+						<InputRadioGroup @bind-Value="ftyp">
+							<InputRadio Value="@("0")" />Hepsi &nbsp;
+							<InputRadio Value="@("1")" />Yeniler &nbsp;
+							<InputRadio Value="@("2")" />Başlamamış &nbsp;
+							<InputRadio Value="@("3")" />Bitmemiş
+						</InputRadioGroup>
+					</td>
+				</tr>
+				<tr>
+					<td class="border border-slate-300 px-1 font-thin">Konu</td>
+					<td class="border border-slate-300 px-1">
+						<input type="text"
+							   maxlength="30"
+							   size="15"
+							   list="TSL"
+							   @bind="sSbj"
+							   @bind:event="onchange"
+							   @bind:after="CheckSbj" />
+					</td>
+				</tr>
+				<tr>
+					<td class="border border-slate-300 px-1 font-thin">İstek</td>
+					<td class="border border-slate-300 px-1">
+						<input type="text"
+							   maxlength="30"
+							   size="15"
+							   list="TTL"
+							   @bind="sTsk"
+							   @bind:event="onchange"
+							   @bind:after="CheckTsk" />
+					</td>
+				</tr>
+				<tr>
+					<td class="border border-slate-300 px-1 font-thin">Yapan</td>
+					<td class="border border-slate-300 px-1">
+						<input type="text"
+							   maxlength="30"
+							   size="15"
+							   list="TAL"
+							   @bind="sAct"
+							   @bind:event="onchange"
+							   @bind:after="CheckAct" />
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2" class="border border-slate-300 px-1 text-center bg-slate-100">
+						<button type="button" @onclick="QryArgsSelected">🔎</button>
+					</td>
+				</tr>
+			</table>
+			<br />
+		</div>
+
+
 		@{
 			int j = 1;
 		}
@@ -18,53 +83,37 @@
 			<div class="oGrid">
 				<div class="oBox oRecNo">@(j++)</div>
 
-				@if (o.hasOrdAlert)
-				{
-					<div class="oBox oDtyBtn bg-amber-500">
-						<button @onclick="() => ShowModal(o.OOID)">
-							<span class="material-symbols-outlined text-xl">topic</span>
-							@* <sup class="text-[.5rem]">@o.OOID</sup> *@
-						</button>
-					</div>
-				}
-				else
-				{
-					<div class="oBox oDtyBtn">
-						<button @onclick="() => ShowModal(o.OOID)">
-							<span class="material-symbols-outlined text-xl">topic</span>
-							@* <sup class="text-[.5rem]">@o.OOID</sup> *@
-						</button>
-					</div>
-				}
+				<div class="oBox oDtyBtn">
+					<button @onclick="() => ShowModal(o.OOID)">
+						<span class="material-symbols-outlined text-xl @(o.hasOrdAlert ? "text-red-500" : string.Empty)">topic</span>
+					</button>
+				</div>
 
-				@if (o.hasMsgAlert)
-				{
-					<div class="oBox oMsjBtn bg-red-500">
-						<button @onclick="() => ShowModal(o.OOID)">
+				<div class="oBox oMsjBtn">
+					<button @onclick="() => ShowModal(o.OOID)">
+						@if (o.hasMsgAlert)
+						{
+							<span class="material-symbols-outlined text-xl text-red-500">
+								mail<span class="-left-1 text-xs">@o.AlrtM</span>
+							</span>
+						}
+						else
+						{
 							<span class="material-symbols-outlined text-xl">mail</span>
-							<sup>@o.AlrtM</sup>
-						</button>
-					</div>
-				}
-				else
-				{
-					<div class="oBox oMsjBtn bg-indigo-500">
-						<button @onclick="() => ShowModal(o.OOID)">
-							<span class="material-symbols-outlined">mail</span>
-						</button>
-					</div>
-				}
+						}
+					</button>
+				</div>
 
 				<div class="oBox oSbj">@o.Sbj<span class="topleft">konu</span></div>
-				<div class="oBox oReq">@o.Req<div class="topleft">istek</div></div>
-				<div class="oBox oAct">@o.Act<div class="topleft">yapan</div></div>
+				<div class="oBox oReq">@o.Tsk<span class="topleft">görev</span></div>
+				<div class="oBox oAct">@o.Act<span class="topleft">yapan</span></div>
 
 				<div class="oBox oStart">
 					@if (o.Started)
 					{
 						@o.ASDfs
 						<span class="material-symbols-outlined text-xs">done</span>
-						<sup>@o.sdh</sup>
+						<sup class="text-[10px]">@o.sdh</sup>
 					}
 					else
 					{
@@ -80,7 +129,7 @@
 					{
 						@o.AFDfs
 						<span class="material-symbols-outlined text-xs">done</span>
-						<sup>@o.fdh</sup>
+						<sup class="text-[10px]">@o.fdh</sup>
 					}
 					else
 					{
@@ -88,6 +137,7 @@
 							@o.RFDfs
 						</button>
 					}
+					<div class="topleft">bitiş</div>
 				</div>
 
 				<div class="oBox oConfirm">
@@ -108,167 +158,6 @@
 		}
 	</div>
 
-	<table class="mx-auto text-left text-gray-500 @pointerEvent">
-		<thead class="text-xs text-gray-700 bg-gray-50">
-			<tr>
-				<th colspan="2" class="border border-slate-300 text-center">
-					<span class="material-symbols-outlined">warning</span>
-
-					<input type="checkbox" @bind="AlertOnly" />
-				</th>
-				<th class="border border-slate-300 px-1 text-center">
-					<button type="button" @onclick="QryArgsSelected">🔎</button>
-				</th>
-				<th class="border border-slate-300 px-1 font-thin">
-					<input type="text"
-						   maxlength="30"
-						   size="15"
-						   list="TSL"
-						   @bind="sSbj"
-						   @bind:event="onchange"
-						   @bind:after="CheckSbj" />
-				</th>
-				<th class="border border-slate-300 px-1 font-thin">
-					<input type="text"
-						   maxlength="30"
-						   size="15"
-						   list="TRL"
-						   @bind="sReq"
-						   @bind:event="onchange"
-						   @bind:after="CheckReq" />
-				</th>
-				<th class="border border-slate-300 px-1 font-thin">
-					<input type="text"
-						   maxlength="30"
-						   size="15"
-						   list="TAL"
-						   @bind="sAct"
-						   @bind:event="onchange"
-						   @bind:after="CheckAct" />
-				</th>
-				@* <th colspan="2" class="border border-slate-300"></th> *@
-
-			</tr>
-			<tr class="text-center bg-orange-600 text-white">
-				<th>#</th>
-				<th class="font-thin">Dty</th>
-				<th class="font-thin">Msj</th>
-				<th class="font-thin">Konu</th>
-				<th class="font-thin">İstek</th>
-				<th class="font-thin">Yapan</th>
-				@* <th class="font-thin">Başlangıç</th> *@
-				@* <th class="font-thin">Bitiş</th> *@
-			</tr>
-		</thead>
-		<tbody>
-			@{
-				int i = 1;
-			}
-			@foreach (var o in oo)
-			{
-				<tr class="border border-slate-300">
-					<td rowspan="2" class="border border-slate-300 pr-1 text-right text-red-600">@(i++)</td>
-					@if (o.hasOrdAlert)
-					{
-						<td rowspan="2" class="border border-slate-300 bg-red-700 text-center">
-							<button class=" text-white rounded px-1"
-									@onclick="() => ShowModal(o.OOID)">
-								<span class="material-symbols-outlined">maps_ugc</span>
-								@* <sup class="text-[.5rem]">@o.OOID</sup> *@
-							</button>
-						</td>
-					}
-					else
-					{
-						<td rowspan="2" class="border border-slate-300 bg-indigo-500 text-center">
-							<button class=" text-white rounded px-1"
-									@onclick="() => ShowModal(o.OOID)">
-								<span class="material-symbols-outlined">outbound</span>
-								@* <sup class="text-[.5rem]">@o.OOID</sup> *@
-							</button>
-						</td>
-					}
-					@if (o.hasMsgAlert)
-					{
-						<td rowspan="2" class="bg-amber-500 text-center">
-							<button class="text-white rounded px-1"
-									@onclick="() => ShowModal(o.OOID)">
-								<span class="material-symbols-outlined">mail</span>
-								@o.AlrtM
-							</button>
-						</td>
-					}
-					else
-					{
-						<td rowspan="2" class="border border-slate-300 bg-indigo-500 text-center">
-							<button class="text-white rounded px-1"
-									@onclick="() => ShowModal(o.OOID)">
-								<span class="material-symbols-outlined">mail</span>
-							</button>
-						</td>
-					}
-
-					<td class="border border-slate-300 px-1">@o.Sbj</td>
-					<td class="border border-slate-300 px-1">@o.Req</td>
-					<td class="border border-slate-300 px-1">@o.Act</td>
-				</tr>
-				<tr>
-					<td colspan="1" class="border border-slate-300"></td>
-					@if (o.Started)
-					{
-						<td class="border border-slate-300 px-1">
-							@o.ASDfs
-							<span class="material-symbols-outlined">done</span>
-							<sup>@o.sdh</sup>
-						</td>
-					}
-					else
-					{
-						<td class="border border-slate-300 text-center">
-							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => Started(o)">
-								@o.RSDfs
-							</button>
-						</td>
-					}
-
-					@if (o.Finishhed)
-					{
-						<td class="border border-slate-300 px-1">
-							@o.AFDfs
-							<span class="material-symbols-outlined">done</span>
-							<sup>@o.fdh</sup>
-						</td>
-					}
-					else
-					{
-						<td class="border border-slate-300 text-center">
-							<button class="bg-indigo-500 text-white rounded px-1" @onclick="() => Finished(o)">
-								@o.RFDfs
-							</button>
-						</td>
-					}
-
-					@if (o.UpdatePending)
-					{
-						<td>
-							<button @onclick="() => UpdRec(o)">
-								✔️
-							</button>
-						</td>
-					}
-					@if (o.UpdateSoF > 0)
-					{
-						<td>
-							<button @onclick="() => CancelPending(o)">
-								❌
-							</button>
-						</td>
-					}
-				</tr>
-			}
-		</tbody>
-	</table>
-
 	<datalist id="TSL">
 		@foreach (var r in tsd!)
 		{
@@ -276,8 +165,8 @@
 		}
 	</datalist>
 
-	<datalist id="TRL">
-		@foreach (var r in trd!)
+	<datalist id="TTL">
+		@foreach (var r in ttd!)
 		{
 			<option value="@r.Key" />
 		}
@@ -303,6 +192,9 @@
 	[CascadingParameter]
 	public AppState appState { get; set; }
 
+	public string ftyp { get; set; } = "1";
+	private bool HideQuery { get; set; } = true;
+
 	private bool alertOnly = true;
 	public bool AlertOnly
 	{
@@ -312,19 +204,24 @@
 
 	IEnumerable<OO> oo;
 	private IEnumerable<TS> ts;
-	private IEnumerable<TR> tr;
+	private IEnumerable<TT> tt;
 	private IEnumerable<TA> ta;
-	private Dictionary<string, int?>? tsd, trd, tad;
+	private Dictionary<string, int?>? tsd, ttd, tad;
 
 	private string sSbj;
-	private string sReq;
+	private string sTsk;
 	private string sAct;
 	private int sSbjId = -1;
-	private int sReqId = -1;
+	private int sTskId = -1;
 	private int sActId = -1;
 
 	private int mdlId;
 	private string pointerEvent = "pe-auto";
+
+	private void ToggleQry()
+	{
+		HideQuery = !HideQuery;
+	}
 
 	private void CheckSbj()
 	{
@@ -336,14 +233,14 @@
 			sSbj = "";
 		}
 	}
-	private void CheckReq()
+	private void CheckTsk()
 	{
-		if (trd!.TryGetValue(sReq, out var nid))
-			sReqId = (int)nid;
+		if (ttd!.TryGetValue(sTsk, out var nid))
+			sTskId = (int)nid;
 		else
 		{
-			sReqId = -1;
-			sReq = "";
+			sTskId = -1;
+			sTsk = "";
 		}
 	}
 	private void CheckAct()
@@ -442,6 +339,7 @@
 	public void QryArgsSelected()
 	{
 		LoadData();
+		HideQuery = true;
 	}
 
 	protected override void OnParametersSet()
@@ -469,31 +367,35 @@
 			RngLT = DateTime.Today.AddDays(1),
 			S1F = "SbjId",
 			S1V = sSbjId,
-			S2F = "ReqId",
-			S2V = sReqId,
+			S2F = "TskId",
+			S2V = sTskId,
 			S3F = "ActId",
 			S3V = sActId,
 		};
 
 		using (IDbConnection conn = dbCon.GetConnection())
 		{
-			if (AlertOnly)
-				oo = conn.Query<OO>("select * from OO_QRY(@FFID,@USRID,@RNGFLD,@RNGGE,@RNGLT,@S1F,@S1V,@S2F,@S2V,@S3F,@S3V) where AlrtO > 0 or AlrtM > 0", prms);
-			else
+			if (ftyp == "0")
 				oo = conn.Query<OO>("OO_QRY", prms, commandType: CommandType.StoredProcedure);
+			else if (ftyp == "1")
+				oo = conn.Query<OO>("select * from OO_QRY(@FFID,@USRID,@RNGFLD,@RNGGE,@RNGLT,@S1F,@S1V,@S2F,@S2V,@S3F,@S3V) where AlrtO > 0 or AlrtM > 0", prms);
+			else if (ftyp == "2")
+				oo = conn.Query<OO>("select * from OO_QRY(@FFID,@USRID,@RNGFLD,@RNGGE,@RNGLT,@S1F,@S1V,@S2F,@S2V,@S3F,@S3V) where ASD is null", prms);
+			else if (ftyp == "3")
+				oo = conn.Query<OO>("select * from OO_QRY(@FFID,@USRID,@RNGFLD,@RNGGE,@RNGLT,@S1F,@S1V,@S2F,@S2V,@S3F,@S3V) where AFD is null", prms);
 		}
 	}
 
 	private void LoadLookups()
 	{
 		tsd = new();
-		trd = new();
+		ttd = new();
 		tad = new();
 
 		tsd.Add("", -1);    // tümü
 		tsd.Add("-boş-", 0);
-		trd.Add("", -1);
-		trd.Add("-boş-", 0);
+		ttd.Add("", -1);
+		ttd.Add("-boş-", 0);
 		tad.Add("", -1);
 		tad.Add("-boş-", 0);
 
@@ -504,12 +406,12 @@
 			ts = conn.Query<TS>("select * from TS where FFId = @FFId", new { FFId = appState.FrmId });
 			foreach (var r in ts)
 			{
-				trd.Add(r.Ad, r.TSID);
+				ttd.Add(r.Ad, r.TSID);
 			}
-			tr = conn.Query<TR>("select * from TR where FFId = @FFId", new { FFId = appState.FrmId });
-			foreach (var r in tr)
+            tt = conn.Query<TT>("select * from TT where FFId = @FFId", new { FFId = appState.FrmId });
+			foreach (var r in tt)
 			{
-				trd.Add(r.Ad, r.TRID);
+				ttd.Add(r.Ad, r.TRID);
 			}
 			ta = conn.Query<TA>("select * from TA where FFId = @FFId", new { FFId = appState.FrmId });
 			foreach (var r in ta)
@@ -525,13 +427,6 @@
 		public DateTime? AFD;
 		public int SDH;
 		public int FDH;
-	}
-
-	private sealed class TT
-	{
-		public int TTId { get; set; }
-		public string Typ { get; set; }
-		public string AdX { get; set; }
 	}
 
 }
